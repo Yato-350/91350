@@ -1,0 +1,40 @@
+name: Bug
+description: Quelque chose ne marche pas comme prévu
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version du jeu
+      description: Affichée en haut à droite de l'écran (ex. v0.0.1).
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Plateforme
+      description: Web (quel navigateur ?), Windows, Linux, macOS, Steam Deck…
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes pour reproduire
+      placeholder: |
+        1. Lancer le jeu
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Ce qui était attendu
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Ce qui s'est passé
+      description: Une capture d'écran ou une courte vidéo aide beaucoup.
+    validations:
+      required: true

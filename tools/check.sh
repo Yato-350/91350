@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Vérifications du projet : les mêmes commandes en local et en CI.
-# usage : tools/check.sh <lint|data|import|test|render|screenshot <scène>|all>
+# usage : tools/check.sh <lint|data|import|test|render|screenshot <scène>|web|all>
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -86,6 +86,22 @@ render() {
 	screenshot res://scenes/zones/test_zone.tscn
 }
 
+# Export web mono-thread (aucun en-tête HTTP spécial requis : compatible GitHub Pages).
+export_web() {
+	local log file
+	log="$(mktemp)"
+	rm -rf build/web
+	mkdir -p build/web
+	tools/godot.sh --headless --path . --export-release "Web" build/web/index.html 2>&1 | tee "$log"
+	fail_on_script_errors "$log"
+	for file in index.html index.js index.wasm index.pck; do
+		if [[ ! -s "build/web/$file" ]]; then
+			echo "Échec : build/web/$file manquant." >&2
+			exit 1
+		fi
+	done
+}
+
 # Capture une scène dans build/screenshots/ (voir scripts/main/main.gd).
 screenshot() {
 	local scene="$1"
@@ -106,6 +122,7 @@ case "${1:-all}" in
 	import) import_project ;;
 	test) run_tests ;;
 	render) render ;;
+	web) export_web ;;
 	screenshot) screenshot "${2:?usage : tools/check.sh screenshot <scène>}" ;;
 	all)
 		lint
@@ -113,9 +130,10 @@ case "${1:-all}" in
 		import_project
 		run_tests
 		render
+		export_web
 		;;
 	*)
-		echo "usage : tools/check.sh <lint|data|import|test|render|screenshot <scène>|all>" >&2
+		echo "usage : tools/check.sh <lint|data|import|test|render|screenshot <scène>|web|all>" >&2
 		exit 2
 		;;
 esac

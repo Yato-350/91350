@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Vérifications et build web
+    # Un push sur une branche du dépôt est déjà couvert par l'événement « push » :
+    # l'événement « pull_request » ne sert qu'aux PR venant d'un fork.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
+
+      - name: Outils Python
+        run: pip install -r tools/requirements.txt
+
+      - name: Lint GDScript
+        run: tools/check.sh lint
+
+      - name: Données
+        run: tools/check.sh data
+
+      - name: Cache de Godot
+        uses: actions/cache@v6
+        with:
+          path: |
+            .tools/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ hashFiles('.godot-version') }}
+
+      - name: Godot (version épinglée dans .godot-version)
+        run: tools/install_godot.sh --templates web
+
+      - name: Import et chargement des scripts
+        run: tools/check.sh import
+
+      - name: Tests GUT
+        run: tools/check.sh test
+
+      - name: Écran virtuel et rendu logiciel
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xvfb libgl1-mesa-dri \
+            libxcursor1 libxinerama1 libxi6 libxrandr2 libxkbcommon0 libfontconfig1
+
+      - name: Tests de rendu et capture d'écran
+        run: tools/check.sh render
+
+      - name: Captures d'écran
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: captures
+          path: build/screenshots
+          if-no-files-found: ignore
+
+      - name: Export web
+        run: tools/check.sh web
+
+      - name: Build web (artefact GitHub Pages)
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/web
+
+  deploy:
+    name: Mise en ligne (GitHub Pages)
+    needs: checks
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5
