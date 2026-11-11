@@ -34,18 +34,20 @@ check_data() {
 
 # Godot rend souvent le code 0 même quand un script ne compile pas : on lit sa sortie.
 fail_on_script_errors() {
-	if grep -qE "SCRIPT ERROR|Parse Error|Échec du chargement" "$1"; then
+	if grep -qE "SCRIPT ERROR|Parse Error|Failed loading resource|Échec du chargement" "$1"; then
 		echo "Échec : erreur de script (voir ci-dessus)." >&2
 		exit 1
 	fi
 }
 
-# L'import ne compile pas le GDScript : on charge ensuite chaque script et chaque scène.
+# L'import ne compile pas le GDScript : on charge ensuite chaque script, scène et
+# ressource. Le journal de l'import lui-même n'est pas contrôlé : sur un clone neuf,
+# Godot y signale des fichiers « introuvables » qu'il est justement en train de créer.
 import_project() {
 	local log
 	log="$(mktemp)"
-	tools/godot.sh --headless --path . --import 2>&1 | tee "$log"
-	tools/godot.sh --headless --path . -s tools/check_scripts.gd 2>&1 | tee -a "$log"
+	tools/godot.sh --headless --path . --import
+	tools/godot.sh --headless --path . -s tools/check_scripts.gd 2>&1 | tee "$log"
 	fail_on_script_errors "$log"
 }
 

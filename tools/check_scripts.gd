@@ -1,9 +1,11 @@
 extends SceneTree
-## Charge chaque script et chaque scène du projet : l'import seul ne signale pas
+## Charge chaque script, scène et ressource du projet : l'import seul ne signale pas
 ## les erreurs de GDScript. Sort avec le code 1 si une ressource ne se charge pas.
 
-const ROOTS: Array[String] = ["res://scripts", "res://scenes", "res://tests", "res://tools"]
-const EXTENSIONS: Array[String] = ["gd", "tscn"]
+const ROOTS: Array[String] = [
+	"res://scripts", "res://scenes", "res://tests", "res://tools", "res://assets", "res://shaders"
+]
+const EXTENSIONS: Array[String] = ["gd", "tscn", "tres", "gdshader"]
 
 
 func _initialize() -> void:
