@@ -1,0 +1,4 @@
+# Fins de ligne Unix partout : Godot et les outils s'en accommodent sur tous les systèmes.
+* text=auto eol=lf
+*.png binary
+*.ttf binary

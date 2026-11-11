@@ -1,0 +1,15 @@
+# Godot 4 : cache d'import et fichiers générés
+.godot/
+*.translation
+
+# Builds et captures d'écran
+build/
+
+# Outils locaux (Godot épinglé, environnement Python)
+.tools/
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Brouillons de session
+.superpowers/
