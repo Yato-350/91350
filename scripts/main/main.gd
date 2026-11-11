@@ -16,6 +16,8 @@ const SCREENSHOT_FRAMES := 30
 var _colour_enabled := true
 
 @onready var _pixel_view: PixelView = $PixelView
+@onready var _ui: CanvasLayer = $UI
+@onready var _hud: Control = $UI/Hud
 
 
 ## Rend le chemin res:// de la scène demandée par « --screenshot <scène> », ou "".
@@ -28,6 +30,9 @@ static func parse_screenshot_scene(args: PackedStringArray) -> String:
 
 
 func _ready() -> void:
+	_pixel_view.scale_changed.connect(func(_scale: int) -> void: _layout_ui())
+	_pixel_view.resized.connect(_layout_ui)
+	_layout_ui()
 	var screenshot_scene := parse_screenshot_scene(OS.get_cmdline_user_args())
 	if not screenshot_scene.is_empty():
 		_run_screenshot_mode(screenshot_scene)
@@ -86,6 +91,14 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		return
 	print("Capture enregistrée : %s" % ProjectSettings.globalize_path(path))
 	get_tree().quit(0)
+
+
+# L'interface est dessinée en 640×360 puis agrandie du même facteur entier que le monde.
+func _layout_ui() -> void:
+	var pixel_scale := maxi(1, _pixel_view.get_pixel_scale())
+	_ui.scale = Vector2.ONE * pixel_scale
+	_hud.position = Vector2.ZERO
+	_hud.size = (_pixel_view.size / pixel_scale).ceil()
 
 
 func _toggle_fullscreen() -> void:

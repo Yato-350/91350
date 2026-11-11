@@ -1,0 +1,8 @@
+keys,fr
+HUD_CONTROLS,"Bouger : ZQSD ou stick · Courir : Maj ou B · Caméra : A / E ou LB / RB"
+HUD_KEYS,"F5 sauver · F9 charger · F2 gris / couleur · F1 crédits · F11 plein écran"
+HUD_STATUS,"v{version} · {fps} IPS"
+HUD_SAVED,"Partie sauvegardée"
+HUD_LOADED,"Partie chargée"
+CREDITS_TITLE,"91350 — crédits"
+CREDITS_BODY,"Prototype d'un jeu indépendant. Fiction : toute ressemblance avec des personnes réelles serait fortuite.\n\nMoteur : Godot Engine (licence MIT) — godotengine.org/license\nPolice : Tiny5, The Tiny5 Project Authors (SIL Open Font License 1.1)\n\nF1 pour fermer. Licence de Godot Engine :"
