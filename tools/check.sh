@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Vérifications du projet : les mêmes commandes en local et en CI.
-# usage : tools/check.sh <lint|data|import|test|all>
+# usage : tools/check.sh <lint|data|import|test|render|all>
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -50,16 +50,39 @@ import_project() {
 }
 
 # GUT ignore un fichier de test qui ne compile pas et rend 0 s'il s'arrête avant
-# de commencer : on exige son bilan et l'absence d'erreur de script.
+# de commencer : on exige son bilan, aucun test en échec et aucune erreur de script.
+check_gut_log() {
+	fail_on_script_errors "$1"
+	if ! grep -q "Passing Tests" "$1" || grep -q "Failing Tests" "$1"; then
+		echo "Échec : des tests GUT ont échoué ou n'ont pas tourné." >&2
+		exit 1
+	fi
+}
+
 run_tests() {
 	local log
 	log="$(mktemp)"
-	tools/godot.sh --headless --path . -s addons/gut/gut_cmdln.gd -gexit "$@" 2>&1 | tee "$log"
-	fail_on_script_errors "$log"
-	if ! grep -q "All tests passed" "$log"; then
-		echo "Échec : GUT n'a pas annoncé « All tests passed »." >&2
-		exit 1
+	tools/godot.sh --headless --path . -s addons/gut/gut_cmdln.gd -gexit 2>&1 | tee "$log"
+	check_gut_log "$log"
+}
+
+# Lance une commande dans un écran virtuel quand il n'y a pas d'affichage (CI, cloud).
+with_display() {
+	if [[ -z "${DISPLAY:-}" ]] && command -v xvfb-run > /dev/null; then
+		xvfb-run -a -s "-screen 0 1280x720x24" "$@"
+	else
+		"$@"
 	fi
+}
+
+# Tests qui exigent un vrai rendu : « --headless » n'affiche rien.
+render() {
+	local log
+	log="$(mktemp)"
+	with_display tools/godot.sh --path . --rendering-driver opengl3 --audio-driver Dummy \
+		--resolution 1280x720 -s addons/gut/gut_cmdln.gd -gexit -gdir=res://tests/render \
+		2>&1 | tee "$log"
+	check_gut_log "$log"
 }
 
 case "${1:-all}" in
@@ -67,14 +90,16 @@ case "${1:-all}" in
 	data) check_data ;;
 	import) import_project ;;
 	test) run_tests ;;
+	render) render ;;
 	all)
 		lint
 		check_data
 		import_project
 		run_tests
+		render
 		;;
 	*)
-		echo "usage : tools/check.sh <lint|data|import|test|all>" >&2
+		echo "usage : tools/check.sh <lint|data|import|test|render|all>" >&2
 		exit 2
 		;;
 esac

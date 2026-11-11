@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/rendering/pixel_view.gd" id="1_view"]
+[ext_resource type="Shader" path="res://shaders/outline.gdshader" id="2_outline"]
+[ext_resource type="Shader" path="res://shaders/color_grade.gdshader" id="3_grade"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_screen"]
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+resource_local_to_scene = true
+render_priority = -100
+shader = ExtResource("2_outline")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grade"]
+resource_local_to_scene = true
+shader = ExtResource("3_grade")
+
+[node name="PixelView" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_view")
+
+[node name="Container" type="SubViewportContainer" parent="."]
+texture_filter = 1
+layout_mode = 0
+stretch = true
+
+[node name="World" type="SubViewport" parent="Container"]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(642, 362)
+render_target_update_mode = 4
+
+[node name="Outline" type="MeshInstance3D" parent="Container/World"]
+material_override = SubResource("ShaderMaterial_outline")
+cast_shadow = 0
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_screen")
+
+[node name="Grade" type="CanvasLayer" parent="Container/World"]
+
+[node name="Rect" type="ColorRect" parent="Container/World/Grade"]
+material = SubResource("ShaderMaterial_grade")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
