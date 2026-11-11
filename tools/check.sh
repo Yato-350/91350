@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Vérifications du projet : les mêmes commandes en local et en CI.
-# usage : tools/check.sh <lint|import|test|all>
+# usage : tools/check.sh <lint|data|import|test|all>
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -24,6 +24,12 @@ lint() {
 	mapfile -t dirs < <(gdscript_dirs)
 	gdlint "${dirs[@]}"
 	gdformat --check "${dirs[@]}"
+}
+
+# Schémas JSON des données, puis tests du validateur lui-même.
+check_data() {
+	python tools/validate_data.py
+	python -m pytest -q tools/tests
 }
 
 # Godot rend souvent le code 0 même quand un script ne compile pas : on lit sa sortie.
@@ -58,15 +64,17 @@ run_tests() {
 
 case "${1:-all}" in
 	lint) lint ;;
+	data) check_data ;;
 	import) import_project ;;
 	test) run_tests ;;
 	all)
 		lint
+		check_data
 		import_project
 		run_tests
 		;;
 	*)
-		echo "usage : tools/check.sh <lint|import|test|all>" >&2
+		echo "usage : tools/check.sh <lint|data|import|test|all>" >&2
 		exit 2
 		;;
 esac
