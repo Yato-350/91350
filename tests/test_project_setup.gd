@@ -19,3 +19,8 @@ func test_static_typing_is_enforced() -> void:
 
 func test_physics_is_interpolated() -> void:
 	assert_true(ProjectSettings.get_setting("physics/common/physics_interpolation"))
+
+
+func test_main_scene_is_set() -> void:
+	var main_scene: String = ProjectSettings.get_setting("application/run/main_scene", "")
+	assert_eq(main_scene, "res://scenes/main/main.tscn")

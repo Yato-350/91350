@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Vérifications du projet : les mêmes commandes en local et en CI.
-# usage : tools/check.sh <lint|data|import|test|render|all>
+# usage : tools/check.sh <lint|data|import|test|render|screenshot <scène>|all>
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -83,6 +83,21 @@ render() {
 		--resolution 1280x720 -s addons/gut/gut_cmdln.gd -gexit -gdir=res://tests/render \
 		2>&1 | tee "$log"
 	check_gut_log "$log"
+	screenshot res://scenes/zones/test_zone.tscn
+}
+
+# Capture une scène dans build/screenshots/ (voir scripts/main/main.gd).
+screenshot() {
+	local scene="$1"
+	local output
+	output="build/screenshots/$(basename "$scene" .tscn).png"
+	rm -f "$output"
+	with_display tools/godot.sh --path . --rendering-driver opengl3 --audio-driver Dummy \
+		--resolution 1280x720 -- --screenshot "$scene"
+	if [[ ! -f "$output" || "$(wc -c < "$output")" -lt 2048 ]]; then
+		echo "Échec : capture absente ou vide ($output)." >&2
+		exit 1
+	fi
 }
 
 case "${1:-all}" in
@@ -91,6 +106,7 @@ case "${1:-all}" in
 	import) import_project ;;
 	test) run_tests ;;
 	render) render ;;
+	screenshot) screenshot "${2:?usage : tools/check.sh screenshot <scène>}" ;;
 	all)
 		lint
 		check_data
@@ -99,7 +115,7 @@ case "${1:-all}" in
 		render
 		;;
 	*)
-		echo "usage : tools/check.sh <lint|data|import|test|render|all>" >&2
+		echo "usage : tools/check.sh <lint|data|import|test|render|screenshot <scène>|all>" >&2
 		exit 2
 		;;
 esac
