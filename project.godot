@@ -14,8 +14,14 @@ config/name="91350"
 config/version="0.0.1"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
+[autoload]
+
+EventBus="*res://scripts/autoload/event_bus.gd"
+SaveManager="*res://scripts/autoload/save_manager.gd"
+
 [debug]
 
+gdscript/warnings/unused_signal=0
 gdscript/warnings/untyped_declaration=2
 
 [display]
