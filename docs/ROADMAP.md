@@ -16,7 +16,7 @@ Les jalons viennent du brief (§17). Une case est cochée quand le critère est 
 - [x] Interface minimale, traductions par clés, crédits
 - [x] Export web mono-thread, essayé dans Chromium (`node tools/web_smoke.cjs`)
 - [x] Docs de base : README, CLAUDE.md, GDD, TON, ROADMAP, DECISIONS, LEGAL
-- [ ] CI verte sur la PR
+- [x] CI verte sur la PR ([#1](https://github.com/Yato-350/91350/pull/1), fusionnée)
 - [ ] Build web jouable en ligne (après fusion sur `main` et activation de GitHub Pages)
 
 ## M1 — Tranche verticale (acte 1, ~45 min)

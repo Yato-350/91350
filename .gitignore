@@ -13,3 +13,6 @@ __pycache__/
 
 # Brouillons de session
 .superpowers/
+
+# Extraits OpenStreetMap bruts (retéléchargeables)
+tools/osm_import/cache/
