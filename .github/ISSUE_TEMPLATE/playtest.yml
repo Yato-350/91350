@@ -1,0 +1,44 @@
+name: Retour de playtest
+description: Tes impressions après une session de jeu
+labels: [playtest]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version du jeu
+      description: Affichée en haut à droite de l'écran (ex. v0.0.1).
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Plateforme et matériel
+      description: Web (navigateur), PC, Steam Deck ; clavier ou manette ?
+    validations:
+      required: true
+  - type: input
+    id: duration
+    attributes:
+      label: Durée de jeu
+  - type: textarea
+    id: liked
+    attributes:
+      label: Ce qui t'a plu
+  - type: textarea
+    id: blocked
+    attributes:
+      label: Ce qui t'a bloqué ou agacé
+  - type: dropdown
+    id: controls
+    attributes:
+      label: Les commandes étaient-elles claires ?
+      options: ["Oui", "À peu près", "Non"]
+  - type: dropdown
+    id: smoothness
+    attributes:
+      label: Le jeu était-il fluide ?
+      options: ["Oui, tout le temps", "Quelques saccades", "Non"]
+  - type: textarea
+    id: notes
+    attributes:
+      label: Remarques libres

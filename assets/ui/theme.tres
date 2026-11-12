@@ -1,0 +1,26 @@
+[gd_resource type="Theme" load_steps=3 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/Tiny5-Regular.ttf" id="1_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.0706, 0.102, 0.1804, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9333, 0.9373, 0.9412, 1)
+anti_aliasing = false
+
+[resource]
+default_font = ExtResource("1_font")
+default_font_size = 8
+Label/colors/font_color = Color(0.9333, 0.9373, 0.9412, 1)
+Label/colors/font_shadow_color = Color(0.0784, 0.0824, 0.102, 1)
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_panel")
+RichTextLabel/colors/default_color = Color(0.9333, 0.9373, 0.9412, 1)
