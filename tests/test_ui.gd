@@ -5,9 +5,16 @@ const STRINGS := "res://locale/strings.csv"
 const FONT := "res://assets/fonts/Tiny5-Regular.ttf"
 const FRENCH_GLYPHS := "àâäçéèêëîïôöùûüÿœæÀÂÇÉÈÊËÎÏÔÙÛÜŒ«»’…—·"
 
+var _original_locale: String
+
 
 func before_all() -> void:
+	_original_locale = TranslationServer.get_locale()
 	TranslationServer.set_locale("fr")
+
+
+func after_all() -> void:
+	TranslationServer.set_locale(_original_locale)
 
 
 func test_every_key_is_translated_in_french() -> void:
@@ -88,6 +95,10 @@ func _send_action(action: String) -> void:
 	event.action = action
 	event.pressed = true
 	Input.parse_input_event(event)
+	var release := InputEventAction.new()
+	release.action = action
+	release.pressed = false
+	Input.parse_input_event(release)
 
 
 func _translation_keys() -> Array[String]:

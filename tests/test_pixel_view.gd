@@ -6,6 +6,7 @@ const LAYOUT_CASES: Array = [
 	[Vector2(1920, 1080), 3, Vector2i(642, 362)],
 	[Vector2(1366, 768), 2, Vector2i(685, 386)],
 	[Vector2(320, 200), 1, Vector2i(322, 202)],
+	[Vector2(1366, 650), 2, Vector2i(685, 327)],
 ]
 const SAMPLE := Vector3(3.37, 12.11, -7.93)
 const EPSILON := 0.0001

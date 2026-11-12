@@ -37,6 +37,21 @@ func test_outline_draws_the_darkest_color() -> void:
 	assert_eq(_count_color(_view.get_low_res_image(), outline_color), 0)
 
 
+func test_outline_ignores_the_frame_border() -> void:
+	var image := _view.get_low_res_image()
+	var outline_color := _rgb(_palette["noir"])
+	var on_border := 0
+	for x: int in image.get_width():
+		for y: int in [0, image.get_height() - 1]:
+			if _rgb(image.get_pixel(x, y)) == outline_color:
+				on_border += 1
+	for y: int in image.get_height():
+		for x: int in [0, image.get_width() - 1]:
+			if _rgb(image.get_pixel(x, y)) == outline_color:
+				on_border += 1
+	assert_eq(on_border, 0, "le shader ne doit pas lire de voisin hors de l'image")
+
+
 func test_grey_and_colour_differ() -> void:
 	var coloured := _view.get_low_res_image()
 	_view.saturation = 0.0
@@ -61,7 +76,7 @@ func _make_world() -> Node3D:
 	var sun := DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-50.0, -30.0, 0.0)
 	world.add_child(sun)
-	world.add_child(_make_box(Vector3(40.0, 0.2, 40.0), Vector3(0.0, -0.1, 0.0), "beton_5"))
+	world.add_child(_make_box(Vector3(160.0, 0.2, 160.0), Vector3(0.0, -0.1, 0.0), "beton_5"))
 	world.add_child(_make_box(Vector3(2.0, 2.0, 2.0), Vector3(0.0, 1.0, 0.0), "blanc"))
 	world.add_child(_make_box(Vector3.ONE, Vector3(3.0, 0.5, 2.0), "rouge_propagande"))
 	var camera := Camera3D.new()

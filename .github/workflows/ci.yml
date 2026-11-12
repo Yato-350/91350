@@ -5,16 +5,17 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+# Un nouveau push remplace l'exécution en cours, sauf sur main (ne pas couper une mise en ligne).
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   checks:
     name: Vérifications et build web
-    # Un push sur une branche du dépôt est déjà couvert par l'événement « push » :
-    # l'événement « pull_request » ne sert qu'aux PR venant d'un fork.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7

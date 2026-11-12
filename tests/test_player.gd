@@ -117,6 +117,12 @@ func test_each_action_has_keyboard_and_gamepad() -> void:
 		assert_true(has_key and has_pad, action)
 
 
+func test_actions_accept_any_device() -> void:
+	for action: String in GAME_ACTIONS:
+		for event: InputEvent in InputMap.action_get_events(action):
+			assert_eq(event.device, -1, action)
+
+
 func _make_player_on_floor() -> Player:
 	var floor_body := StaticBody3D.new()
 	var shape := CollisionShape3D.new()

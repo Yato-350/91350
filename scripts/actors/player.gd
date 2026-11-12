@@ -12,7 +12,7 @@ const FALL_LIMIT := -20.0
 const STRIDES_PER_METER := 1.6
 const SWING_RADIANS := 0.7
 
-var save_id: StringName = &"player"
+@export var save_id: StringName = &"player"
 
 var _spawn_position := Vector3.ZERO
 var _stride := 0.0

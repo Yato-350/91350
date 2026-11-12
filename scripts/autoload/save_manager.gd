@@ -23,7 +23,14 @@ func has_save(slot: int = 0) -> bool:
 func save_game(slot: int = 0) -> bool:
 	var systems := {}
 	for node: Node in get_tree().get_nodes_in_group(SAVEABLE_GROUP):
-		systems[_save_id(node)] = node.call(&"save_state")
+		var id := _save_id(node)
+		if id.is_empty() or not node.has_method(&"save_state"):
+			push_error("Nœud sauvegardable sans save_id ou sans save_state : %s" % node.get_path())
+			return false
+		if systems.has(id):
+			push_error("Deux nœuds sauvegardables portent le même save_id : %s" % id)
+			return false
+		systems[id] = node.call(&"save_state")
 	var text := SaveCodec.encode(systems, Time.get_datetime_string_from_system(true))
 
 	# Écriture dans un fichier temporaire puis renommage : une coupure en cours
@@ -61,4 +68,5 @@ func load_game(slot: int = 0) -> bool:
 
 
 func _save_id(node: Node) -> String:
-	return str(node.get(&"save_id"))
+	var id: Variant = node.get(&"save_id")
+	return "" if id == null else str(id)

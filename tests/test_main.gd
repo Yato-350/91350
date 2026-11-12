@@ -102,6 +102,10 @@ func _send_action(action: String) -> void:
 	event.action = action
 	event.pressed = true
 	Input.parse_input_event(event)
+	var release := InputEventAction.new()
+	release.action = action
+	release.pressed = false
+	Input.parse_input_event(release)
 
 
 func _clear_test_dir() -> void:

@@ -8,7 +8,11 @@ const SCALE_CASES: Array = [
 	[Vector2i(640, 360), 1],
 	[Vector2i(320, 200), 1],
 	[Vector2i(2560, 1080), 3],
-	[Vector2i(1080, 1920), 1],
+	[Vector2i(1080, 1920), 2],
+	[Vector2i(1366, 650), 2],
+	[Vector2i(960, 540), 2],
+	[Vector2i(1600, 900), 3],
+	[Vector2i(800, 450), 1],
 ]
 const LOW_RES_CASES: Array = [
 	[Vector2i(1920, 1080), 3, Vector2i(640, 360)],

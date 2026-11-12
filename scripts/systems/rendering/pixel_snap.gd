@@ -13,10 +13,12 @@ const TEXEL := 1.0 / PIXELS_PER_METER
 const MARGIN := 1
 
 
-## Plus grand agrandissement entier pour lequel la vue de base tient dans la fenêtre.
+## Agrandissement entier qui rapproche le plus la vue de la taille de base.
+## Arrondi au plus proche : une fenêtre un peu plus petite que 1280×720 (un navigateur
+## sur un portable) garde un agrandissement de 2 et montre simplement un peu moins.
 static func integer_scale(window_size: Vector2i) -> int:
-	@warning_ignore("integer_division")
-	return maxi(1, mini(window_size.x / BASE_SIZE.x, window_size.y / BASE_SIZE.y))
+	var ratio := minf(window_size.x / float(BASE_SIZE.x), window_size.y / float(BASE_SIZE.y))
+	return maxi(1, roundi(ratio))
 
 
 ## Taille du rendu basse résolution qui couvre toute la fenêtre (sans la marge).

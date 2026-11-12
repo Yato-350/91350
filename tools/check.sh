@@ -5,8 +5,15 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
-if [[ -d .venv/bin ]]; then
-	PATH="$root/.venv/bin:$PATH"
+# Environnement Python du projet, s'il existe (.venv/Scripts sous Windows).
+for venv_bin in .venv/bin .venv/Scripts; do
+	if [[ -d "$venv_bin" ]]; then
+		PATH="$root/$venv_bin:$PATH"
+	fi
+done
+python="python3"
+if ! command -v python3 > /dev/null; then
+	python="python"
 fi
 
 # Dossiers de GDScript qui existent déjà (les addons ne sont pas vérifiés).
@@ -21,15 +28,22 @@ gdscript_dirs() {
 
 lint() {
 	local dirs
-	mapfile -t dirs < <(gdscript_dirs)
-	gdlint "${dirs[@]}"
-	gdformat --check "${dirs[@]}"
+	# shellcheck disable=SC2046 # les noms de dossiers n'ont pas d'espace
+	dirs="$(gdscript_dirs)"
+	gdlint $dirs
+	gdformat --check $dirs
+}
+
+# build/ contient des captures et le build web : Godot ne doit pas les importer.
+prepare_build_dir() {
+	mkdir -p build
+	touch build/.gdignore
 }
 
 # Schémas JSON des données, puis tests du validateur lui-même.
 check_data() {
-	python tools/validate_data.py
-	python -m pytest -q tools/tests
+	"$python" tools/validate_data.py
+	"$python" -m pytest -q tools/tests
 }
 
 # Godot rend souvent le code 0 même quand un script ne compile pas : on lit sa sortie.
@@ -92,6 +106,7 @@ render() {
 export_web() {
 	local log file
 	log="$(mktemp)"
+	prepare_build_dir
 	rm -rf build/web
 	mkdir -p build/web
 	tools/godot.sh --headless --path . --export-release "Web" build/web/index.html 2>&1 | tee "$log"
@@ -109,6 +124,7 @@ screenshot() {
 	local scene="$1"
 	local output
 	output="build/screenshots/$(basename "$scene" .tscn).png"
+	prepare_build_dir
 	rm -f "$output"
 	with_display tools/godot.sh --path . --rendering-driver opengl3 --audio-driver Dummy \
 		--resolution 1280x720 -- --screenshot "$scene"

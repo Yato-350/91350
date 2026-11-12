@@ -83,6 +83,23 @@ func test_no_temporary_file_is_left() -> void:
 	assert_eq(Array(DirAccess.get_files_at(TEST_DIR)), ["slot_0.json"])
 
 
+func test_duplicate_save_ids_are_refused() -> void:
+	_add_saveable(&"twin")
+	_add_saveable(&"twin")
+	assert_false(SaveManager.save_game())
+	assert_push_error("twin")
+	assert_false(SaveManager.has_save())
+
+
+func test_node_without_save_contract_is_refused() -> void:
+	var stranger := Node.new()
+	stranger.add_to_group(SaveManager.SAVEABLE_GROUP)
+	add_child_autofree(stranger)
+	assert_false(SaveManager.save_game())
+	assert_push_error("save_id")
+	assert_false(SaveManager.has_save())
+
+
 func _add_saveable(id: StringName = &"fake") -> FakeSaveable:
 	var node := FakeSaveable.new(id)
 	add_child_autofree(node)

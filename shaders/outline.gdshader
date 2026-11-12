@@ -38,5 +38,8 @@ void fragment() {
 	// son laplacien y est nul, donc pas de faux trait sur les pentes.
 	float laplacian = abs(left + right - 2.0 * center) + abs(up + down - 2.0 * center);
 	float edge = step(threshold, laplacian);
+	// Sur le cadre de l'image, un voisin manque : le laplacien y serait faux. Pas de trait.
+	vec2 inside = step(pixel, SCREEN_UV) * step(SCREEN_UV, vec2(1.0) - pixel);
+	edge *= inside.x * inside.y;
 	ALBEDO = mix(texture(screen_texture, SCREEN_UV).rgb, outline_color, edge);
 }

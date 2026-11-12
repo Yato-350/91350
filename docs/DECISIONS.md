@@ -9,7 +9,7 @@ Choix datés et justifiés. Une décision réversible se prend, se note ici, et 
 | 3 | 2026-11-11 | La **palette est la dernière passe**, en shader `canvas_item` dans le SubViewport | Une passe écran en shader spatial décale les couleurs (≤ 6/255) ; en `canvas_item`, 0 pixel hors palette | Oui |
 | 4 | 2026-11-11 | **`SubViewportContainer` + `PixelView`** plutôt que l'étirement `viewport` du projet | Seul moyen de compenser le reste sous-pixel de la caméra (défilement fluide sans scintillement) | Oui |
 | 5 | 2026-11-11 | **Tangage de la caméra : 30° exactement** | Avec un lacet de 45°, les arêtes au sol tombent sur des lignes de pixels 2:1 nettes | Oui (une constante) |
-| 6 | 2026-11-11 | **Vue étendue plutôt que bandes noires** : échelle `max(1, min(l ÷ 640, h ÷ 360))`, rendu `ceil(fenêtre / échelle)` | Aucun bord vide sur les fenêtres non multiples de 640×360 | Oui |
+| 6 | 2026-11-12 | **Vue étendue plutôt que bandes noires** : échelle `max(1, arrondi(min(l / 640, h / 360)))`, rendu `ceil(fenêtre / échelle)` | Aucun bord vide sur les fenêtres non multiples de 640×360. L'arrondi au plus proche (et non vers le bas) garde un agrandissement de 2 dans un navigateur de portable (1366×650) au lieu de tout afficher en minuscule | Oui |
 | 7 | 2026-11-11 | **Jolt Physics** et **interpolation physique** | Jolt marche aussi en web mono-thread (essayé) ; l'interpolation garde un mouvement fluide au-delà de 60 Hz | Oui (réglages du projet) |
 | 8 | 2026-11-11 | **Sauvegarde par groupe `saveable`** (`save_id`, `save_state`, `load_state`), pas d'autoload `GameState` | Aucun état global à porter en M0 ; chaque système possède son état | Oui |
 | 9 | 2026-11-11 | **Installation de Godot par script** (`tools/install_godot.sh`, SHA-512 vérifié) plutôt qu'une action tierce | Même chemin en CI, en session cloud et sous Linux ; une seule source de version | Oui |
@@ -26,6 +26,11 @@ Choix datés et justifiés. Une décision réversible se prend, se note ici, et 
 | 20 | 2026-11-11 | **Dialogue Manager 4.2.0** (et non la v3), installé en M1 | La v4 est sortie officiellement en août 2026, pour Godot 4.7 | Oui |
 | 21 | 2026-11-11 | `release.yml`, pipeline voxel/pixel, `GameState`, `AudioManager` **reportés à M1** | Pas de système « pour plus tard » : ils arrivent avec ce qui les utilise | — |
 | 22 | 2026-11-11 | **L'essai web dans Chromium** (`tools/web_smoke.cjs`) est un script Node hors CI | Playwright est préinstallé dans les sessions cloud ; l'ajouter à la CI coûterait une installation de navigateur à chaque exécution | Oui |
+| 23 | 2026-11-12 | Les événements d'entrée valent pour **tous les périphériques** (`device = -1`) | Une manette n'est pas toujours la numéro 0 (revue de M0) | Oui |
+| 24 | 2026-11-12 | La CI tourne sur `push` **et** sur `pull_request`, sans job sauté | Un job sauté compte comme réussi : il pouvait masquer un échec et laisser passer une fusion (revue de M0) | Oui |
+| 25 | 2026-11-12 | `SaveManager` **refuse** un `save_id` vide ou en double | Sans cela, deux nœuds s'écrasent en silence dans la sauvegarde (revue de M0) | Oui |
+| 26 | 2026-11-12 | Le shader de contours **ne trace rien sur le cadre** de l'image | Le voisin manquant faussait le laplacien : un trait clignotait en haut et en bas de l'écran (revue de M0) | Oui |
+| 27 | 2026-11-12 | `physics_jitter_fix = 0` | Recommandé quand l'interpolation physique est active | Oui |
 
 ## À surveiller
 
