@@ -52,16 +52,8 @@ static func build(zone: Dictionary, palette: Dictionary) -> ZoneGeometry:
 	_add_roads(geometry, zone.get("roads", []), zone.get("rails", []), palette)
 	_add_buildings(geometry, zone.get("buildings", []), palette)
 	_add_bounds(geometry)
-	_own(geometry, geometry)
+	MeshKit.own(geometry, geometry)
 	return geometry
-
-
-## Rend `owner` propriétaire de tous les descendants : sans cela, ils ne seraient pas
-## enregistrés quand la géométrie est empaquetée dans une scène.
-static func _own(node: Node, owner: Node) -> void:
-	for child: Node in node.get_children():
-		child.owner = owner
-		_own(child, owner)
 
 
 static func _add_ground(geometry: ZoneGeometry, palette: Dictionary) -> void:
@@ -75,7 +67,7 @@ static func _add_ground(geometry: ZoneGeometry, palette: Dictionary) -> void:
 	geometry.add_child(ground)
 	var box := BoxShape3D.new()
 	box.size = Vector3(size.x, GROUND_THICKNESS, size.y)
-	_add_body(ground, "Body", box, Vector3(0.0, -GROUND_THICKNESS / 2.0, 0.0))
+	MeshKit.add_body(ground, "Body", box, Vector3(0.0, -GROUND_THICKNESS / 2.0, 0.0))
 
 
 static func _add_flat_layer(
@@ -94,7 +86,7 @@ static func _add_flat_layer(
 		_add_polygon(surface, points, y, palette[color_id])
 		if blocks:
 			_block(geometry.nav_data, points, 0.0)
-	_add_mesh(geometry, layer, surface, VERTEX_COLOR_MATERIAL)
+	MeshKit.commit(geometry, layer, surface, VERTEX_COLOR_MATERIAL)
 
 
 static func _add_roads(
@@ -109,7 +101,7 @@ static func _add_roads(
 		_add_ribbon(surface, _points(road["points"]), road["width"], y, color)
 	for rail: Dictionary in rails:
 		_add_ribbon(surface, _points(rail["points"]), RAIL_WIDTH, RAIL_Y, palette[RAIL_COLOR])
-	_add_mesh(geometry, "Roads", surface, VERTEX_COLOR_MATERIAL)
+	MeshKit.commit(geometry, "Roads", surface, VERTEX_COLOR_MATERIAL)
 
 
 static func _add_buildings(geometry: ZoneGeometry, buildings: Array, palette: Dictionary) -> void:
@@ -138,12 +130,12 @@ static func _add_buildings(geometry: ZoneGeometry, buildings: Array, palette: Di
 		faces[chunk] = chunk_faces
 		_block(geometry.nav_data, points, NAV_MARGIN)
 	for chunk: Vector2i in surfaces:
-		var instance := _add_mesh(
+		var instance := MeshKit.commit(
 			root, "Chunk_%d_%d" % [chunk.x, chunk.y], surfaces[chunk], BUILDING_MATERIAL
 		)
 		var shape := ConcavePolygonShape3D.new()
 		shape.set_faces(faces[chunk])
-		_add_body(instance, "Body", shape, Vector3.ZERO)
+		MeshKit.add_body(instance, "Body", shape, Vector3.ZERO)
 
 
 static func _add_building(
@@ -185,7 +177,7 @@ static func _add_building(
 			var a: int = triangle[0]
 			var b: int = triangle[1]
 			var c: int = triangle[2]
-			_add_triangle(
+			MeshKit.add_triangle(
 				surface,
 				faces,
 				[corners[a], corners[b], corners[c]],
@@ -208,8 +200,8 @@ static func _add_building(
 			roof.append(Vector3(point.x, height, point.y))
 			floor_corners.append(Vector3(point.x, FLOOR_Y, point.y))
 			uvs.append(point)
-		_add_triangle(surface, faces, roof, Vector3.UP, roof_color, uvs, extra)
-		_add_triangle(surface, unused, floor_corners, Vector3.UP, floor_color, uvs, extra)
+		MeshKit.add_triangle(surface, faces, roof, Vector3.UP, roof_color, uvs, extra)
+		MeshKit.add_triangle(surface, unused, floor_corners, Vector3.UP, floor_color, uvs, extra)
 
 
 static func _add_bounds(geometry: ZoneGeometry) -> void:
@@ -239,35 +231,10 @@ static func _add_bounds(geometry: ZoneGeometry) -> void:
 		var extent: Vector3 = sides[side][1]
 		box.size = Vector3(extent.x, BOUNDS_HEIGHT, extent.z)
 		var at: Vector3 = sides[side][0]
-		_add_body(bounds, side, box, at + Vector3(0.0, BOUNDS_HEIGHT / 2.0, 0.0))
+		MeshKit.add_body(bounds, side, box, at + Vector3(0.0, BOUNDS_HEIGHT / 2.0, 0.0))
 
 
 # --- Aides de maillage -----------------------------------------------------
-
-
-## Ajoute un triangle orienté vers `normal` (Godot : face avant = sens horaire).
-static func _add_triangle(
-	surface: SurfaceTool,
-	faces: PackedVector3Array,
-	corners: Array,
-	normal: Vector3,
-	color: Color,
-	uvs: Array,
-	uv2: Vector2
-) -> void:
-	var order: Array[int] = [0, 1, 2]
-	var a: Vector3 = corners[0]
-	var b: Vector3 = corners[1]
-	var c: Vector3 = corners[2]
-	if (b - a).cross(c - a).dot(normal) > 0.0:
-		order = [0, 2, 1]
-	for index: int in order:
-		surface.set_normal(normal)
-		surface.set_color(color)
-		surface.set_uv(uvs[index])
-		surface.set_uv2(uv2)
-		surface.add_vertex(corners[index])
-		faces.append(corners[index])
 
 
 static func _add_polygon(
@@ -282,7 +249,7 @@ static func _add_polygon(
 			var point := points[indices[index + offset]]
 			corners.append(Vector3(point.x, y, point.y))
 			uvs.append(point)
-		_add_triangle(surface, unused, corners, Vector3.UP, color, uvs, Vector2.ZERO)
+		MeshKit.add_triangle(surface, unused, corners, Vector3.UP, color, uvs, Vector2.ZERO)
 
 
 ## Ruban plat le long d'une ligne brisée ; chaque tronçon déborde un peu pour couvrir les angles.
@@ -304,32 +271,7 @@ static func _add_ribbon(
 			for corner: int in triangle:
 				corners.append(Vector3(quad[corner].x, y, quad[corner].y))
 				uvs.append(quad[corner])
-			_add_triangle(surface, unused, corners, Vector3.UP, color, uvs, Vector2.ZERO)
-
-
-static func _add_mesh(
-	parent: Node, name: String, surface: SurfaceTool, material: Material
-) -> MeshInstance3D:
-	var instance := MeshInstance3D.new()
-	instance.name = name
-	surface.index()
-	var mesh := surface.commit()
-	if mesh.get_surface_count() > 0:
-		mesh.surface_set_material(0, material)
-		instance.mesh = mesh
-	parent.add_child(instance)
-	return instance
-
-
-static func _add_body(parent: Node, name: String, shape: Shape3D, at: Vector3) -> void:
-	var body := StaticBody3D.new()
-	body.name = name
-	body.position = at
-	var collision := CollisionShape3D.new()
-	collision.name = "Shape"
-	collision.shape = shape
-	body.add_child(collision)
-	parent.add_child(body)
+			MeshKit.add_triangle(surface, unused, corners, Vector3.UP, color, uvs, Vector2.ZERO)
 
 
 static func _flat_material(color: Color) -> StandardMaterial3D:

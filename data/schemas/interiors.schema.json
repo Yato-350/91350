@@ -1,0 +1,91 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Intérieur",
+	"description": "Un lieu intérieur dessiné en texte, une case par mètre (voir scripts/systems/world/interior_builder.gd) : « # » mur, majuscule pan de mur particulier, espace vide, le reste du sol ; minuscule ou chiffre : un repère.",
+	"type": "object",
+	"required": [
+		"id",
+		"name",
+		"territory",
+		"plan",
+		"markers"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9_]*$"
+		},
+		"name": {
+			"type": "string",
+			"pattern": "^PLACE_[A-Z0-9_]+$"
+		},
+		"territory": {
+			"type": "string",
+			"description": "Zone de territoire qui abrite ce lieu."
+		},
+		"plan": {
+			"type": "array",
+			"minItems": 3,
+			"items": {
+				"type": "string",
+				"minLength": 3
+			}
+		},
+		"markers": {
+			"type": "object",
+			"description": "Caractère du plan → nom du repère. Il en faut un nommé « default ».",
+			"propertyNames": {
+				"pattern": "^[a-z0-9]$"
+			},
+			"additionalProperties": {
+				"type": "string",
+				"pattern": "^[a-z][a-z0-9_]*$"
+			}
+		},
+		"floors": {
+			"type": "object",
+			"description": "Caractère du plan → couleur de la palette pour ce sol.",
+			"propertyNames": {
+				"minLength": 1,
+				"maxLength": 1
+			},
+			"additionalProperties": {
+				"type": "string"
+			}
+		},
+		"floor_color": {
+			"type": "string"
+		},
+		"wall_color": {
+			"type": "string"
+		},
+		"doors": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"at",
+					"to",
+					"prompt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"at": {
+						"type": "string",
+						"description": "Repère où se trouve la porte."
+					},
+					"to": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*(@[a-z0-9_]+)?$",
+						"description": "Lieu d'arrivée, avec ou sans repère : « hall_tour », « grigny2@gare »."
+					},
+					"prompt": {
+						"type": "string",
+						"pattern": "^[A-Z][A-Z0-9_]*$"
+					}
+				}
+			}
+		}
+	}
+}

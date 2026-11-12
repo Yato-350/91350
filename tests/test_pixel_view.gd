@@ -36,6 +36,20 @@ func test_camera_is_snapped_and_sized() -> void:
 	assert_almost_eq(camera.size, view.get_world_viewport().size.y / 16.0, 0.001)
 
 
+func test_zoom_brings_the_camera_closer_on_a_finer_grid() -> void:
+	var view := _make_view()
+	var camera := _add_camera(view)
+	view.zoom = 2
+	await wait_process_frames(2)
+	assert_almost_eq(camera.size, view.get_world_viewport().size.y / 32.0, 0.001)
+	var local := camera.global_position * camera.global_basis
+	var texel := PixelSnap.TEXEL / 2.0
+	assert_almost_eq(fposmod(local.x + EPSILON, texel), EPSILON, EPSILON)
+	assert_almost_eq(fposmod(local.y + EPSILON, texel), EPSILON, EPSILON)
+	view.zoom = 0
+	assert_eq(view.zoom, 1, "jamais moins que la taille de base")
+
+
 func test_container_follows_the_subpixel_offset() -> void:
 	var view := _make_view()
 	var camera := _add_camera(view)

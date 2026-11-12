@@ -3,26 +3,87 @@
 	"title": "Zone",
 	"description": "Contenu de jeu d'une zone extérieure. Les coordonnées sont en mètres : [x, z], x vers l'est, z vers le sud, origine au centre de la zone.",
 	"type": "object",
-	"required": ["id", "name_regime", "name_real", "control", "support", "spawns"],
+	"required": [
+		"id",
+		"name_regime",
+		"name_real",
+		"control",
+		"support",
+		"markers"
+	],
 	"additionalProperties": false,
 	"properties": {
-		"id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-		"name_regime": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
-		"name_real": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
-		"control": { "type": "integer", "minimum": 0, "maximum": 100 },
-		"support": { "type": "integer", "minimum": 0, "maximum": 100 },
-		"spawns": {
+		"id": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9_]*$"
+		},
+		"name_regime": {
+			"type": "string",
+			"pattern": "^[A-Z][A-Z0-9_]*$"
+		},
+		"name_real": {
+			"type": "string",
+			"pattern": "^[A-Z][A-Z0-9_]*$"
+		},
+		"control": {
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 100
+		},
+		"support": {
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 100
+		},
+		"markers": {
 			"type": "object",
-			"required": ["default"],
-			"additionalProperties": { "$ref": "#/$defs/point" }
+			"required": [
+				"default"
+			],
+			"additionalProperties": {
+				"$ref": "#/$defs/point"
+			},
+			"description": "Repères nommés : points d'arrivée, portes, lieux de quête."
+		},
+		"doors": {
+			"type": "array",
+			"items": {
+				"$ref": "#/$defs/door"
+			}
 		}
 	},
 	"$defs": {
 		"point": {
 			"type": "array",
-			"items": { "type": "number" },
+			"items": {
+				"type": "number"
+			},
 			"minItems": 2,
 			"maxItems": 2
+		},
+		"door": {
+			"type": "object",
+			"required": [
+				"at",
+				"to",
+				"prompt"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"at": {
+					"type": "string",
+					"description": "Repère où se trouve la porte."
+				},
+				"to": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9_]*(@[a-z0-9_]+)?$",
+					"description": "Lieu d'arrivée, avec ou sans repère : « hall_tour », « grigny2@gare »."
+				},
+				"prompt": {
+					"type": "string",
+					"pattern": "^[A-Z][A-Z0-9_]*$"
+				}
+			}
 		}
 	}
 }

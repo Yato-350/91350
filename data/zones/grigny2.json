@@ -4,9 +4,29 @@
 	"name_real": "ZONE_GRIGNY2_REAL",
 	"control": 85,
 	"support": 15,
-	"spawns": {
-		"default": [-118, -150],
-		"gare": [100, 10],
-		"derriere_la_tour": [-150, -160]
-	}
+	"markers": {
+		"default": [
+			-118,
+			-150
+		],
+		"gare": [
+			100,
+			10
+		],
+		"derriere_la_tour": [
+			-150,
+			-160
+		],
+		"tour_akan": [
+			-124,
+			-147
+		]
+	},
+	"doors": [
+		{
+			"at": "tour_akan",
+			"to": "hall_tour",
+			"prompt": "PROMPT_ENTRER"
+		}
+	]
 }

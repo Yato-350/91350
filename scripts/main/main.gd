@@ -8,6 +8,8 @@ extends Node
 
 const DEFAULT_ZONE := "res://scenes/zones/test_zone.tscn"
 const COLOR_FADE_SECONDS := 1.5
+## Durée du fondu au noir, à l'aller comme au retour, quand Akan change de lieu.
+const TRAVEL_FADE_SECONDS := 0.2
 const READY_MARKER := "[91350] prêt"
 const SCREENSHOT_ARGUMENT := "--screenshot"
 const SCREENSHOT_DIR := "res://build/screenshots"
@@ -16,10 +18,12 @@ const SCREENSHOT_FRAMES := 30
 const ZONE_PREFIX := "zone:"
 
 var _colour_enabled := true
+var _traveling := false
 
 @onready var _pixel_view: PixelView = $PixelView
 @onready var _ui: CanvasLayer = $UI
 @onready var _hud: Control = $UI/Hud
+@onready var _fade: ColorRect = $Overlay/Fade
 
 
 ## Rend le chemin res:// de la scène demandée par « --screenshot <scène> », ou "".
@@ -37,6 +41,7 @@ func _ready() -> void:
 	_pixel_view.scale_changed.connect(func(_scale: int) -> void: _layout_ui())
 	_pixel_view.resized.connect(_layout_ui)
 	_layout_ui()
+	EventBus.travel_requested.connect(_on_travel_requested)
 	var screenshot_scene := parse_screenshot_scene(OS.get_cmdline_user_args())
 	if not screenshot_scene.is_empty():
 		_run_screenshot_mode(screenshot_scene)
@@ -67,11 +72,29 @@ func travel_to(ref: String, position: Array = []) -> bool:
 		return false
 	GameState.location = ref
 	var zone := _pixel_view.get_zone() as Zone
-	GameState.territory_id = zone.zone_id if zone != null else ""
+	GameState.territory_id = zone.territory_id if zone != null else ""
+	_pixel_view.zoom = zone.get_zoom() if zone != null else 1
 	var player := get_player()
 	if player != null and position.size() == 3:
 		player.teleport(Vector3(position[0], position[1], position[2]))
 	return true
+
+
+## Une porte a été franchie : fondu au noir, changement de lieu, retour de l'image.
+func _on_travel_requested(target: String) -> void:
+	if _traveling:
+		return
+	_traveling = true
+	await _fade_to(1.0)
+	travel_to(ZONE_PREFIX + target)
+	await _fade_to(0.0)
+	_traveling = false
+
+
+func _fade_to(alpha: float) -> void:
+	var tween := create_tween()
+	tween.tween_property(_fade, ^"color:a", alpha, TRAVEL_FADE_SECONDS)
+	await tween.finished
 
 
 func get_player() -> Player:
@@ -131,7 +154,7 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		printerr("Le mode --screenshot a besoin d'un rendu : ne pas le lancer avec --headless.")
 		get_tree().quit(1)
 		return
-	if not load_zone(scene_path):
+	if not travel_to(scene_path):
 		get_tree().quit(1)
 		return
 	for i: int in SCREENSHOT_FRAMES:

@@ -4,6 +4,7 @@ var _zone: Zone
 
 
 func before_each() -> void:
+	GameState.new_game()
 	_zone = Zone.create("grigny2")
 	add_child_autofree(_zone)
 	await wait_physics_frames(2)
@@ -47,3 +48,56 @@ func test_unknown_spawn_falls_back_to_the_default_one() -> void:
 func test_unknown_zone_is_refused() -> void:
 	assert_null(Zone.create("atlantide"))
 	assert_push_error("atlantide")
+
+
+func test_markers_place_named_points_on_free_ground() -> void:
+	var door := _zone.marker_position("tour_akan")
+	assert_false(_zone.geometry.nav_data.is_solid_at(door))
+	assert_lt(door.distance_to(Vector3(-124.0, 0.0, -147.0)), 6.0)
+	assert_eq(_zone.territory_id, "grigny2")
+	assert_false(_zone.is_interior)
+
+
+func test_an_interior_is_built_from_its_plan() -> void:
+	var home := Zone.create("appartement_akan")
+	add_child_autofree(home)
+	await wait_physics_frames(30)
+	assert_true(home.is_interior)
+	assert_eq(home.territory_id, "grigny2")
+	assert_gt(home.geometry.markers.size(), 1)
+	assert_almost_eq(home.player.global_position.y, 0.0, 0.1)
+	var at := home.player.global_position
+	assert_almost_eq(Vector3(at.x, 0.0, at.z), home.marker_position("default"), Vector3.ONE * 0.1)
+
+
+func test_a_named_marker_is_the_arrival_point() -> void:
+	var home := Zone.create("appartement_akan@porte")
+	add_child_autofree(home)
+	await wait_physics_frames(2)
+	var at := home.player.global_position
+	assert_almost_eq(Vector3(at.x, 0.0, at.z), home.marker_position("porte"), Vector3.ONE * 0.1)
+
+
+func test_doors_ask_to_travel_when_used() -> void:
+	var home := Zone.create("appartement_akan@porte")
+	add_child_autofree(home)
+	await wait_physics_frames(3)
+	watch_signals(EventBus)
+	var door: Interactable = home.player.focus
+	assert_not_null(door, "Akan arrive devant la porte")
+	if door != null:
+		door.interact(home.player)
+	assert_signal_emitted_with_parameters(EventBus, "travel_requested", ["palier_11"])
+
+
+func test_every_door_of_the_game_leads_somewhere() -> void:
+	var places := DataRegistry.all("zones").duplicate()
+	places.merge(DataRegistry.all("interiors"))
+	for place_id: String in places:
+		for door: Dictionary in places[place_id].get("doors", []):
+			var target: String = door["to"]
+			var place: Dictionary = places.get(target.get_slice("@", 0), {})
+			assert_false(place.is_empty(), "%s → %s" % [place_id, target])
+			var marker := target.get_slice("@", 1) if target.contains("@") else "default"
+			var known: Array = place.get("markers", {}).values() + place.get("markers", {}).keys()
+			assert_has(known, marker, "%s → %s" % [place_id, target])

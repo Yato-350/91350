@@ -1,73 +1,90 @@
 class_name Zone
 extends Node3D
-## Une zone extérieure du jeu : sa géométrie (cuite depuis OpenStreetMap), son ciel,
-## le joueur et sa caméra. Le contenu de jeu vient de data/zones/<zone>.json.
+## Un lieu du jeu : sa géométrie, sa lumière, le joueur et sa caméra, ses portes.
+##
+## Une zone extérieure (data/zones/) a une géométrie cuite depuis OpenStreetMap ; un
+## intérieur (data/interiors/) est construit à la volée depuis son plan en texte.
 
-const DEFINITION_PATH := "res://data/zones/%s.json"
 const GEOMETRY_PATH := "res://scenes/zones/generated/%s.scn"
 const SKY_SCENE := preload("res://scenes/world/sky.tscn")
 const PLAYER_SCENE := preload("res://scenes/actors/player.tscn")
 const CAMERA_RIG_SCENE := preload("res://scenes/actors/camera_rig.tscn")
-const DEFAULT_SPAWN := "default"
-const SPAWN_SEPARATOR := "@"
+const DEFAULT_MARKER := "default"
+const MARKER_SEPARATOR := "@"
+const INTERIOR_BACKGROUND := "noir"
+## Dans un intérieur, la vue se rapproche : les pièces sont petites.
+const INTERIOR_ZOOM := 2
 ## Hauteur d'apparition au-dessus du sol : le joueur se pose tout seul.
 const SPAWN_HEIGHT := 0.1
 ## Rayon maximal (en cases) de la recherche d'une case libre.
 const FREE_SEARCH_RADIUS := 40
 
 var zone_id := ""
-## Point d'apparition du joueur à l'entrée dans la zone.
-var spawn := DEFAULT_SPAWN
+## Repère où Akan arrive en entrant dans le lieu.
+var arrival := DEFAULT_MARKER
 var definition := {}
+var is_interior := false
+## Zone de territoire dont dépend le lieu : elle-même, ou celle qui abrite l'intérieur.
+var territory_id := ""
 var geometry: ZoneGeometry
+## Repères du lieu : nom → position.
+var markers := {}
 var player: Player
 
 
-## Rend la zone demandée, ou null (erreur journalisée) si elle n'existe pas.
-## `id` peut préciser un point d'apparition : « grigny2@gare ».
-static func create(id: String) -> Zone:
-	var spawn_name := DEFAULT_SPAWN
-	if id.contains(SPAWN_SEPARATOR):
-		spawn_name = id.get_slice(SPAWN_SEPARATOR, 1)
-		id = id.get_slice(SPAWN_SEPARATOR, 0)
-	var definition_path := DEFINITION_PATH % id
-	var geometry_path := GEOMETRY_PATH % id
-	if not FileAccess.file_exists(definition_path) or not ResourceLoader.exists(geometry_path):
-		push_error("Zone inconnue : %s" % id)
-		return null
-	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(definition_path))
-	if not data is Dictionary:
-		push_error("Définition de zone illisible : %s" % id)
-		return null
+## Rend le lieu demandé, ou null (erreur journalisée) s'il n'existe pas.
+## `ref` peut préciser un repère d'arrivée : « grigny2@gare ».
+static func create(ref: String) -> Zone:
+	var id := ref.get_slice(MARKER_SEPARATOR, 0)
 	var zone := Zone.new()
 	zone.name = id.capitalize().replace(" ", "")
 	zone.zone_id = id
-	zone.spawn = spawn_name
-	zone.definition = data
-	var geometry_scene: PackedScene = load(geometry_path)
-	zone.geometry = geometry_scene.instantiate()
+	if ref.contains(MARKER_SEPARATOR):
+		zone.arrival = ref.get_slice(MARKER_SEPARATOR, 1)
+	zone.definition = DataRegistry.entry("zones", id)
+	zone.territory_id = id
+	if zone.definition.is_empty():
+		zone.definition = DataRegistry.entry("interiors", id)
+		zone.is_interior = true
+		zone.territory_id = zone.definition.get("territory", "")
+	zone.geometry = zone._make_geometry()
+	if zone.geometry == null:
+		push_error("Zone inconnue : %s" % id)
+		zone.free()
+		return null
+	zone._read_markers()
 	return zone
 
 
 func _ready() -> void:
 	add_child(geometry)
-	add_child(SKY_SCENE.instantiate())
+	var sky: ZoneSky = SKY_SCENE.instantiate()
+	add_child(sky)
+	if is_interior:
+		sky.use_interior_light(Palette.load_colors()[INTERIOR_BACKGROUND])
+	for door: Dictionary in definition.get("doors", []):
+		_add_door(door)
 	player = PLAYER_SCENE.instantiate()
-	player.position = spawn_position(spawn)
+	player.position = spawn_position(arrival)
 	add_child(player)
 	var rig: CameraRig = CAMERA_RIG_SCENE.instantiate()
 	rig.target = player
 	add_child(rig)
 
 
-## Position d'apparition nommée (ou celle par défaut), toujours sur une case libre.
-func spawn_position(spawn_name: String = DEFAULT_SPAWN) -> Vector3:
-	var spawns: Dictionary = definition.get("spawns", {})
-	var raw: Variant = spawns.get(spawn_name, spawns.get(DEFAULT_SPAWN))
-	var wanted := Vector3.ZERO
-	if raw is Array and raw.size() == 2:
-		wanted = Vector3(raw[0], 0.0, raw[1])
-	return nearest_free(wanted) + Vector3.UP * SPAWN_HEIGHT
+func get_zoom() -> int:
+	return INTERIOR_ZOOM if is_interior else 1
+
+
+## Position d'un repère (ou du repère par défaut), toujours sur une case libre.
+func marker_position(marker: String = DEFAULT_MARKER) -> Vector3:
+	var wanted: Vector3 = markers.get(marker, markers.get(DEFAULT_MARKER, Vector3.ZERO))
+	return nearest_free(wanted)
+
+
+## Là où poser Akan quand il arrive au repère `marker`.
+func spawn_position(marker: String = DEFAULT_MARKER) -> Vector3:
+	return marker_position(marker) + Vector3.UP * SPAWN_HEIGHT
 
 
 ## Centre de la case libre la plus proche (recherche en anneaux carrés de plus en plus grands).
@@ -94,3 +111,35 @@ func nearest_free(position: Vector3) -> Vector3:
 		if best_distance < INF:
 			break
 	return best
+
+
+func _make_geometry() -> ZoneGeometry:
+	if definition.is_empty():
+		return null
+	if is_interior:
+		return InteriorBuilder.build(definition, Palette.load_colors())
+	var path := GEOMETRY_PATH % zone_id
+	if not ResourceLoader.exists(path):
+		return null
+	var scene: PackedScene = load(path)
+	return scene.instantiate()
+
+
+# Un intérieur tient ses repères de son plan ; une zone extérieure les donne en mètres.
+func _read_markers() -> void:
+	markers = geometry.markers.duplicate()
+	if is_interior:
+		return
+	var points: Dictionary = definition.get("markers", {})
+	for marker: String in points:
+		var point: Array = points[marker]
+		markers[marker] = Vector3(point[0], 0.0, point[1])
+
+
+func _add_door(door: Dictionary) -> void:
+	var node := Door.new()
+	node.name = "Door_%s" % door["at"]
+	node.target = door["to"]
+	node.prompt = door.get("prompt", "")
+	node.position = marker_position(door["at"])
+	add_child(node)

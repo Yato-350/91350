@@ -1,0 +1,32 @@
+{
+	"id": "appartement_akan",
+	"name": "PLACE_APPARTEMENT_AKAN",
+	"territory": "grigny2",
+	"plan": [
+		"#############",
+		"#l..#m..#,,,#",
+		"#...#...#,,,#",
+		"#...#...#,,,#",
+		"##.###.###.##",
+		"#...........#",
+		"#a.........pD",
+		"#...........#",
+		"#############"
+	],
+	"markers": {
+		"l": "default",
+		"m": "chambre",
+		"a": "sejour",
+		"p": "porte"
+	},
+	"floors": {
+		",": "beton_5"
+	},
+	"doors": [
+		{
+			"at": "porte",
+			"to": "palier_11",
+			"prompt": "PROMPT_SORTIR"
+		}
+	]
+}

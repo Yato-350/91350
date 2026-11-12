@@ -78,6 +78,30 @@ func test_travel_records_where_akan_is() -> void:
 	assert_eq(GameState.location, "zone:grigny2@gare")
 
 
+func test_a_door_fades_out_travels_and_fades_back_in() -> void:
+	var main := await _make_main()
+	var fade: ColorRect = main.get_node("Overlay/Fade")
+	EventBus.travel_requested.emit("appartement_akan@porte")
+	EventBus.travel_requested.emit("hall_tour")
+	await wait_seconds(Main.TRAVEL_FADE_SECONDS * 0.5)
+	assert_gt(fade.color.a, 0.1)
+	await wait_seconds(Main.TRAVEL_FADE_SECONDS * 2.0 + 0.1)
+	assert_eq(GameState.location, "zone:appartement_akan@porte", "une seule porte à la fois")
+	assert_eq(GameState.territory_id, "grigny2")
+	assert_eq(fade.color.a, 0.0)
+
+
+func test_the_view_comes_closer_indoors() -> void:
+	var main := await _make_main()
+	var view: PixelView = main.get_node("PixelView")
+	main.travel_to("zone:hall_tour")
+	assert_eq(view.zoom, Zone.INTERIOR_ZOOM)
+	main.travel_to("zone:grigny2")
+	assert_eq(view.zoom, 1)
+	main.travel_to(Main.DEFAULT_ZONE)
+	assert_eq(view.zoom, 1)
+
+
 func test_travel_can_place_akan_at_a_saved_position() -> void:
 	var main := await _make_main()
 	assert_true(main.travel_to(Main.DEFAULT_ZONE, [2.0, 0.5, -3.0]))

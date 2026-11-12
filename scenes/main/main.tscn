@@ -93,3 +93,15 @@ layout_mode = 2
 [node name="Text" type="RichTextLabel" parent="UI/Hud/Credits/Margin"]
 layout_mode = 2
 focus_mode = 2
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Fade" type="ColorRect" parent="Overlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0784, 0.0824, 0.102, 0)
