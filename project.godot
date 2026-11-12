@@ -133,3 +133,18 @@ common/physics_interpolation=true
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+
+[shader_globals]
+
+player_position={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+xray_radius={
+"type": "float",
+"value": 3.0
+}
+night_factor={
+"type": "float",
+"value": 0.0
+}
