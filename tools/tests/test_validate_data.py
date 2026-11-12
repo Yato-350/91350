@@ -75,3 +75,44 @@ def test_data_file_without_schema_is_an_error(tmp_path):
     errors = validate(project)
     assert len(errors) == 1
     assert "data/items/x.json" in errors[0]
+
+
+def write_items(project: Path, items: list) -> None:
+    (project / "data" / "items").mkdir(exist_ok=True)
+    path = project / "data" / "items" / "items.json"
+    path.write_text(json.dumps({"items": items}), encoding="utf-8")
+
+
+def make_item(item_id: str) -> dict:
+    key = "ITEM_" + item_id.upper()
+    return {"id": item_id, "name": key, "description": key + "_DESC",
+            "category": "ressource", "stack": 1, "value": 0}
+
+
+def test_rejects_a_translation_key_missing_from_strings(tmp_path):
+    project = make_project(tmp_path)
+    (project / "locale").mkdir()
+    (project / "locale" / "strings.csv").write_text(
+        'keys,fr\nITEM_EAU,"Eau"\nITEM_EAU_DESC,"De l\'eau"\nITEM_PAIN,"Pain"\n', encoding="utf-8")
+    write_items(project, [make_item("eau"), make_item("pain")])
+    errors = validate(project)
+    assert len(errors) == 1
+    assert "ITEM_PAIN_DESC" in errors[0]
+    assert "data/items/items.json" in errors[0]
+
+
+def test_null_colors_are_reported_without_crashing(tmp_path):
+    project = make_project(tmp_path)
+    path = project / "assets_src" / "palette.json"
+    path.write_text(json.dumps({"colors": None}), encoding="utf-8")
+    errors = validate(project)
+    assert errors
+    assert all("assets_src/palette.json" in error for error in errors)
+
+
+def test_unhashable_ids_are_reported_without_crashing(tmp_path):
+    project = make_project(tmp_path)
+    edit_palette(project, lambda colors: colors[0].update(id=["x"]))
+    edit_palette(project, lambda colors: colors[1].update(id=["x"]))
+    errors = validate(project)
+    assert len(errors) == 2
