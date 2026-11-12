@@ -45,10 +45,26 @@ def test_single_voxel_has_six_faces():
     assert set(colors) == {(200, 32, 44, 255)}
 
 
-def test_hidden_faces_between_neighbours_are_removed():
+def test_hidden_faces_are_removed_and_same_colour_faces_merged():
     model = parse_model("palette:\n  r: rouge_propagande\nlayer:\n  rr\n", PALETTE)
     _, _, _, indices = mesh_part(model.parts["main"])
-    assert len(indices) == 10 * 6  # 2 cubes collés : 12 faces − 2 faces internes
+    assert len(indices) == 6 * 6  # 2 cubes de même couleur = un pavé : 6 rectangles
+
+
+def test_faces_of_different_colours_are_not_merged():
+    text = "palette:\n  r: rouge_propagande\n  n: noir\nlayer:\n  rn\n"
+    positions, _, colors, indices = mesh_part(parse_model(text, PALETTE).parts["main"])
+    assert len(indices) == 10 * 6  # 12 faces − 2 faces internes, rien à fusionner
+    assert set(colors) == {(200, 32, 44, 255), (20, 21, 26, 255)}
+
+
+def test_merged_faces_keep_the_outer_shape():
+    text = "palette:\n  r: rouge_propagande\nlayer x3:\n  rrrr\n  rrrr\n"
+    positions, _, _, indices = mesh_part(parse_model(text, PALETTE).parts["main"])
+    assert len(indices) == 6 * 6
+    assert max(p[0] for p in positions) - min(p[0] for p in positions) == 4 / 16
+    assert max(p[1] for p in positions) - min(p[1] for p in positions) == 3 / 16
+    assert max(p[2] for p in positions) - min(p[2] for p in positions) == 2 / 16
 
 
 def test_voxels_are_one_sixteenth_of_a_metre_and_centred():

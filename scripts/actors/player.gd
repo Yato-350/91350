@@ -1,27 +1,21 @@
 class_name Player
 extends CharacterBody3D
 ## Akan : déplacement relatif à la caméra, au clavier comme à la manette.
-## Le visuel en boîtes est provisoire (remplacé par le pipeline voxel au jalon M1).
 
 const WALK_SPEED := 2.5
 const RUN_SPEED := 5.5
 const ACCELERATION := 30.0
-const TURN_SPEED := 12.0
 ## Sous cette altitude, le joueur est tombé hors du monde : retour à l'apparition.
 const FALL_LIMIT := -20.0
-const STRIDES_PER_METER := 1.6
-const SWING_RADIANS := 0.7
+## Paramètre global des shaders : là où s'ouvre la vue à travers les bâtiments.
+const SHADER_POSITION := &"player_position"
 
 @export var save_id: StringName = &"player"
 
 var _spawn_position := Vector3.ZERO
-var _stride := 0.0
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-@onready var _visual: Node3D = $Visual
-@onready var _swinging: Array[Node3D] = [
-	$Visual/LegLeft, $Visual/ArmRight, $Visual/LegRight, $Visual/ArmLeft
-]
+@onready var _visual: CharacterVisual = $Visual
 
 
 ## Direction de déplacement dans le monde pour une entrée du stick (x à droite,
@@ -32,6 +26,11 @@ static func move_direction(input: Vector2, camera_yaw: float) -> Vector3:
 
 func _ready() -> void:
 	_spawn_position = global_position
+
+
+func _process(_delta: float) -> void:
+	var at := get_global_transform_interpolated().origin
+	RenderingServer.global_shader_parameter_set(SHADER_POSITION, at)
 
 
 func _physics_process(delta: float) -> void:
@@ -45,7 +44,7 @@ func _physics_process(delta: float) -> void:
 	horizontal = horizontal.move_toward(direction * speed, ACCELERATION * delta)
 	velocity = Vector3(horizontal.x, velocity.y - _gravity * delta, horizontal.z)
 	move_and_slide()
-	_animate(horizontal, delta)
+	_visual.animate(horizontal, delta)
 
 
 func save_state() -> Dictionary:
@@ -77,17 +76,3 @@ func _teleport(to: Vector3) -> void:
 func _camera_yaw() -> float:
 	var camera := get_viewport().get_camera_3d()
 	return camera.global_rotation.y if camera != null else 0.0
-
-
-# Tourne le visuel vers la marche et balance bras et jambes selon la distance parcourue.
-func _animate(horizontal: Vector3, delta: float) -> void:
-	var speed := horizontal.length()
-	if speed > 0.1:
-		var facing := atan2(-horizontal.x, -horizontal.z)
-		_visual.rotation.y = lerp_angle(_visual.rotation.y, facing, minf(1.0, TURN_SPEED * delta))
-		_stride += speed * delta * STRIDES_PER_METER * TAU
-	else:
-		_stride = 0.0
-	var swing := sin(_stride) * SWING_RADIANS * minf(1.0, speed / WALK_SPEED)
-	for index: int in _swinging.size():
-		_swinging[index].rotation.x = swing if index < 2 else -swing

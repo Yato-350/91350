@@ -1,0 +1,41 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Personnages",
+	"description": "Fiches des personnages : identité et apparence (voir tools/voxel_characters.py).",
+	"type": "object",
+	"required": ["characters"],
+	"additionalProperties": false,
+	"properties": {
+		"characters": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": ["id", "name", "group", "appearance"],
+				"additionalProperties": false,
+				"properties": {
+					"id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+					"name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+					"group": { "enum": ["habitants", "anciens", "reseau", "collectif", "familles", "regime"] },
+					"appearance": {
+						"type": "object",
+						"required": ["skin", "hair", "hair_style", "top", "top_style", "bottom", "shoes"],
+						"additionalProperties": false,
+						"properties": {
+							"skin": { "type": "string" },
+							"hair": { "type": "string" },
+							"hair_style": { "enum": ["chauve", "rase", "court", "afro", "long", "chignon", "tresses", "casquette", "capuche", "bonnet", "casque"] },
+							"top": { "type": "string" },
+							"top_style": { "enum": ["tshirt", "hoodie", "veste", "uniforme", "blouse", "tablier"] },
+							"bottom": { "type": "string" },
+							"shoes": { "type": "string" },
+							"accessory": { "enum": ["", "sac", "gilet", "lunettes", "brassard", "ecouteurs", "matraque"] },
+							"accessory_color": { "type": "string" },
+							"detail": { "type": "string" },
+							"build": { "enum": ["adulte", "enfant", "fort"] }
+						}
+					}
+				}
+			}
+		}
+	}
+}
