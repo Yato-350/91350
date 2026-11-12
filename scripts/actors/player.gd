@@ -1,16 +1,21 @@
 class_name Player
 extends CharacterBody3D
-## Akan : déplacement relatif à la caméra, au clavier comme à la manette.
+## Akan : déplacement relatif à la caméra, course (endurance), accroupi, interactions.
 
 const WALK_SPEED := 2.5
 const RUN_SPEED := 5.5
+const CROUCH_SPEED := 1.5
 const ACCELERATION := 30.0
 ## Sous cette altitude, le joueur est tombé hors du monde : retour à l'apparition.
 const FALL_LIMIT := -20.0
 ## Paramètre global des shaders : là où s'ouvre la vue à travers les bâtiments.
 const SHADER_POSITION := &"player_position"
+const GROUP := &"player"
 
-@export var save_id: StringName = &"player"
+## Accroupi : lent, silencieux, et jamais en course.
+var crouched := false
+## L'élément du monde avec lequel Akan peut interagir, ou null.
+var focus: Interactable
 
 var _spawn_position := Vector3.ZERO
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -25,6 +30,7 @@ static func move_direction(input: Vector2, camera_yaw: float) -> Vector3:
 
 
 func _ready() -> void:
+	add_to_group(GROUP)
 	_spawn_position = global_position
 
 
@@ -35,42 +41,52 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	if global_position.y < FALL_LIMIT:
-		_teleport(_spawn_position)
+		teleport(_spawn_position)
 		return
 	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	var direction := move_direction(input, _camera_yaw())
-	var speed := RUN_SPEED if Input.is_action_pressed(&"run") else WALK_SPEED
+	var wants_run := Input.is_action_pressed(&"run") and not direction.is_zero_approx()
+	var running := wants_run and not crouched and GameState.vitals.can_run()
+	GameState.tick_body(delta, running)
+	var speed := CROUCH_SPEED if crouched else RUN_SPEED if running else WALK_SPEED
 	var horizontal := Vector3(velocity.x, 0.0, velocity.z)
 	horizontal = horizontal.move_toward(direction * speed, ACCELERATION * delta)
 	velocity = Vector3(horizontal.x, velocity.y - _gravity * delta, horizontal.z)
 	move_and_slide()
+	_visual.crouched = crouched
 	_visual.animate(horizontal, delta)
+	_update_focus()
 
 
-func save_state() -> Dictionary:
-	var at := global_position
-	return {"position": [at.x, at.y, at.z], "yaw": _visual.rotation.y}
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"crouch"):
+		crouched = not crouched
+	elif event.is_action_pressed(&"interact") and focus != null:
+		focus.interact(self)
 
 
-## Ignore un état mal formé : la position actuelle est conservée.
-func load_state(state: Dictionary) -> void:
-	var raw: Variant = state.get("position")
-	if not raw is Array or raw.size() != 3:
-		return
-	for value: Variant in raw:
-		if not (value is float or value is int):
-			return
-	_teleport(Vector3(raw[0], raw[1], raw[2]))
-	var yaw: Variant = state.get("yaw")
-	if yaw is float or yaw is int:
-		_visual.rotation.y = yaw
-
-
-func _teleport(to: Vector3) -> void:
+func teleport(to: Vector3) -> void:
 	global_position = to
 	velocity = Vector3.ZERO
 	# Sans cela, l'interpolation physique ferait glisser le joueur jusqu'à sa nouvelle place.
 	reset_physics_interpolation()
+
+
+# Vise l'élément interactif actif le plus proche, s'il est à portée.
+func _update_focus() -> void:
+	var nearest: Interactable = null
+	var nearest_distance := INF
+	for node: Node in get_tree().get_nodes_in_group(Interactable.GROUP):
+		var candidate := node as Interactable
+		if candidate == null or not candidate.enabled:
+			continue
+		var distance := candidate.global_position.distance_to(global_position)
+		if distance <= candidate.radius and distance < nearest_distance:
+			nearest = candidate
+			nearest_distance = distance
+	if nearest != focus:
+		focus = nearest
+		EventBus.interaction_focus_changed.emit(nearest.prompt if nearest != null else "")
 
 
 func _camera_yaw() -> float:

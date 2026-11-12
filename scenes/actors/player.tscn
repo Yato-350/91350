@@ -7,7 +7,7 @@
 radius = 0.3
 height = 1.75
 
-[node name="Player" type="CharacterBody3D" groups=["saveable"]]
+[node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

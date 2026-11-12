@@ -65,3 +65,24 @@ func _make(character_id: String) -> CharacterVisual:
 	visual.character_id = character_id
 	add_child_autofree(visual)
 	return visual
+
+
+func test_crouching_lowers_the_body_and_keeps_the_feet_on_the_ground() -> void:
+	var visual := CharacterVisual.new()
+	visual.character_id = "akan"
+	add_child_autofree(visual)
+	var head := visual.get_part("Head")
+	var leg := visual.get_part("LegLeft")
+	var standing_head := head.position.y
+	var hip := leg.position.y
+	visual.crouched = true
+	for i: int in 30:
+		visual.animate(Vector3.ZERO, 1.0 / 60.0)
+	assert_almost_eq(visual.get_crouch_drop(), CharacterVisual.CROUCH_DROP, 0.001)
+	assert_almost_eq(head.position.y, standing_head - CharacterVisual.CROUCH_DROP, 0.001)
+	assert_almost_eq(leg.position.y * 1.0 / leg.scale.y, hip, 0.001, "les pieds restent au sol")
+	visual.crouched = false
+	for i: int in 30:
+		visual.animate(Vector3.ZERO, 1.0 / 60.0)
+	assert_almost_eq(head.position.y, standing_head, 0.001)
+	assert_almost_eq(leg.scale.y, 1.0, 0.001)

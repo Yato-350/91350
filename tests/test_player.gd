@@ -8,10 +8,25 @@ const GAME_ACTIONS: Array[String] = [
 	"move_down",
 	"run",
 	"camera_rotate_left",
-	"camera_rotate_right"
+	"camera_rotate_right",
+	"crouch",
+	"interact",
+	"attack",
+	"aim",
+	"inventory",
+	"journal",
+	"pause",
+	"quick_1",
+	"quick_2",
+	"quick_3",
+	"quick_4",
 ]
 const MOVE_ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down"]
 const TOLERANCE := Vector3.ONE * 0.001
+
+
+func before_each() -> void:
+	GameState.new_game()
 
 
 func after_each() -> void:
@@ -71,26 +86,49 @@ func test_falling_out_of_the_world_respawns() -> void:
 	assert_almost_eq(player.global_position, Vector3(0.0, 0.05, 0.0), Vector3.ONE * 0.2)
 
 
-func test_save_state_round_trip() -> void:
+func test_teleport_moves_the_player_and_stops_it() -> void:
 	var player := _make_player_on_floor()
-	player.global_position = Vector3(3.0, 0.0, -2.0)
-	var state := player.save_state()
-	player.global_position = Vector3.ZERO
-	player.load_state(state)
-	assert_almost_eq(player.global_position, Vector3(3.0, 0.0, -2.0), TOLERANCE)
-	assert_eq(player.save_id, &"player")
-	assert_true(player.is_in_group(SaveManager.SAVEABLE_GROUP))
+	Input.action_press("move_right")
+	await wait_physics_frames(20)
+	Input.action_release("move_right")
+	player.teleport(Vector3(3.0, 0.05, -2.0))
+	assert_almost_eq(player.global_position, Vector3(3.0, 0.05, -2.0), TOLERANCE)
+	assert_eq(player.velocity, Vector3.ZERO)
 
 
-func test_load_state_ignores_malformed_data() -> void:
+func test_the_player_is_found_by_its_group_and_is_not_saved_by_itself() -> void:
 	var player := _make_player_on_floor()
-	player.global_position = Vector3(1.0, 0.0, 1.0)
-	var states: Array[Dictionary] = [
-		{}, {"position": [1.0]}, {"position": "x"}, {"position": [1, "a", 3]}
-	]
-	for state: Dictionary in states:
-		player.load_state(state)
-		assert_almost_eq(player.global_position, Vector3(1.0, 0.0, 1.0), TOLERANCE)
+	assert_eq(get_tree().get_first_node_in_group(Player.GROUP), player)
+	assert_false(player.is_in_group(SaveManager.SAVEABLE_GROUP))
+
+
+func test_running_drains_stamina_and_exhaustion_forces_a_walk() -> void:
+	var runner := _make_player_on_floor()
+	Input.action_press("run")
+	await wait_physics_frames(20)
+	assert_eq(GameState.vitals.stamina, Vitals.MAX_STAMINA, "courir sur place ne coûte rien")
+	Input.action_press("move_right")
+	await wait_physics_frames(30)
+	assert_lt(GameState.vitals.stamina, Vitals.MAX_STAMINA)
+	GameState.vitals.tick(60.0, true, false)
+	runner.teleport(Vector3(0.0, 0.05, 0.0))
+	await wait_physics_frames(40)
+	assert_lt(runner.position.x, 2.0, "essoufflé : il marche")
+
+
+func test_crouching_toggles_and_is_slow_and_never_runs() -> void:
+	var player := _make_player_on_floor()
+	_send_action("crouch")
+	await wait_physics_frames(2)
+	assert_true(player.crouched)
+	Input.action_press("move_right")
+	Input.action_press("run")
+	await wait_physics_frames(40)
+	assert_between(player.position.x, 0.5, 1.2)
+	assert_eq(GameState.vitals.stamina, Vitals.MAX_STAMINA)
+	_send_action("crouch")
+	await wait_physics_frames(2)
+	assert_false(player.crouched)
 
 
 func test_move_actions_use_physical_keys() -> void:
@@ -136,3 +174,11 @@ func _make_player_on_floor() -> Player:
 	player.position = Vector3(0.0, 0.05, 0.0)
 	add_child_autofree(player)
 	return player
+
+
+func _send_action(action: String) -> void:
+	for pressed: bool in [true, false]:
+		var event := InputEventAction.new()
+		event.action = action
+		event.pressed = pressed
+		Input.parse_input_event(event)

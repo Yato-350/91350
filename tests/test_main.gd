@@ -17,6 +17,7 @@ var _original_dir: String
 
 
 func before_each() -> void:
+	GameState.new_game()
 	_original_dir = SaveManager.save_dir
 	SaveManager.save_dir = TEST_DIR
 	_clear_test_dir()
@@ -58,8 +59,30 @@ func test_quick_save_then_quick_load_restores_the_player() -> void:
 	assert_true(SaveManager.has_save())
 	player.global_position = start + Vector3(3.0, 0.0, 2.0)
 	_send_action("quick_load")
+	await wait_process_frames(3)
+	var reloaded := _player_of(main)
+	assert_ne(reloaded, player, "le lieu est rechargé depuis la sauvegarde")
+	# Le nouveau joueur a déjà commencé à se poser sur le sol.
+	assert_almost_eq(reloaded.global_position, start, Vector3(0.001, 0.05, 0.001))
+
+
+func test_travel_records_where_akan_is() -> void:
+	var main := await _make_main()
+	assert_eq(GameState.location, Main.DEFAULT_ZONE)
+	assert_true(main.travel_to("zone:grigny2@gare"))
 	await wait_process_frames(2)
-	assert_almost_eq(player.global_position, start, Vector3.ONE * 0.001)
+	assert_eq(GameState.location, "zone:grigny2@gare")
+	assert_eq(GameState.territory_id, "grigny2")
+	assert_false(main.travel_to("zone:atlantide"))
+	assert_push_error("atlantide")
+	assert_eq(GameState.location, "zone:grigny2@gare")
+
+
+func test_travel_can_place_akan_at_a_saved_position() -> void:
+	var main := await _make_main()
+	assert_true(main.travel_to(Main.DEFAULT_ZONE, [2.0, 0.5, -3.0]))
+	await wait_process_frames(1)
+	assert_almost_eq(_player_of(main).global_position, Vector3(2.0, 0.5, -3.0), Vector3.ONE * 0.01)
 
 
 func test_colour_toggle_requests_the_other_saturation() -> void:

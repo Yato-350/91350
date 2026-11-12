@@ -14,6 +14,10 @@ const MOVING_SPEED := 0.1
 # Les membres qui se balancent ensemble : jambe gauche avec bras droit, et inversement.
 const SWING_FORWARD: Array[String] = ["LegLeft", "ArmRight"]
 const SWING_BACKWARD: Array[String] = ["LegRight", "ArmLeft"]
+const LEGS: Array[String] = ["LegLeft", "LegRight"]
+## Accroupi, le corps descend de cette hauteur et les jambes se plient d'autant.
+const CROUCH_DROP := 0.3
+const CROUCH_SPEED := 8.0
 
 @export var character_id := "":
 	set(value):
@@ -21,9 +25,15 @@ const SWING_BACKWARD: Array[String] = ["LegRight", "ArmLeft"]
 		if is_node_ready():
 			_load_model()
 
+## Posture accroupie : le modèle s'y glisse en douceur.
+var crouched := false
+
 var _model: Node3D
 var _parts := {}
+## Hauteur de repos de chaque partie, pour revenir debout.
+var _rest_heights := {}
 var _stride := 0.0
+var _crouch := 0.0
 
 
 func _ready() -> void:
@@ -52,6 +62,25 @@ func animate(horizontal_velocity: Vector3, delta: float) -> void:
 		_swing(part_name, swing)
 	for part_name: String in SWING_BACKWARD:
 		_swing(part_name, -swing)
+	_crouch = move_toward(_crouch, 1.0 if crouched else 0.0, CROUCH_SPEED * delta)
+	_apply_crouch()
+
+
+## Hauteur dont le corps est descendu, en mètres (0 debout).
+func get_crouch_drop() -> float:
+	return _crouch * CROUCH_DROP
+
+
+# Descend tout le corps ; les jambes, attachées à la hanche, raccourcissent pour que
+# les pieds restent au sol.
+func _apply_crouch() -> void:
+	var drop := get_crouch_drop()
+	for part_name: String in _parts:
+		var part: Node3D = _parts[part_name]
+		var rest: float = _rest_heights[part_name]
+		part.position.y = rest - drop
+		if part_name in LEGS and rest > 0.0:
+			part.scale.y = (rest - drop) / rest
 
 
 func _swing(part_name: String, angle: float) -> void:
@@ -65,6 +94,7 @@ func _load_model() -> void:
 		_model.queue_free()
 		_model = null
 	_parts.clear()
+	_rest_heights.clear()
 	if character_id.is_empty():
 		return
 	var path := MODEL_PATH % character_id
@@ -78,3 +108,4 @@ func _load_model() -> void:
 		var part := node as MeshInstance3D
 		part.material_override = MATERIAL
 		_parts[String(part.name)] = part
+		_rest_heights[String(part.name)] = part.position.y

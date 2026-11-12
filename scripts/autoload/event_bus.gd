@@ -30,3 +30,7 @@ signal vigilance_changed(zone_id: String, level: int)
 signal status_changed(status: int)
 signal leveled_up(level: int)
 signal player_downed
+## Akan vise un autre élément du monde ; `prompt` est vide quand il n'en vise aucun.
+signal interaction_focus_changed(prompt: String)
+## Demande de changement de lieu : « grigny2@gare », « appartement_akan ».
+signal travel_requested(target: String)

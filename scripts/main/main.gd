@@ -41,16 +41,16 @@ func _ready() -> void:
 	if not screenshot_scene.is_empty():
 		_run_screenshot_mode(screenshot_scene)
 		return
-	load_zone(DEFAULT_ZONE)
+	travel_to(DEFAULT_ZONE)
 	await get_tree().process_frame
 	print(READY_MARKER)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"quick_save"):
-		SaveManager.save_game()
+		save_game()
 	elif event.is_action_pressed(&"quick_load"):
-		SaveManager.load_game()
+		load_game()
 	elif event.is_action_pressed(&"toggle_fullscreen"):
 		_toggle_fullscreen()
 	elif event.is_action_pressed(&"debug_toggle_color"):
@@ -59,22 +59,66 @@ func _unhandled_input(event: InputEvent) -> void:
 		EventBus.saturation_change_requested.emit(target, COLOR_FADE_SECONDS)
 
 
+## Charge un lieu et y place Akan. `ref` est un chemin de scène ou « zone:<id>[@repère] » ;
+## `position` ([x, y, z]) remplace le point d'arrivée, pour reprendre une sauvegarde.
+## Rend false, sans rien changer, si le lieu ne se charge pas.
+func travel_to(ref: String, position: Array = []) -> bool:
+	if not load_zone(ref):
+		return false
+	GameState.location = ref
+	var zone := _pixel_view.get_zone() as Zone
+	GameState.territory_id = zone.zone_id if zone != null else ""
+	var player := get_player()
+	if player != null and position.size() == 3:
+		player.teleport(Vector3(position[0], position[1], position[2]))
+	return true
+
+
+func get_player() -> Player:
+	return get_tree().get_first_node_in_group(Player.GROUP) as Player
+
+
+## Sauvegarde la partie, avec l'endroit exact où se tient Akan.
+func save_game(slot: int = 0) -> bool:
+	var player := get_player()
+	if player != null:
+		var at := player.global_position
+		GameState.saved_position = [at.x, at.y, at.z]
+	return SaveManager.save_game(slot)
+
+
+## Relit la partie, puis recharge le lieu où elle a été sauvegardée.
+func load_game(slot: int = 0) -> bool:
+	if not SaveManager.load_game(slot):
+		return false
+	return travel_to(GameState.location, GameState.saved_position)
+
+
 ## Remplace la zone affichée. Rend false, sans rien changer, si la scène ne se charge pas.
 func load_zone(path: String) -> bool:
 	var zone: Node3D
 	if path.begins_with(ZONE_PREFIX):
+		# Zone.create journalise lui-même une zone inconnue.
 		zone = Zone.create(path.trim_prefix(ZONE_PREFIX))
-	elif ResourceLoader.exists(path, "PackedScene"):
-		var scene := load(path) as PackedScene
-		var root := scene.instantiate() if scene != null else null
-		zone = root as Node3D
-		if zone == null and root != null:
-			root.free()
+	else:
+		zone = _instantiate_scene(path)
+		if zone == null:
+			push_error("Scène de zone introuvable ou invalide : %s" % path)
 	if zone == null:
-		push_error("Zone introuvable ou invalide : %s" % path)
 		return false
 	_pixel_view.set_zone(zone)
 	return true
+
+
+func _instantiate_scene(path: String) -> Node3D:
+	if not ResourceLoader.exists(path, "PackedScene"):
+		return null
+	var scene := load(path) as PackedScene
+	var root := scene.instantiate() if scene != null else null
+	var zone := root as Node3D
+	if zone == null and root != null:
+		root.free()
+	return zone
 
 
 func save_screenshot(path: String) -> Error:

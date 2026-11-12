@@ -1,0 +1,28 @@
+{
+	"deadzone": 0.2,
+	"actions": {
+		"move_left": { "keys": ["A", "Left"], "axes": [[0, -1]] },
+		"move_right": { "keys": ["D", "Right"], "axes": [[0, 1]] },
+		"move_up": { "keys": ["W", "Up"], "axes": [[1, -1]] },
+		"move_down": { "keys": ["S", "Down"], "axes": [[1, 1]] },
+		"run": { "keys": ["Shift"], "buttons": [1] },
+		"crouch": { "keys": ["C"], "buttons": [7] },
+		"interact": { "keys": ["F"], "buttons": [0] },
+		"attack": { "keys": ["Space"], "mouse": [1], "buttons": [2] },
+		"aim": { "keys": ["Ctrl"], "mouse": [2], "axes": [[4, 1]] },
+		"camera_rotate_left": { "keys": ["Q"], "buttons": [9] },
+		"camera_rotate_right": { "keys": ["E"], "buttons": [10] },
+		"inventory": { "keys": ["Tab", "I"], "buttons": [3] },
+		"journal": { "keys": ["J"], "buttons": [4] },
+		"pause": { "keys": ["Escape"], "buttons": [6] },
+		"quick_1": { "keys": ["1"], "buttons": [11] },
+		"quick_2": { "keys": ["2"], "buttons": [14] },
+		"quick_3": { "keys": ["3"], "buttons": [12] },
+		"quick_4": { "keys": ["4"], "buttons": [13] },
+		"quick_save": { "keys": ["F5"] },
+		"quick_load": { "keys": ["F9"] },
+		"toggle_fullscreen": { "keys": ["F11"] },
+		"toggle_credits": { "keys": ["F1"] },
+		"debug_toggle_color": { "keys": ["F2"] }
+	}
+}
