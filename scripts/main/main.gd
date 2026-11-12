@@ -12,6 +12,8 @@ const READY_MARKER := "[91350] prêt"
 const SCREENSHOT_ARGUMENT := "--screenshot"
 const SCREENSHOT_DIR := "res://build/screenshots"
 const SCREENSHOT_FRAMES := 30
+## « zone:<identifiant> » désigne une zone de data/zones/ plutôt qu'un fichier de scène.
+const ZONE_PREFIX := "zone:"
 
 var _colour_enabled := true
 
@@ -26,7 +28,9 @@ static func parse_screenshot_scene(args: PackedStringArray) -> String:
 	if index == -1 or index + 1 >= args.size() or args[index + 1].begins_with("--"):
 		return ""
 	var path := args[index + 1]
-	return path if path.begins_with("res://") else "res://" + path
+	if path.begins_with("res://") or path.begins_with(ZONE_PREFIX):
+		return path
+	return "res://" + path
 
 
 func _ready() -> void:
@@ -57,13 +61,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Remplace la zone affichée. Rend false, sans rien changer, si la scène ne se charge pas.
 func load_zone(path: String) -> bool:
-	if not ResourceLoader.exists(path, "PackedScene"):
-		push_error("Zone introuvable : %s" % path)
-		return false
-	var scene: PackedScene = load(path)
-	var zone := scene.instantiate() as Node3D
+	var zone: Node3D
+	if path.begins_with(ZONE_PREFIX):
+		zone = Zone.create(path.trim_prefix(ZONE_PREFIX))
+	elif ResourceLoader.exists(path, "PackedScene"):
+		var scene := load(path) as PackedScene
+		var root := scene.instantiate() if scene != null else null
+		zone = root as Node3D
+		if zone == null and root != null:
+			root.free()
 	if zone == null:
-		push_error("La zone doit avoir une racine Node3D : %s" % path)
+		push_error("Zone introuvable ou invalide : %s" % path)
 		return false
 	_pixel_view.set_zone(zone)
 	return true
@@ -84,7 +92,8 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		return
 	for i: int in SCREENSHOT_FRAMES:
 		await get_tree().process_frame
-	var path := SCREENSHOT_DIR.path_join(scene_path.get_file().get_basename() + ".png")
+	var file_name := scene_path.get_file().get_basename().replace(":", "_")
+	var path := SCREENSHOT_DIR.path_join(file_name + ".png")
 	if save_screenshot(path) != OK:
 		printerr("Capture impossible : %s" % path)
 		get_tree().quit(1)

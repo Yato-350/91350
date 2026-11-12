@@ -69,8 +69,8 @@ func test_building_is_extruded_to_its_height() -> void:
 	var bounds := chunk.mesh.get_aabb()
 	assert_almost_eq(bounds.size, Vector3(10.0, HEIGHT, 10.0), Vector3.ONE * 0.01)
 	assert_almost_eq(bounds.position.y, 0.0, 0.01)
-	# 4 murs et un toit, deux triangles chacun.
-	assert_eq(chunk.mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX].size(), 10 * 3)
+	# 4 murs, un toit et un sol intérieur, deux triangles chacun.
+	assert_eq(chunk.mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX].size(), 12 * 3)
 
 
 func test_walls_stop_a_ray_from_outside_only() -> void:

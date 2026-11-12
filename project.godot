@@ -142,7 +142,7 @@ player_position={
 }
 xray_radius={
 "type": "float",
-"value": 3.0
+"value": 7.0
 }
 night_factor={
 "type": "float",

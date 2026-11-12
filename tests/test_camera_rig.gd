@@ -60,7 +60,8 @@ func test_rig_resets_the_camera_every_frame() -> void:
 	var camera: Camera3D = rig.get_node("Camera3D")
 	camera.position += Vector3(0.3, 0.2, 0.0)
 	await wait_process_frames(2)
-	assert_almost_eq(camera.position, Vector3(0.0, 30.0, 51.96), Vector3.ONE * 0.01)
+	var expected := Vector3(0.0, 0.5, sqrt(3.0) / 2.0) * CameraRig.DISTANCE
+	assert_almost_eq(camera.position, expected, Vector3.ONE * 0.01)
 
 
 func test_rig_without_target_stays_put() -> void:

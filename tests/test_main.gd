@@ -6,6 +6,7 @@ const PARSE_CASES: Array = [
 	[["--screenshot", "res://scenes/zones/test_zone.tscn"], "res://scenes/zones/test_zone.tscn"],
 	[["--screenshot", "scenes/zones/test_zone.tscn"], "res://scenes/zones/test_zone.tscn"],
 	[["--autre", "x", "--screenshot", "res://b.tscn"], "res://b.tscn"],
+	[["--screenshot", "zone:grigny2"], "zone:grigny2"],
 	[[], ""],
 	[["--screenshot"], ""],
 	[["--screenshot", "--autre"], ""],

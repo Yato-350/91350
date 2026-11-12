@@ -1,0 +1,28 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Zone",
+	"description": "Contenu de jeu d'une zone extérieure. Les coordonnées sont en mètres : [x, z], x vers l'est, z vers le sud, origine au centre de la zone.",
+	"type": "object",
+	"required": ["id", "name_regime", "name_real", "control", "support", "spawns"],
+	"additionalProperties": false,
+	"properties": {
+		"id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+		"name_regime": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+		"name_real": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+		"control": { "type": "integer", "minimum": 0, "maximum": 100 },
+		"support": { "type": "integer", "minimum": 0, "maximum": 100 },
+		"spawns": {
+			"type": "object",
+			"required": ["default"],
+			"additionalProperties": { "$ref": "#/$defs/point" }
+		}
+	},
+	"$defs": {
+		"point": {
+			"type": "array",
+			"items": { "type": "number" },
+			"minItems": 2,
+			"maxItems": 2
+		}
+	}
+}

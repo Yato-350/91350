@@ -10,6 +10,10 @@ global uniform float night_factor;
 uniform vec3 window_dark : source_color = vec3(0.071, 0.102, 0.180);
 uniform vec3 window_lit : source_color = vec3(0.957, 0.894, 0.757);
 uniform vec2 window_cell = vec2(3.0, 2.8);
+// Hauteur à laquelle sont arasés les bâtiments qui cachent les abords du joueur.
+uniform float cut_height = 2.4;
+
+varying vec3 world_position;
 
 const float BAYER[16] = float[16](
 	0.0, 8.0, 2.0, 10.0,
@@ -21,13 +25,21 @@ float hash(vec2 cell) {
 	return fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);
 }
 
+void vertex() {
+	world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+}
+
 void fragment() {
-	// Disque de vision : ne s'ouvre que dans ce qui se trouve entre la caméra et le joueur.
+	// Ce qui se trouve entre la caméra et le joueur est découpé autour de lui :
+	// tout près, on voit à travers ; un peu plus loin, les bâtiments sont arasés.
 	vec3 player_view = (VIEW_MATRIX * vec4(player_position + vec3(0.0, 1.0, 0.0), 1.0)).xyz;
 	if (VERTEX.z > player_view.z + 0.75) {
-		ivec2 cell = ivec2(FRAGCOORD.xy) % 4;
-		float threshold = 0.7 + 0.3 * BAYER[cell.x + cell.y * 4] / 16.0;
-		if (length(VERTEX.xy - player_view.xy) < xray_radius * threshold) {
+		ivec2 dither_cell = ivec2(FRAGCOORD.xy) % 4;
+		float threshold = 0.9 + 0.1 * BAYER[dither_cell.x + dither_cell.y * 4] / 16.0;
+		float distance_to_player = length(VERTEX.xy - player_view.xy);
+		bool near = distance_to_player < xray_radius * 0.4 * threshold;
+		bool above = world_position.y > cut_height && distance_to_player < xray_radius * threshold;
+		if (near || above) {
 			discard;
 		}
 	}

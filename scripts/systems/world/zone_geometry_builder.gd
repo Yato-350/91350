@@ -22,17 +22,20 @@ const ROAD_Y := 0.05
 const RAIL_Y := 0.07
 const RAIL_WIDTH := 3.0
 const FOOT_KINDS: Array[String] = ["footway", "path", "steps", "cycleway", "pedestrian", "track"]
-const GROUND_COLOR := "beton_4"
+const GROUND_COLOR := "beton_3"
 const ROAD_COLOR := "beton_2"
 const FOOTWAY_COLOR := "beton_5"
 const RAIL_COLOR := "brun_1"
 const WATER_COLOR := "eau_sombre"
 const GREEN_COLORS := {"pitch": "vert_feuille", "playground": "orange_sombre"}
 const GREEN_DEFAULT_COLOR := "vert_sombre"
-const BUILDING_COLORS: Array[String] = ["beton_3", "beton_4", "beton_5"]
+const BUILDING_COLORS: Array[String] = ["beton_4", "beton_5", "beton_4"]
 const NEUTRAL_COLOR := "creme"
 const COMMERCIAL_COLOR := "beton_3"
 const ROOF_COLOR := "beton_2"
+## Sol intérieur d'un bâtiment, visible seulement quand la vue le découpe.
+const FLOOR_COLOR := "beton_1"
+const FLOOR_Y := 0.06
 
 
 static func build(zone: Dictionary, palette: Dictionary) -> ZoneGeometry:
@@ -193,15 +196,20 @@ static func _add_building(
 			)
 		along += length
 	var roof_color := Color(palette[ROOF_COLOR], 0.0)
+	var floor_color := Color(palette[FLOOR_COLOR], 0.0)
+	var unused := PackedVector3Array()
 	var indices := Geometry2D.triangulate_polygon(points)
 	for index: int in range(0, indices.size(), 3):
-		var corners: Array[Vector3] = []
+		var roof: Array[Vector3] = []
+		var floor_corners: Array[Vector3] = []
 		var uvs: Array[Vector2] = []
 		for offset: int in 3:
 			var point := points[indices[index + offset]]
-			corners.append(Vector3(point.x, height, point.y))
+			roof.append(Vector3(point.x, height, point.y))
+			floor_corners.append(Vector3(point.x, FLOOR_Y, point.y))
 			uvs.append(point)
-		_add_triangle(surface, faces, corners, Vector3.UP, roof_color, uvs, extra)
+		_add_triangle(surface, faces, roof, Vector3.UP, roof_color, uvs, extra)
+		_add_triangle(surface, unused, floor_corners, Vector3.UP, floor_color, uvs, extra)
 
 
 static func _add_bounds(geometry: ZoneGeometry) -> void:

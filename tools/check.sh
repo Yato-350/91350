@@ -123,7 +123,8 @@ export_web() {
 screenshot() {
 	local scene="$1"
 	local output
-	output="build/screenshots/$(basename "$scene" .tscn).png"
+	output="$(basename "$scene" .tscn)"
+	output="build/screenshots/${output//:/_}.png"
 	prepare_build_dir
 	rm -f "$output"
 	with_display tools/godot.sh --path . --rendering-driver opengl3 --audio-driver Dummy \

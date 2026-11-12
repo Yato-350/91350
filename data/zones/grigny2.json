@@ -1,0 +1,12 @@
+{
+	"id": "grigny2",
+	"name_regime": "ZONE_GRIGNY2_REGIME",
+	"name_real": "ZONE_GRIGNY2_REAL",
+	"control": 85,
+	"support": 15,
+	"spawns": {
+		"default": [-118, -150],
+		"gare": [100, 10],
+		"derriere_la_tour": [-150, -160]
+	}
+}

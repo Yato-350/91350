@@ -13,7 +13,8 @@ const PITCH_DEGREES := 30.0
 const YAW_OFFSET_DEGREES := 45.0
 const STEP_DEGREES := 90.0
 const STEP_COUNT := 4
-const DISTANCE := 60.0
+## Recul de la caméra : assez grand pour qu'une tour proche ne passe jamais derrière elle.
+const DISTANCE := 150.0
 const ROTATION_SECONDS := 0.25
 
 @export var target: Node3D
