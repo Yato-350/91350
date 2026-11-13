@@ -106,6 +106,46 @@
 					}
 				}
 			}
+		},
+		"npcs": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"character",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"character": {
+						"type": "string",
+						"description": "Fiche de data/characters/."
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère où se tient le personnage."
+					},
+					"dialogue": {
+						"type": "string",
+						"description": "Fichier de dialogue/ (sans extension)."
+					},
+					"cue": {
+						"type": "string"
+					},
+					"yaw": {
+						"type": "number"
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
+					}
+				}
+			}
 		}
 	},
 	"$defs": {

@@ -66,6 +66,7 @@ func _ready() -> void:
 		_add_door(door)
 	_add_props()
 	_add_pickups()
+	_add_npcs()
 	EventBus.item_dropped.connect(_on_item_dropped)
 	player = PLAYER_SCENE.instantiate()
 	player.position = spawn_position(arrival)
@@ -173,6 +174,16 @@ func _add_pickups() -> void:
 			continue
 		var node := Pickup.create(pickup["item"], int(pickup.get("count", 1)), id)
 		node.position = marker_position(pickup["at"])
+		add_child(node)
+
+
+# Un personnage n'est là que si sa condition « if » est vraie à l'arrivée d'Akan.
+func _add_npcs() -> void:
+	for npc: Dictionary in definition.get("npcs", []):
+		if not Conditions.check(npc.get("if", {})):
+			continue
+		var node := Npc.create(npc)
+		node.position = marker_position(npc["at"])
 		add_child(node)
 
 

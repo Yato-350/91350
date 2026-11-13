@@ -61,6 +61,9 @@ func test_credits_name_the_engine_and_the_font() -> void:
 	var text: RichTextLabel = main.get_node("UI/Hud/Credits/Margin/Text")
 	assert_string_contains(text.text, "Godot Engine")
 	assert_string_contains(text.text, "Tiny5")
+	assert_string_contains(text.text, "OpenStreetMap")
+	assert_string_contains(text.text, "ODbL")
+	assert_string_contains(text.text, "Dialogue Manager")
 	assert_string_contains(text.text, Engine.get_license_text().substr(0, 40))
 
 

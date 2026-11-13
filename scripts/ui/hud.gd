@@ -24,6 +24,7 @@ const ZONE_PREFIX := "zone:"
 var _palette := Palette.load_colors()
 var _fills := {}
 var _prompt_key := ""
+var _talking := false
 var _debug_age := DEBUG_SECONDS
 var _message_tween: Tween
 
@@ -47,6 +48,10 @@ func _ready() -> void:
 	EventBus.game_loaded.connect(func(_slot: int) -> void: show_message("HUD_LOADED"))
 	EventBus.notified.connect(show_message)
 	EventBus.interaction_focus_changed.connect(_on_focus_changed)
+	EventBus.dialogue_requested.connect(
+		func(_dialogue: String, _cue: String) -> void: _set_talking(true)
+	)
+	EventBus.dialogue_ended.connect(func(_dialogue: String) -> void: _set_talking(false))
 	EventBus.inventory_changed.connect(func(_item: String) -> void: _refresh_quick_slots())
 	EventBus.game_state_reset.connect(_refresh_all)
 	EventBus.location_changed.connect(_refresh_place)
@@ -95,8 +100,15 @@ func _set_bar(bar: String, ratio: float) -> void:
 
 func _on_focus_changed(prompt_key: String) -> void:
 	_prompt_key = prompt_key
-	_prompt.visible = not prompt_key.is_empty()
+	_prompt.visible = not prompt_key.is_empty() and not _talking
 	_prompt.text = "%s %s" % [InputHints.label(&"interact"), tr(prompt_key)]
+
+
+# Pendant un dialogue, la bulle prend le bas de l'écran.
+func _set_talking(talking: bool) -> void:
+	_talking = talking
+	_quick_slots.visible = not talking
+	_on_focus_changed(_prompt_key)
 
 
 func _refresh_all() -> void:

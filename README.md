@@ -106,6 +106,8 @@ tools/         installation de Godot, vérifications, validation des données
 
 - Moteur : [Godot Engine](https://godotengine.org/license) (MIT).
 - Police : Tiny5, The Tiny5 Project Authors (SIL Open Font License 1.1).
+- Dialogues : [Dialogue Manager](https://github.com/nathanhoad/godot_dialogue_manager), Nathan Hoad (MIT).
+- Cartes : © les contributeurs d'OpenStreetMap — données sous licence ODbL.
 - Tests : [GUT](https://github.com/bitwes/Gut) (MIT), non distribué avec le jeu.
 - Le code et le contenu du jeu ne sont pas sous licence libre : tous droits réservés.
 

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://gc8utduv67g"
+path="res://.godot/imported/daronne.dialogue-7a6fa239098a94cf2c9e34152d379ca9.tres"
+
+[deps]
+
+source_file="res://dialogue/daronne.dialogue"
+dest_files=["res://.godot/imported/daronne.dialogue-7a6fa239098a94cf2c9e34152d379ca9.tres"]
+
+[params]
+
+defaults=true

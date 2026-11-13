@@ -16,10 +16,12 @@ func should_skip_script():
 
 func before_each() -> void:
 	GameState.new_game()
+	_show_test_runner(false)
 
 
 func after_each() -> void:
 	get_tree().paused = false
+	_show_test_runner(true)
 
 
 func test_the_bag_screen_is_drawn_over_the_game() -> void:
@@ -40,6 +42,16 @@ func test_the_bag_screen_is_drawn_over_the_game() -> void:
 	)
 
 
+func test_the_dialogue_balloon_is_drawn_over_the_game() -> void:
+	var main := await _make_main("zone:appartement_akan@cuisine")
+	var closed := get_viewport().get_texture().get_image()
+	EventBus.dialogue_requested.emit("res://tests/dialogue/essai.dialogue", "start")
+	await wait_process_frames(SETTLE_FRAMES)
+	assert_eq(main.save_screenshot(OUTPUT % "dialogue"), OK)
+	var opened := get_viewport().get_texture().get_image()
+	assert_gt(_changed_pixels(closed, opened), 2000, "la bulle couvre le bas de l'écran")
+
+
 func _make_main(place: String) -> Main:
 	var main: Main = SCENE.instantiate()
 	add_child_autofree(main)
@@ -56,3 +68,10 @@ func _changed_pixels(before: Image, after: Image) -> int:
 			if before.get_pixel(x, y) != after.get_pixel(x, y):
 				changed += 1
 	return changed
+
+
+# Le panneau de GUT recouvrirait la moitié de la capture.
+func _show_test_runner(shown: bool) -> void:
+	var layer := get_tree().root.find_child("GutLayer", true, false) as CanvasLayer
+	if layer != null:
+		layer.visible = shown

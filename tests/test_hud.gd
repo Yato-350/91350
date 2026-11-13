@@ -73,6 +73,18 @@ func test_prompt_names_the_key_and_the_action() -> void:
 	assert_false(prompt.visible)
 
 
+func test_a_dialogue_takes_the_bottom_of_the_screen() -> void:
+	var prompt: Label = _hud.get_node("Prompt")
+	var slots: Control = _hud.get_node("QuickSlots")
+	EventBus.interaction_focus_changed.emit("PROMPT_PARLER")
+	EventBus.dialogue_requested.emit("daronne", "")
+	assert_false(prompt.visible)
+	assert_false(slots.visible)
+	EventBus.dialogue_ended.emit("daronne")
+	assert_true(prompt.visible)
+	assert_true(slots.visible)
+
+
 func test_notifications_show_a_short_message() -> void:
 	var message: Label = _hud.get_node("Message")
 	assert_false(message.visible)

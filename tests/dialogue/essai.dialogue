@@ -1,0 +1,18 @@
+~ start
+tonton: Tu cherches Lucien ?
+- Oui. [#ton=calme]
+	tonton: Et moi je cherche quoi, à ton avis ? Des piles.
+	$> set_flag("piles_demandees")
+	$> give("piles", 2)
+- Non. [#ton=cash]
+	tonton: Alors circule.
+- J'ai déjà tes piles. [if has("piles") /]
+	tonton: Pose-les là.
+=> END
+
+~ suite
+if flag("piles_demandees")
+	tonton: Alors, ces piles ?
+else
+	Un inconnu: Je te connais, toi ?
+=> END

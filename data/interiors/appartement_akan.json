@@ -5,7 +5,7 @@
 	"plan": [
 		"#############",
 		"#b.w#B.w#fkc#",
-		"#b.l#B..#,,,#",
+		"#b.l#B..#,e,#",
 		"#...#..m#,,i#",
 		"##.###.###.##",
 		"#s........v.#",
@@ -18,7 +18,8 @@
 		"m": "chambre",
 		"a": "sejour",
 		"p": "porte",
-		"i": "cuisine"
+		"i": "cuisine",
+		"e": "evier"
 	},
 	"floors": {
 		",": "beton_5"
@@ -73,7 +74,16 @@
 		{
 			"id": "bidon",
 			"item": "bidon_vide",
-			"at": "cuisine"
+			"at": "evier"
+		}
+	],
+	"npcs": [
+		{
+			"id": "daronne",
+			"character": "daronne",
+			"at": "cuisine",
+			"dialogue": "daronne",
+			"yaw": 90
 		}
 	]
 }

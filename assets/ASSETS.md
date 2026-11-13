@@ -14,3 +14,5 @@ uniquement en CC0 ou sous une licence compatible.
 | Décor (`assets/voxel/props/`, `assets/icons/props/`) | Générés depuis `assets_src/voxel/props/*.txt` | Projet | Placeholder généré (28 éléments) |
 | Zones extérieures (`scenes/zones/generated/*.scn`) | Cuites par `tools/bake_zones.gd` depuis `tools/osm_import/data/` | Données dérivées d'OpenStreetMap : ODbL (`docs/LEGAL.md`) | Généré |
 | Zone de test (`scenes/zones/test_zone.tscn`) | Boîtes grises écrites à la main | Projet | Placeholder de M0 |
+| `addons/dialogue_manager/` | [Dialogue Manager 4.2.0](https://github.com/nathanhoad/godot_dialogue_manager), Nathan Hoad | MIT (`addons/dialogue_manager/LICENSE`) | Addon, distribué avec le jeu (sans ses fichiers C#) |
+| `addons/gut/` | [GUT 9.7.1](https://github.com/bitwes/Gut) | MIT | Addon de test, non distribué avec le jeu |

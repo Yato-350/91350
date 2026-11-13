@@ -38,3 +38,6 @@ signal travel_requested(target: String)
 signal notified(text_key: String)
 ## Akan vient d'entrer dans un lieu (voir GameState.location).
 signal location_changed
+## Demande de dialogue : un fichier de dialogue/ et l'entrée à y jouer.
+signal dialogue_requested(dialogue: String, cue: String)
+signal dialogue_ended(dialogue: String)
