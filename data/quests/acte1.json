@@ -58,7 +58,10 @@
 				"xp": 50,
 				"start": [
 					"la_file"
-				]
+				],
+				"items": {
+					"billets": 10
+				}
 			}
 		},
 		{
@@ -161,8 +164,340 @@
 				},
 				"flags": [
 					"radio"
+				],
+				"start": [
+					"les_yeux_du_quartier"
 				]
 			}
+		},
+		{
+			"id": "les_yeux_du_quartier",
+			"name": "QUEST_YEUX",
+			"summary": "QUEST_YEUX_SUMMARY",
+			"giver": "ines",
+			"zone": "grigny2",
+			"beat": {
+				"type": "stealth",
+				"intensity": 0.6
+			},
+			"rewards": {
+				"xp": 100,
+				"reputation": {
+					"collectif": 10
+				},
+				"start": [
+					"premier_tag"
+				]
+			},
+			"steps": [
+				{
+					"id": "toit",
+					"type": "GOTO",
+					"target": "toit_tour",
+					"text": "OBJ_YEUX_TOIT",
+					"where": "palier_11:toit"
+				},
+				{
+					"id": "jumeaux",
+					"type": "TALK",
+					"target": "ines",
+					"text": "OBJ_YEUX_JUMEAUX",
+					"where": "toit_tour:ines"
+				},
+				{
+					"id": "coteau",
+					"type": "STEALTH",
+					"target": "poste_coteau",
+					"text": "OBJ_YEUX_COTEAU",
+					"where": "grigny2:poste_coteau"
+				},
+				{
+					"id": "parking",
+					"type": "STEALTH",
+					"target": "poste_parking",
+					"text": "OBJ_YEUX_PARKING",
+					"where": "grigny2:poste_parking"
+				},
+				{
+					"id": "conteneurs",
+					"type": "STEALTH",
+					"target": "poste_conteneurs",
+					"text": "OBJ_YEUX_CONTENEURS",
+					"where": "grigny2:poste_conteneurs"
+				},
+				{
+					"id": "retour",
+					"type": "TALK",
+					"target": "ines",
+					"text": "OBJ_YEUX_RETOUR",
+					"where": "toit_tour:ines"
+				}
+			]
+		},
+		{
+			"id": "premier_tag",
+			"name": "QUEST_TAG",
+			"summary": "QUEST_TAG_SUMMARY",
+			"giver": "pixel",
+			"zone": "grigny2",
+			"beat": {
+				"type": "action",
+				"intensity": 0.8
+			},
+			"rewards": {
+				"xp": 125,
+				"support": 10,
+				"vigilance": 1,
+				"flags": [
+					"avis_recherche"
+				],
+				"start": [
+					"le_grand"
+				]
+			},
+			"steps": [
+				{
+					"id": "pixel",
+					"type": "TALK",
+					"target": "pixel",
+					"text": "OBJ_TAG_PIXEL",
+					"where": "grigny2:pixel"
+				},
+				{
+					"id": "bombe",
+					"type": "COLLECT",
+					"target": "bombe_peinture",
+					"text": "OBJ_TAG_BOMBE",
+					"where": "grigny2:derriere_la_tour"
+				},
+				{
+					"id": "tag",
+					"type": "PUBLISH",
+					"target": "mur_tour",
+					"text": "OBJ_TAG_MUR",
+					"where": "grigny2:mur_tag"
+				},
+				{
+					"id": "semer",
+					"type": "GOTO",
+					"target": "appartement_akan",
+					"text": "OBJ_TAG_SEMER"
+				}
+			]
+		},
+		{
+			"id": "le_grand",
+			"name": "QUEST_GRAND",
+			"summary": "QUEST_GRAND_SUMMARY",
+			"giver": "lucien",
+			"zone": "grigny2",
+			"beat": {
+				"type": "explore",
+				"intensity": 0.3
+			},
+			"rewards": {
+				"xp": 150,
+				"skill_points": 1,
+				"reputation": {
+					"anciens": 10
+				},
+				"flags": [
+					"grand_allie"
+				],
+				"start": [
+					"le_contact"
+				]
+			},
+			"steps": [
+				{
+					"id": "lucien",
+					"type": "TALK",
+					"target": "lucien",
+					"text": "OBJ_GRAND_LUCIEN",
+					"where": "appartement_lucien:lucien"
+				},
+				{
+					"id": "salle",
+					"type": "TALK",
+					"target": "le_grand",
+					"text": "OBJ_GRAND_SALLE",
+					"where": "salle_boxe:le_grand"
+				},
+				{
+					"id": "eau",
+					"type": "DELIVER",
+					"target": "eau_voisins",
+					"count": 3,
+					"text": "OBJ_GRAND_EAU",
+					"where": "palier_11:voisin_2"
+				},
+				{
+					"id": "paos",
+					"type": "USE",
+					"target": "paos",
+					"text": "OBJ_GRAND_PAOS",
+					"where": "salle_boxe:mamie_scooter"
+				},
+				{
+					"id": "question",
+					"type": "TALK",
+					"target": "le_grand",
+					"text": "OBJ_GRAND_QUESTION",
+					"where": "salle_boxe:le_grand"
+				}
+			]
+		},
+		{
+			"id": "le_contact",
+			"name": "QUEST_CONTACT",
+			"summary": "QUEST_CONTACT_SUMMARY",
+			"giver": "le_grand",
+			"zone": "grigny2",
+			"beat": {
+				"type": "rest",
+				"intensity": 0.3
+			},
+			"rewards": {
+				"xp": 125,
+				"start": [
+					"la_tour_se_leve"
+				]
+			},
+			"steps": [
+				{
+					"id": "passerelle",
+					"type": "GOTO",
+					"target": "grigny2:passerelle",
+					"text": "OBJ_CONTACT_PASSERELLE"
+				},
+				{
+					"id": "coursier",
+					"type": "USE",
+					"target": "deal_zed",
+					"text": "OBJ_CONTACT_COURSIER",
+					"where": "grigny2:passerelle",
+					"branches": [
+						{
+							"type": "USE",
+							"target": "payer_zed",
+							"goto": ""
+						}
+					]
+				},
+				{
+					"id": "colis",
+					"type": "DELIVER",
+					"target": "relais_zed",
+					"text": "OBJ_CONTACT_COLIS",
+					"where": "grigny2:gare",
+					"end": true,
+					"branches": [
+						{
+							"type": "DELIVER",
+							"target": "tata_rose",
+							"goto": "cle"
+						}
+					]
+				},
+				{
+					"id": "cle",
+					"type": "TALK",
+					"target": "cle_de_12",
+					"text": "OBJ_CONTACT_CLE",
+					"where": "grigny2:garage"
+				}
+			]
+		},
+		{
+			"id": "la_tour_se_leve",
+			"name": "QUEST_TOUR",
+			"summary": "QUEST_TOUR_SUMMARY",
+			"giver": "wifi",
+			"zone": "grigny2",
+			"beat": {
+				"type": "climax",
+				"intensity": 1.0
+			},
+			"rewards": {
+				"xp": 300
+			},
+			"steps": [
+				{
+					"id": "wifi",
+					"type": "TALK",
+					"target": "wifi",
+					"text": "OBJ_TOUR_WIFI",
+					"where": "hall_tour:local"
+				},
+				{
+					"id": "camera",
+					"type": "SABOTAGE",
+					"target": "camera_hall",
+					"text": "OBJ_TOUR_CAMERA",
+					"where": "hall_tour:boitier"
+				},
+				{
+					"id": "indices",
+					"type": "COLLECT",
+					"target": "indice",
+					"count": 3,
+					"text": "OBJ_TOUR_INDICES",
+					"where": "hall_tour:boites"
+				},
+				{
+					"id": "bernard",
+					"type": "TALK",
+					"target": "bernard",
+					"text": "OBJ_TOUR_BERNARD",
+					"where": "palier_11:voisin_1"
+				},
+				{
+					"id": "voisins",
+					"type": "TALK",
+					"target": "voisins",
+					"count": 5,
+					"text": "OBJ_TOUR_VOISINS",
+					"where": "hall_tour:loge",
+					"effects": {
+						"flags": [
+							"descente"
+						]
+					},
+					"dialogue": [
+						"wifi",
+						"alerte"
+					]
+				},
+				{
+					"id": "defendre",
+					"type": "DEFEND",
+					"target": "hall_tour",
+					"count": 5,
+					"waves": [
+						1,
+						2,
+						2
+					],
+					"spawn": "default",
+					"enemy": "intervention",
+					"text": "OBJ_TOUR_DEFENDRE",
+					"effects": {
+						"support": 60,
+						"control": -60,
+						"liberate": true
+					},
+					"dialogue": [
+						"wifi",
+						"victoire"
+					]
+				},
+				{
+					"id": "planque",
+					"type": "GOTO",
+					"target": "local_tour",
+					"text": "OBJ_TOUR_PLANQUE"
+				}
+			]
 		}
 	]
 }

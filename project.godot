@@ -186,7 +186,7 @@ debug_toggle_color={
 [internationalization]
 
 locale/translations=PackedStringArray("res://locale/strings.fr.translation")
-locale/translations_pot_files=PackedStringArray("res://dialogue/daronne.dialogue", "res://tests/dialogue/essai.dialogue", "res://dialogue/akan.dialogue", "res://dialogue/bernard.dialogue", "res://dialogue/maya.dialogue", "res://dialogue/tonton.dialogue", "res://dialogue/lucien.dialogue", "res://dialogue/file.dialogue", "res://dialogue/voisins.dialogue")
+locale/translations_pot_files=PackedStringArray("res://dialogue/daronne.dialogue", "res://tests/dialogue/essai.dialogue", "res://dialogue/akan.dialogue", "res://dialogue/bernard.dialogue", "res://dialogue/maya.dialogue", "res://dialogue/tonton.dialogue", "res://dialogue/lucien.dialogue", "res://dialogue/file.dialogue", "res://dialogue/voisins.dialogue", "res://dialogue/grand.dialogue", "res://dialogue/mamie_scooter.dialogue", "res://dialogue/pixel.dialogue", "res://dialogue/guetteurs.dialogue", "res://dialogue/jumeaux.dialogue", "res://dialogue/voisins_tour.dialogue", "res://dialogue/tata_rose.dialogue", "res://dialogue/cle_de_12.dialogue", "res://dialogue/tour.dialogue", "res://dialogue/wifi.dialogue", "res://dialogue/zed.dialogue")
 locale/fallback="fr"
 
 [physics]

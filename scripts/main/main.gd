@@ -18,6 +18,8 @@ const READY_MARKER := "[91350] prêt"
 const SCREENSHOT_ARGUMENT := "--screenshot"
 ## « --hour 23.5 » : l'heure du jeu au moment de la capture.
 const HOUR_ARGUMENT := "--hour"
+## « --view 3 » : la caméra tournée de trois quarts de tour pour la capture.
+const VIEW_ARGUMENT := "--view"
 const SCREENSHOT_DIR := "res://build/screenshots"
 const SCREENSHOT_FRAMES := 30
 ## « zone:<identifiant> » désigne un lieu des données plutôt qu'un fichier de scène.
@@ -54,6 +56,14 @@ static func parse_hour(args: PackedStringArray) -> float:
 	if index == -1 or index + 1 >= args.size() or not args[index + 1].is_valid_float():
 		return -1.0
 	return args[index + 1].to_float()
+
+
+## Le quart de tour demandé par « --view <n> » (0 à 3), ou -1 si absent ou illisible.
+static func parse_view(args: PackedStringArray) -> int:
+	var index := args.find(VIEW_ARGUMENT)
+	if index == -1 or index + 1 >= args.size() or not args[index + 1].is_valid_int():
+		return -1
+	return posmod(args[index + 1].to_int(), CameraRig.STEP_COUNT)
 
 
 func _ready() -> void:
@@ -216,6 +226,9 @@ func _run_screenshot_mode(scene_path: String) -> void:
 	if not travel_to(scene_path):
 		get_tree().quit(1)
 		return
+	var view := parse_view(OS.get_cmdline_user_args())
+	if view >= 0:
+		_turn_camera(view)
 	for i: int in SCREENSHOT_FRAMES:
 		await get_tree().process_frame
 	# « zone:grigny2@-48.7,-34.7 » n'a pas d'extension : seul un fichier de scène en perd une.
@@ -226,6 +239,8 @@ func _run_screenshot_mode(scene_path: String) -> void:
 	if hour >= 0.0:
 		var args := OS.get_cmdline_user_args()
 		file_name += "_%sh" % args[args.find(HOUR_ARGUMENT) + 1]
+	if view >= 0:
+		file_name += "_v%d" % view
 	var path := SCREENSHOT_DIR.path_join(file_name + ".png")
 	if save_screenshot(path) != OK:
 		printerr("Capture impossible : %s" % path)
@@ -233,6 +248,18 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		return
 	print("Capture enregistrée : %s" % ProjectSettings.globalize_path(path))
 	get_tree().quit(0)
+
+
+# Tourne la caméra du lieu sur le quart de tour `step`, sans animation.
+func _turn_camera(step: int) -> void:
+	var zone := _pixel_view.get_zone()
+	if zone == null:
+		return
+	for child: Node in zone.get_children():
+		var rig := child as CameraRig
+		if rig != null:
+			var yaw := deg_to_rad(CameraRig.YAW_OFFSET_DEGREES + CameraRig.STEP_DEGREES * step)
+			rig.face(Vector3(sin(yaw), 0.0, cos(yaw)))
 
 
 # L'interface est dessinée en 640×360 puis agrandie du même facteur entier que le monde.

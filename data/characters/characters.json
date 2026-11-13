@@ -261,14 +261,14 @@
 			"appearance": {
 				"skin": "peau_3",
 				"hair": "blanc",
-				"hair_style": "bonnet",
+				"hair_style": "chignon",
 				"top": "violet_tag",
 				"top_style": "veste",
 				"bottom": "beton_3",
 				"shoes": "brun_1",
-				"accessory_color": "jaune_linge",
 				"detail": "creme",
-				"bottom_style": "pantalon"
+				"bottom_style": "pantalon",
+				"accessory": "lunettes"
 			}
 		},
 		{
@@ -585,6 +585,142 @@
 				"accessory": "sac",
 				"accessory_color": "rose_tag",
 				"bottom_style": "jean"
+			}
+		},
+		{
+			"id": "emissaire",
+			"name": "CHAR_EMISSAIRE",
+			"group": "reseau",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "noir",
+				"hair_style": "casquette",
+				"top": "noir",
+				"top_style": "hoodie",
+				"bottom": "beton_2",
+				"shoes": "blanc",
+				"bottom_style": "jogging",
+				"accessory": "sac",
+				"accessory_color": "rouge_sombre",
+				"detail": "rouge_sombre"
+			}
+		},
+		{
+			"id": "relais_zed",
+			"name": "CHAR_RELAIS_ZED",
+			"group": "reseau",
+			"appearance": {
+				"skin": "brun_2",
+				"hair": "beton_4",
+				"hair_style": "court",
+				"top": "brun_1",
+				"top_style": "veste",
+				"bottom": "noir",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"accessory": "lunettes",
+				"facial_hair": "moustache",
+				"detail": "orange_sombre"
+			}
+		},
+		{
+			"id": "sandra",
+			"name": "CHAR_SANDRA",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "brun_2",
+				"hair_style": "chignon",
+				"top": "bleu_nuit",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"accessory": "gilet",
+				"accessory_color": "jaune_linge"
+			}
+		},
+		{
+			"id": "jo",
+			"name": "CHAR_JO",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "blanc",
+				"hair_style": "casquette",
+				"top": "vert_sombre",
+				"top_style": "veste",
+				"bottom": "brun_2",
+				"shoes": "brun_1",
+				"bottom_style": "pantalon",
+				"facial_hair": "barbe",
+				"detail": "creme"
+			}
+		},
+		{
+			"id": "nadia",
+			"name": "CHAR_NADIA",
+			"group": "habitants",
+			"appearance": {
+				"skin": "brun_1",
+				"hair": "noir",
+				"hair_style": "tresses",
+				"top": "vert_feuille",
+				"top_style": "uniforme",
+				"bottom": "vert_sombre",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"accessory": "gilet",
+				"accessory_color": "orange_vif"
+			}
+		},
+		{
+			"id": "huguette",
+			"name": "CHAR_HUGUETTE",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "blanc",
+				"hair_style": "court",
+				"top": "violet_tag",
+				"top_style": "blouse",
+				"bottom": "beton_3",
+				"shoes": "brun_1",
+				"bottom_style": "jupe",
+				"accessory": "lunettes",
+				"detail": "creme"
+			}
+		},
+		{
+			"id": "ferreira",
+			"name": "CHAR_FERREIRA",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "beton_4",
+				"hair_style": "chauve",
+				"top": "bleu_acier",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"facial_hair": "moustache"
+			}
+		},
+		{
+			"id": "gardienne",
+			"name": "CHAR_GARDIENNE",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "brun_1",
+				"hair_style": "court",
+				"top": "bleu_ciel",
+				"top_style": "tablier",
+				"bottom": "bleu_nuit",
+				"shoes": "blanc",
+				"bottom_style": "pantalon",
+				"detail": "blanc"
 			}
 		}
 	]

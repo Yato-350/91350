@@ -4,12 +4,12 @@
 	"territory": "grigny2",
 	"plan": [
 		"#########EE#S##",
-		"#,c,#mm..a..b.#",
+		"#,c,#mmq.a..b.#",
 		"#,g,..........#",
-		"#,t,#.........#",
+		"#,t,#.1....2..#",
 		"#####.........#",
-		"#.............#",
-		"#x...........k#",
+		"Dl.....3......#",
+		"#xw.......4.jk#",
 		"#......p.....z#",
 		"#######D#######"
 	],
@@ -18,7 +18,15 @@
 		"a": "ascenseur",
 		"b": "escalier",
 		"g": "loge",
-		"k": "camera"
+		"k": "camera",
+		"q": "boites",
+		"l": "local",
+		"w": "poubelle",
+		"j": "boitier",
+		"1": "foule_1",
+		"2": "foule_2",
+		"3": "foule_3",
+		"4": "foule_4"
 	},
 	"floors": {
 		",": "brun_2"
@@ -35,6 +43,16 @@
 			"at": "escalier",
 			"to": "palier_7@escalier_bas",
 			"prompt": "PROMPT_MONTER"
+		},
+		{
+			"at": "local",
+			"to": "local_tour",
+			"prompt": "PROMPT_ENTRER",
+			"if": {
+				"quests_done": [
+					"le_contact"
+				]
+			}
 		}
 	],
 	"props": {
@@ -64,7 +82,119 @@
 			"at": "camera",
 			"yaw": 90,
 			"sweep": 40,
-			"range": 9
+			"range": 9,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		}
+	],
+	"spots": [
+		{
+			"id": "boitier",
+			"at": "boitier",
+			"prompt": "PROMPT_SABOTER",
+			"dialogue": [
+				"tour",
+				"boitier"
+			],
+			"offence": true,
+			"if": {
+				"step": "la_tour_se_leve:camera"
+			}
+		},
+		{
+			"id": "boites",
+			"at": "boites",
+			"prompt": "PROMPT_FOUILLER",
+			"dialogue": [
+				"tour",
+				"boites"
+			],
+			"if": {
+				"step": "la_tour_se_leve:indices",
+				"not_flags": [
+					"indice_carnet"
+				]
+			}
+		},
+		{
+			"id": "poubelle",
+			"at": "poubelle",
+			"prompt": "PROMPT_FOUILLER",
+			"dialogue": [
+				"tour",
+				"poubelle"
+			],
+			"if": {
+				"step": "la_tour_se_leve:indices",
+				"not_flags": [
+					"indice_lettre"
+				]
+			}
+		}
+	],
+	"npcs": [
+		{
+			"id": "gardienne",
+			"character": "gardienne",
+			"at": "loge",
+			"dialogue": "voisins_tour",
+			"cue": "gardienne",
+			"yaw": 90
+		},
+		{
+			"id": "foule_huguette",
+			"character": "huguette",
+			"at": "foule_1",
+			"dialogue": "voisins_tour",
+			"cue": "foule",
+			"yaw": 180,
+			"if": {
+				"flags": [
+					"descente"
+				]
+			}
+		},
+		{
+			"id": "foule_ferreira",
+			"character": "ferreira",
+			"at": "foule_2",
+			"dialogue": "voisins_tour",
+			"cue": "foule",
+			"yaw": 200,
+			"if": {
+				"flags": [
+					"descente"
+				]
+			}
+		},
+		{
+			"id": "foule_voisin",
+			"character": "civil_1",
+			"at": "foule_3",
+			"dialogue": "voisins_tour",
+			"cue": "foule",
+			"yaw": 160,
+			"if": {
+				"flags": [
+					"descente"
+				]
+			}
+		},
+		{
+			"id": "foule_voisine",
+			"character": "civil_6",
+			"at": "foule_4",
+			"dialogue": "voisins_tour",
+			"cue": "foule",
+			"yaw": 180,
+			"if": {
+				"flags": [
+					"descente"
+				]
+			}
 		}
 	]
 }

@@ -77,6 +77,10 @@
 					"if": {
 						"type": "object",
 						"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
+					},
+					"exact": {
+						"type": "boolean",
+						"description": "Posé au centimètre près (« x,z » en mètres), même contre un mur : une fresque."
 					}
 				}
 			}

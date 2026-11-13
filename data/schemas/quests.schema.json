@@ -139,6 +139,22 @@
 									},
 									"minItems": 2,
 									"maxItems": 2
+								},
+								"waves": {
+									"type": "array",
+									"items": {
+										"type": "integer",
+										"minimum": 1
+									},
+									"description": "DEFEND : taille de chaque vague de Vigiles, dans l'ordre."
+								},
+								"spawn": {
+									"type": "string",
+									"description": "DEFEND : repère d'arrivée des Vigiles."
+								},
+								"enemy": {
+									"type": "string",
+									"description": "DEFEND : personnage des Vigiles (data/characters/)."
 								}
 							}
 						}

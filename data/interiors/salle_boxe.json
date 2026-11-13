@@ -1,0 +1,59 @@
+{
+	"id": "salle_boxe",
+	"name": "PLACE_SALLE_BOXE",
+	"territory": "grigny2",
+	"plan": [
+		"##############",
+		"#p.p.p.....nn#",
+		"#............#",
+		"#..,,,,,,....#",
+		"#..,,,,,,..g.#",
+		"#..,,,,,,....#",
+		"#..,,,,,,..m.#",
+		"#............#",
+		"#.....d......#",
+		"######D#######"
+	],
+	"markers": {
+		"d": "default",
+		"g": "le_grand",
+		"m": "mamie_scooter"
+	},
+	"floors": {
+		",": "bleu_acier"
+	},
+	"floor_color": "brun_2",
+	"wall_color": "creme",
+	"doors": [
+		{
+			"at": "default",
+			"to": "grigny2@salle",
+			"prompt": "PROMPT_SORTIR"
+		}
+	],
+	"props": {
+		"p": {
+			"model": "sac_frappe"
+		},
+		"n": {
+			"model": "banc",
+			"yaw": 180
+		}
+	},
+	"npcs": [
+		{
+			"id": "le_grand",
+			"character": "le_grand",
+			"at": "le_grand",
+			"dialogue": "grand",
+			"yaw": 270
+		},
+		{
+			"id": "mamie_scooter",
+			"character": "mamie_scooter",
+			"at": "mamie_scooter",
+			"dialogue": "mamie_scooter",
+			"yaw": 270
+		}
+	]
+}

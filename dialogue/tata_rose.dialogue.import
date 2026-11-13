@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://ctcr3n8mlsibt"
+path="res://.godot/imported/tata_rose.dialogue-13535126ec903e15d2b35c34f9a67a55.tres"
+
+[deps]
+
+source_file="res://dialogue/tata_rose.dialogue"
+dest_files=["res://.godot/imported/tata_rose.dialogue-13535126ec903e15d2b35c34f9a67a55.tres"]
+
+[params]
+
+defaults=true

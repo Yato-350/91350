@@ -123,6 +123,7 @@ export_web() {
 screenshot() {
 	local scene="$1"
 	local hour="${2:-}"
+	local view="${3:-}"
 	local output
 	local extra=()
 	output="$(basename "$scene" .tscn)"
@@ -130,6 +131,10 @@ screenshot() {
 	if [[ -n "$hour" ]]; then
 		output="${output}_${hour}h"
 		extra=(--hour "$hour")
+	fi
+	if [[ -n "$view" ]]; then
+		output="${output}_v${view}"
+		extra+=(--view "$view")
 	fi
 	output="build/screenshots/${output}.png"
 	prepare_build_dir
@@ -149,7 +154,7 @@ case "${1:-all}" in
 	test) run_tests ;;
 	render) render ;;
 	web) export_web ;;
-	screenshot) screenshot "${2:?usage : tools/check.sh screenshot <scène> [heure]}" "${3:-}" ;;
+	screenshot) screenshot "${2:?usage : tools/check.sh screenshot <scène> [heure] [vue]}" "${3:-}" "${4:-}" ;;
 	all)
 		lint
 		check_data
@@ -159,7 +164,7 @@ case "${1:-all}" in
 		export_web
 		;;
 	*)
-		echo "usage : tools/check.sh <lint|data|import|test|render|screenshot <scène> [heure]|web|all>" >&2
+		echo "usage : tools/check.sh <lint|data|import|test|render|screenshot <scène> [heure] [vue]|web|all>" >&2
 		exit 2
 		;;
 esac

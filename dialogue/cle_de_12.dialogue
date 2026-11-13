@@ -1,0 +1,13 @@
+~ start
+if step("le_contact", "cle")
+	cle_de_12: Tata Rose m'a appelé. T'as rendu les tickets. Ton moteur tourne rond, toi.
+	cle_de_12: Tiens. Un lance-pierre. De quoi éteindre l'œil d'une caméra.
+	cle_de_12: Pas de quoi blesser un homme. Garde-le comme ça.
+	$> give("lance_pierre")
+	cle_de_12: « Le moteur ne ment jamais. L'huile dit tout, la fumée avoue le reste. »
+	cle_de_12: C'est de moi. Je l'ai écrit sous une Clio, en 2009.
+elif quest_active("le_contact")
+	cle_de_12: T'as la tête d'un carburateur encrassé. Qu'est-ce qui coince ?
+else
+	cle_de_12: Ton scooter tousse comme un Vigile qui monte au onzième. Ah, t'as pas de scooter.
+=> END

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dstb3tq2m235o"
+path="res://.godot/imported/wifi.dialogue-aa7f16c90ad15afb8d9cd11e8a86f1ef.tres"
+
+[deps]
+
+source_file="res://dialogue/wifi.dialogue"
+dest_files=["res://.godot/imported/wifi.dialogue-aa7f16c90ad15afb8d9cd11e8a86f1ef.tres"]
+
+[params]
+
+defaults=true

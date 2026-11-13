@@ -40,5 +40,20 @@
 				"porte"
 			]
 		}
+	],
+	"npcs": [
+		{
+			"id": "ferreira",
+			"character": "ferreira",
+			"at": "voisin_1",
+			"dialogue": "voisins_tour",
+			"cue": "ferreira",
+			"yaw": 0,
+			"if": {
+				"not_flags": [
+					"descente"
+				]
+			}
+		}
 	]
 }

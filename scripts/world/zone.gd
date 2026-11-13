@@ -311,7 +311,7 @@ func _add_props() -> void:
 		placements = InteriorBuilder.prop_placements(definition)
 	else:
 		for prop: Dictionary in definition.get("props", []):
-			var at := marker_position(prop["at"])
+			var at := _prop_position(prop)
 			var solid: bool = prop.get("solid", true)
 			(
 				placements
@@ -334,6 +334,16 @@ func _add_props() -> void:
 		if placement["model"] == ZoneDressing.LAMP_MODEL and condition.is_empty():
 			var basis := Basis.from_euler(Vector3(0.0, deg_to_rad(placement["yaw"]), 0.0))
 			_extra_lamps.append(placement["position"] + basis * ZoneDressing.LAMP_HEAD)
+
+
+# Un décor « exact » se pose au centimètre près (une fresque plaquée sur un mur) ; les
+# autres, sur la case libre la plus proche de leur repère.
+func _prop_position(prop: Dictionary) -> Vector3:
+	var at: String = prop["at"]
+	var coordinates := at.split(",")
+	if prop.get("exact", false) and coordinates.size() == 2:
+		return Vector3(coordinates[0].to_float(), 0.0, coordinates[1].to_float())
+	return marker_position(at)
 
 
 func _make_prop(placement: Dictionary) -> Prop:

@@ -1,0 +1,22 @@
+~ start
+if step("le_contact", "colis") and has("colis_zed")
+	tata_rose: Akan, mon grand ! Fais voir ce paquet...
+	tata_rose: Ce papier. Cette ficelle. Ce sont nos tickets ! Cent vingt tickets, volés la semaine dernière.
+	tata_rose: Cent vingt. Ça fait quarante familles qui ont mangé moins.
+	- Ils sont à vous. Je vous les rends. [#ton=calme]
+		$> take("colis_zed")
+		$> rep("familles", 15)
+		$> rep("reseau", -10)
+		tata_rose: Un, deux, trois... cent vingt. Tout y est. Ta mère t'a bien élevé.
+		tata_rose: Zed va pas aimer. Va voir Clé-de-12, au garage du parking. Il me doit tout.
+		$> objective("DELIVER", "tata_rose")
+	- Je peux pas. C'est un contrat. [#ton=cash]
+		tata_rose: Un contrat. Avec qui, mon grand ? Avec ceux qui nous volent ?
+		tata_rose: Va. Moi je compte les familles, pas les fautes.
+elif quest_active("le_contact")
+	tata_rose: On nous a volé des tickets au panier, tu sais. Cent vingt. Si tu vois passer un paquet ficelé...
+elif quest_done("la_tour_se_leve")
+	tata_rose: Douze conserves, neuf familles... et plus un Vigile pour compter avec nous. Ça change tout.
+else
+	tata_rose: Douze conserves, neuf familles. Il manque trois miracles, tu t'en occupes ?
+=> END

@@ -22,6 +22,16 @@ elif quest_active("la_file")
 	daronne: L'eau, Akan. Le point de ration, c'est sur l'esplanade.
 elif quest_active("le_vieux_du_7e")
 	daronne: Lucien, au 7e. Et tu frappes poliment.
+elif step("la_tour_se_leve", "voisins") and not flag("mobilise_daronne")
+	daronne: Les Vigiles. Dans ma tour. Dans mon hall.
+	daronne: Maya reste ici, porte fermée. Moi, je garde le onzième. Personne ne monte.
+	akan: Maman...
+	daronne: Toi, tu tiens le hall. Je répète pas.
+	$> set_flag("mobilise_daronne")
+	$> objective("TALK", "voisins")
+elif quest_done("la_tour_se_leve")
+	daronne: Tout le monde en parle, en bas. Mon fils.
+	daronne: Mange. Tu es tout maigre, pour un héros.
 else
 	daronne: Mange. Je répète pas.
 => END

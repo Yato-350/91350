@@ -1,0 +1,24 @@
+# Tag d'Akan, colère : l'œil de la caméra crevé d'une croix rouge.
+palette:
+  n: noir
+  w: blanc
+  r: rouge_propagande
+  R: rouge_sombre
+  e: bleu_ecran
+scale: 2
+offset: 0 3 0
+panel:
+  ....nnn...........nnnn..
+  ...nrrrn..nnnn...nrrrrn.
+  ...nrrrrnnwwwwnnnrrrrrn.
+  ....nrrrrrwwwwwrrrrrnn..
+  ...nwwrrrrrnnnrrrrrwn...
+  ..nwwwwwrrrrrrrrrwwwwn..
+  ..nwwwwwwrrrrrrrwwwwwn..
+  ..nwwwwwwrrrrrrrwwwwwn..
+  ..nwwwwwrrrrrrrrrwwwwn..
+  ...nwwrrrrrnnnrrrrrwn...
+  ....nrrrrrwwwwwrrrrrn...
+  ...nrrrrnnwwwwnnnrrrrn..
+  ...nrrRn..nRnn..nRrrrrn.
+  ...nrrRn...n....nRnnrrn.

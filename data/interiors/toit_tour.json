@@ -1,0 +1,71 @@
+{
+	"id": "toit_tour",
+	"name": "PLACE_TOIT_TOUR",
+	"territory": "grigny2",
+	"open_air": true,
+	"plan": [
+		"####################",
+		"#..................#",
+		"#.cc.....a.....vv..#",
+		"#.cc...........vv..#",
+		"#..................#",
+		"#..SSS........r.h..#",
+		"#..SdS.......y..i..#",
+		"#..S.S.........h...#",
+		"#..................#",
+		"####################"
+	],
+	"markers": {
+		"d": "default",
+		"y": "yanis",
+		"i": "ines"
+	},
+	"floor_color": "beton_3",
+	"wall_color": "beton_2",
+	"doors": [
+		{
+			"at": "default",
+			"to": "palier_11@toit",
+			"prompt": "PROMPT_DESCENDRE"
+		}
+	],
+	"props": {
+		"c": {
+			"model": "caisse"
+		},
+		"v": {
+			"model": "caisse",
+			"yaw": 90
+		},
+		"a": {
+			"model": "antenne"
+		},
+		"r": {
+			"model": "radio",
+			"solid": false,
+			"yaw": 180
+		},
+		"h": {
+			"model": "chaise",
+			"solid": false,
+			"yaw": 180
+		}
+	},
+	"npcs": [
+		{
+			"id": "ines",
+			"character": "ines",
+			"at": "ines",
+			"dialogue": "jumeaux",
+			"yaw": 200
+		},
+		{
+			"id": "yanis",
+			"character": "yanis",
+			"at": "yanis",
+			"dialogue": "jumeaux",
+			"cue": "yanis",
+			"yaw": 160
+		}
+	]
+}

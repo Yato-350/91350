@@ -192,3 +192,26 @@ def test_icon_of_a_scaled_model_keeps_its_proportions():
 def test_scale_must_be_a_positive_integer():
     with pytest.raises(ValueError):
         parse_model("palette:\n  r: noir\nscale: 0\nbox: r 0 0 0 1 1 1\n", PALETTE)
+
+
+PANEL = """
+palette:
+  r: rouge_propagande
+  n: noir
+panel:
+  r.r
+  nnn
+"""
+
+
+def test_a_panel_draws_a_vertical_picture_from_the_top_row_down():
+    part = parse_model(PANEL, PALETTE).parts["main"]
+    assert part.voxels[(0, 1, 0)] == PALETTE["rouge_propagande"]
+    assert (1, 1, 0) not in part.voxels
+    assert part.voxels[(1, 0, 0)] == PALETTE["noir"]
+    assert (part.width, part.height, part.depth) == (3, 2, 1)
+
+
+def test_a_panel_with_an_unknown_letter_is_an_error():
+    with pytest.raises(ValueError):
+        parse_model("palette:\n  r: noir\npanel:\n  rx\n", PALETTE)

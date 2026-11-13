@@ -1,0 +1,36 @@
+~ boitier
+akan: Le boîtier de la caméra. Des câbles partout. Un rouge, un bleu... et un gros noir.
+- Couper le gros câble noir.
+	$> set_flag("camera_off:hall")
+	$> objective("SABOTAGE", "camera_hall")
+	akan: Clac. Le petit voyant s'éteint. Bonne nuit, l'œil.
+- Pas maintenant.
+	akan: Plus tard. Quand personne regarde.
+=> END
+
+~ boites
+akan: La boîte aux lettres de Bernard. Elle ferme plus depuis des années.
+akan: Un carnet. Des dates, des heures... « 11e, Akan, sorti à 22 h 10. »
+akan: Il note tout. Tout le monde.
+$> give("carnet_bernard")
+$> set_flag("indice_carnet")
+$> objective("COLLECT", "indice")
+=> END
+
+~ poubelle
+akan: La poubelle du hall. Ça sent le... ça sent tout.
+akan: Une lettre froissée, au tampon de la Concorde.
+akan: « Votre fille bénéficie d'un logement encadré. Votre coopération garantit sa tranquillité. »
+akan: Ils le tiennent par sa fille.
+$> give("lettre_menaces")
+$> set_flag("indice_lettre")
+$> objective("COLLECT", "indice")
+=> END
+
+~ rebord
+akan: Un vieux téléphone, coincé derrière le rebord de la fenêtre du palier.
+akan: Un seul contact : « Concorde — Signalements ». Quarante messages envoyés.
+$> give("telephone_bernard")
+$> set_flag("indice_telephone")
+$> objective("COLLECT", "indice")
+=> END

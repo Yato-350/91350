@@ -3,6 +3,27 @@ if step("le_vieux_du_7e", "bernard")
 	bernard: Pardon, Akan. Lucien ? Je ne sais rien, moi. Pardon.
 	akan: Tu connais tout le palier, Bernard. Tout le monde le sait.
 	bernard: Pardon... Demande à Tonton. Il voit tout, en bas. Pardon.
+elif step("la_tour_se_leve", "bernard")
+	bernard: Pardon, Akan. Tu as une drôle de tête. Pardon.
+	akan: Ton carnet. Ton téléphone. Et la lettre de la Concorde.
+	bernard: Pardon... C'est pour ma fille. Ils ont dit qu'elle perdrait son logement. Pardon.
+	- Je vais dire la vérité. À toute la tour. [#ton=calme]
+		bernard: Pardon. Je comprends. Je partirai ce soir. Pardon.
+		$> set_flag("bernard_denonce")
+		$> support(5)
+		akan: Le palier saura. Toute la tour saura.
+	- Tu vas continuer à leur écrire. Mais c'est nous qui dictons. [#ton=malin] [if has("lettre_menaces") /]
+		bernard: Pardon... Tu veux dire... leur mentir ?
+		akan: Tu leur écris que tout est calme. Toujours. Et ta fille ne risque rien.
+		bernard: Pardon. Merci. Pardon.
+		$> set_flag("bernard_double")
+	- Disparais. Si je te revois sur ce palier... [#ton=cash]
+		bernard: Pardon ! Je m'en vais. Pardon !
+		$> set_flag("bernard_parti")
+		$> vigilance(2)
+		akan: Il va courir les prévenir. Tant pis.
+elif flag("bernard_double")
+	bernard: Pardon. Je leur ai écrit que tout était calme. Comme d'habitude. Pardon.
 else
 	bernard: Pardon, je n'ai pas le temps. Vraiment. Pardon.
 => END

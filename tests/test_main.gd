@@ -40,6 +40,13 @@ func test_parse_hour() -> void:
 	assert_eq(Main.parse_hour(PackedStringArray([])), -1.0)
 
 
+func test_parse_view() -> void:
+	assert_eq(Main.parse_view(PackedStringArray(["--view", "3"])), 3)
+	assert_eq(Main.parse_view(PackedStringArray(["--view", "5"])), 1, "un tour complet en plus")
+	assert_eq(Main.parse_view(PackedStringArray(["--view", "gauche"])), -1)
+	assert_eq(Main.parse_view(PackedStringArray([])), -1)
+
+
 func test_main_loads_the_default_zone() -> void:
 	var main := await _make_main()
 	var view: PixelView = main.get_node("PixelView")

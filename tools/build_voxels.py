@@ -17,6 +17,9 @@ Source : assets_src/voxel/<nom>.txt. Un voxel mesure 1/16 m. Format :
       rrrr                       (première ligne = avant du modèle, côté -Z)
     box: r 0 0 0 4 1 2           (un bloc plein : lettre, x y z du coin, puis largeur,
                                   hauteur et profondeur ; il recouvre ce qui était là)
+    panel:                       (une image verticale, épaisse d'un voxel, à l'avant :
+      r..r                        la première ligne est le haut ; pour une fresque,
+      rrrr                        une affiche, un écran)
     scale: 4                     (facultatif, avant pivot et offset : la partie est faite
                                   de voxels 4 fois plus grands, pour les grands objets)
 
@@ -92,9 +95,26 @@ def parse_model(text: str, palette: dict[str, tuple[int, int, int]]) -> Model:
             part = model.parts.setdefault("main", Part("main"))
         return part
 
+    def flush_panel() -> None:
+        target = current_part()
+        for index, row in enumerate(rows):
+            for x, letter in enumerate(row):
+                if letter in ". ":
+                    continue
+                if letter not in letters:
+                    raise ValueError(f"lettre « {letter} » absente de la palette du modèle")
+                target.voxels[(x, len(rows) - 1 - index, 0)] = letters[letter]
+        target.width = max(target.width, max(len(row) for row in rows))
+        target.height = max(target.height, len(rows))
+        target.depth = max(target.depth, 1)
+
     def flush_layer() -> None:
         nonlocal rows
         if not rows:
+            return
+        if section == "panel":
+            flush_panel()
+            rows = []
             return
         target = current_part()
         for _ in range(repeat):
@@ -138,6 +158,8 @@ def parse_model(text: str, palette: dict[str, tuple[int, int, int]]) -> Model:
             elif keyword.startswith("layer"):
                 section = "layer"
                 repeat = int(keyword.split("x")[1]) if "x" in keyword else 1
+            elif keyword == "panel":
+                section = "panel"
             else:
                 raise ValueError(f"ligne non comprise : {stripped}")
         elif section == "palette":
@@ -146,7 +168,7 @@ def parse_model(text: str, palette: dict[str, tuple[int, int, int]]) -> Model:
             if color_id not in palette:
                 raise ValueError(f"couleur inconnue dans la palette du jeu : {color_id}")
             letters[letter.strip()] = palette[color_id]
-        elif section == "layer":
+        elif section in ("layer", "panel"):
             rows.append(stripped)
     flush_layer()
     return model
