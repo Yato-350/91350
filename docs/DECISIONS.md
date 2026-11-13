@@ -31,6 +31,21 @@ Choix datés et justifiés. Une décision réversible se prend, se note ici, et 
 | 25 | 2026-11-12 | `SaveManager` **refuse** un `save_id` vide ou en double | Sans cela, deux nœuds s'écrasent en silence dans la sauvegarde (revue de M0) | Oui |
 | 26 | 2026-11-12 | Le shader de contours **ne trace rien sur le cadre** de l'image | Le voisin manquant faussait le laplacien : un trait clignotait en haut et en bas de l'écran (revue de M0) | Oui |
 | 27 | 2026-11-12 | `physics_jitter_fix = 0` | Recommandé quand l'interpolation physique est active | Oui |
+| 28 | 2026-11-12 | Import OSM par l'**API principale** (`/api/0.6/map`), extrait mis en cache hors dépôt | Overpass est injoignable depuis l'environnement cloud ; un petit extrait par zone suffit | Oui |
+| 29 | 2026-11-12 | Zones **cuites** par `tools/bake_zones.gd` : maillages fusionnés par carrés de 64 m, collisions, grille de navigation d'un mètre | Chargement rapide ; pas de navmesh à maintenir | Oui |
+| 30 | 2026-11-12 | **Monde plat** en M1 | Le relief (plateau, coteau) n'apporte rien à la tranche verticale | Oui |
+| 31 | 2026-11-12 | **Vue à travers les bâtiments** : disque tramé autour d'Akan dans le shader des façades (uniformes globaux) | Les tours cachent le joueur en vue isométrique ; pas de transparence alpha | Oui |
+| 32 | 2026-11-12 | Caméra reculée à **150 m**, plan lointain à 400 m | Une tour proche ne passe jamais derrière une caméra orthographique aussi loin | Oui |
+| 33 | 2026-11-12 | Voxels : faces fusionnées (*greedy meshing*), couleurs sRGB par sommet, matériau `vertex_color_is_srgb` | Dix fois moins de triangles ; un seul matériau pour tous les modèles | Oui |
+| 34 | 2026-11-12 | Personnages **générés** depuis une fiche d'apparence (six parties rigides) | 35 personnages sans dessiner un seul modèle à la main | Oui |
+| 35 | 2026-11-13 | Systèmes de jeu en **logique pure** (`RefCounted`), portés par l'autoload `GameState`, relayés sur l'`EventBus` | Testables sans nœud ; l'interface ne connaît que le bus | Oui |
+| 36 | 2026-11-13 | `GameState` est le **seul** nœud sauvegardé d'une partie ; le joueur ne l'est plus à part | Charger une partie = relire l'état puis recharger le lieu | Oui |
+| 37 | 2026-11-13 | Table des commandes **générée** depuis `assets_src/input_map.json` | La section `[input]` de `project.godot` est illisible à la main | Oui |
+| 38 | 2026-11-13 | Interagir : **F** / A (manette) ; la caméra garde A / E | E est pris par la rotation de la caméra depuis M0 | Oui |
+| 39 | 2026-11-13 | Intérieurs en **plans de texte**, construits au chargement : murs fins et bas, vue rapprochée ×2 | Un appartement se lit d'un coup d'œil ; un plan se corrige dans un éditeur de texte | Oui |
+| 40 | 2026-11-13 | Objectif de quête **`USE`** ajouté à la liste du brief ; **`COLLECT`** = avoir l'objet dans le sac | Le tutoriel fait manger et boire ; un objet ramassé trop tôt ne bloque pas la quête | Oui |
+| 41 | 2026-11-13 | Un objet qui ne tient pas dans le sac **tombe au sol** ; rien n'est jamais perdu | Un sac plein ne doit pas bloquer une quête | Oui |
+| 42 | 2026-11-13 | Éclairage : l'**ambiance et le soleil s'additionnent en sRGB** ; énergies réglées pour qu'un sol reçoive juste sa couleur | En Compatibility, une lumière à ombres est dessinée dans une passe ajoutée après la conversion sRGB (mesuré) ; dehors, à reprendre avec le cycle jour/nuit | Oui |
 
 ## À surveiller
 

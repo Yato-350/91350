@@ -15,12 +15,15 @@ Source : assets_src/voxel/<nom>.txt. Un voxel mesure 1/16 m. Format :
     layer x3:                    (une couche horizontale, répétée 3 fois vers le haut)
       .rr.
       rrrr                       (première ligne = avant du modèle, côté -Z)
+    box: r 0 0 0 4 1 2           (un bloc plein : lettre, x y z du coin, puis largeur,
+                                  hauteur et profondeur ; il recouvre ce qui était là)
 
 Les couches s'empilent du bas vers le haut. « . » ou espace = vide.
 """
 from __future__ import annotations
 
 import json
+import math
 import struct
 import sys
 from dataclasses import dataclass, field
@@ -122,6 +125,8 @@ def parse_model(text: str, palette: dict[str, tuple[int, int, int]]) -> Model:
                 current_part().pivot = tuple(float(v) * VOXEL for v in value.split())
             elif keyword == "offset":
                 current_part().offset = tuple(float(v) for v in value.split())
+            elif keyword == "box":
+                _fill_box(current_part(), value, letters)
             elif keyword.startswith("layer"):
                 section = "layer"
                 repeat = int(keyword.split("x")[1]) if "x" in keyword else 1
@@ -137,6 +142,25 @@ def parse_model(text: str, palette: dict[str, tuple[int, int, int]]) -> Model:
             rows.append(stripped)
     flush_layer()
     return model
+
+
+def _fill_box(part: Part, value: str, letters: dict[str, tuple[int, int, int]]) -> None:
+    """Remplit un bloc de voxels : « lettre x y z largeur hauteur profondeur »."""
+    letter, *numbers = value.split()
+    if letter not in letters:
+        raise ValueError(f"lettre « {letter} » absente de la palette du modèle")
+    if len(numbers) != 6 or not all(number.isdigit() for number in numbers):
+        raise ValueError(f"bloc mal formé : {value}")
+    x0, y0, z0, width, height, depth = (int(number) for number in numbers)
+    if min(width, height, depth) < 1:
+        raise ValueError(f"bloc vide : {value}")
+    for x in range(x0, x0 + width):
+        for y in range(y0, y0 + height):
+            for z in range(z0, z0 + depth):
+                part.voxels[(x, y, z)] = letters[letter]
+    part.width = max(part.width, x0 + width)
+    part.height = max(part.height, y0 + height)
+    part.depth = max(part.depth, z0 + depth)
 
 
 def _corner(part: Part, x: int, y: int, z: int) -> tuple[float, float, float]:
@@ -267,7 +291,9 @@ def build_icon(model: Model) -> Image.Image:
     for part in model.parts.values():
         ox, oy, oz = part.offset
         for (x, y, z), color in part.voxels.items():
-            column = (round(x + ox - part.width / 2 + 64), round(y + oy))
+            # Partie entière, et non arrondi : un modèle de largeur impaire tombe à
+            # cheval sur deux colonnes, et l'arrondi « au pair » y laisserait des trous.
+            column = (math.floor(x + ox - part.width / 2), math.floor(y + oy))
             depth = z + oz - part.depth / 2
             if column not in front or depth < front[column][0]:
                 front[column] = (depth, color)

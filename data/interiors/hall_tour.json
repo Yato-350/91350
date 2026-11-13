@@ -4,13 +4,13 @@
 	"territory": "grigny2",
 	"plan": [
 		"#########EE#S##",
-		"#,,,#....a..b.#",
+		"#,c,#mm..a..b.#",
 		"#,g,..........#",
-		"#,,,#.........#",
+		"#,t,#.........#",
 		"#####.........#",
 		"#.............#",
-		"#.............#",
-		"#......p......#",
+		"#x............#",
+		"#......p.....z#",
 		"#######D#######"
 	],
 	"markers": {
@@ -20,8 +20,7 @@
 		"g": "loge"
 	},
 	"floors": {
-		",": "brun_2",
-		"g": "brun_2"
+		",": "brun_2"
 	},
 	"floor_color": "beton_4",
 	"wall_color": "beton_5",
@@ -36,5 +35,26 @@
 			"to": "palier_11@escalier",
 			"prompt": "PROMPT_ESCALIER"
 		}
-	]
+	],
+	"props": {
+		"m": {
+			"model": "boites_lettres",
+			"yaw": 180
+		},
+		"c": {
+			"model": "chaise",
+			"solid": false,
+			"yaw": 180
+		},
+		"t": {
+			"model": "radio",
+			"solid": false
+		},
+		"x": {
+			"model": "poubelle"
+		},
+		"z": {
+			"model": "caisse"
+		}
+	}
 }

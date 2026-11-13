@@ -1,0 +1,13 @@
+# Scooter.
+palette:
+  n: noir
+  1: beton_1
+  j: jaune_linge
+  t: turquoise
+box: n 3 0 2 2 5 5
+box: n 3 0 19 2 5 5
+box: t 2 4 6 4 5 14
+box: n 2 9 12 4 2 8
+box: t 3 5 2 2 9 3
+box: 1 0 13 3 8 1 1
+box: j 3 11 1 2 2 1

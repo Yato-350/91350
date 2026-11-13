@@ -4,20 +4,21 @@
 	"territory": "grigny2",
 	"plan": [
 		"#############",
-		"#l..#m..#,,,#",
-		"#...#...#,,,#",
-		"#...#...#,,,#",
+		"#b.w#B.w#fkc#",
+		"#b.l#B..#,,,#",
+		"#...#..m#,,i#",
 		"##.###.###.##",
-		"#...........#",
-		"#a.........pD",
-		"#...........#",
+		"#s........v.#",
+		"#s..tt.....pD",
+		"#a..hh......#",
 		"#############"
 	],
 	"markers": {
 		"l": "default",
 		"m": "chambre",
 		"a": "sejour",
-		"p": "porte"
+		"p": "porte",
+		"i": "cuisine"
 	},
 	"floors": {
 		",": "beton_5"
@@ -27,6 +28,52 @@
 			"at": "porte",
 			"to": "palier_11",
 			"prompt": "PROMPT_SORTIR"
+		}
+	],
+	"props": {
+		"b": {
+			"model": "lit"
+		},
+		"B": {
+			"model": "lit_double"
+		},
+		"w": {
+			"model": "armoire",
+			"yaw": 180
+		},
+		"f": {
+			"model": "frigo",
+			"yaw": 180
+		},
+		"k": {
+			"model": "plan_travail",
+			"yaw": 180
+		},
+		"c": {
+			"model": "cuisiniere",
+			"yaw": 180
+		},
+		"s": {
+			"model": "canape",
+			"yaw": -90
+		},
+		"v": {
+			"model": "tele",
+			"yaw": 90
+		},
+		"t": {
+			"model": "table"
+		},
+		"h": {
+			"model": "chaise",
+			"solid": false
+		}
+	},
+	"pickups": [
+		{
+			"id": "bidon",
+			"item": "bidon_vide",
+			"at": "cuisine"
 		}
 	]
 }

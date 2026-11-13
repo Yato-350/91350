@@ -1,0 +1,10 @@
+# Lit d'une personne, tête vers l'avant.
+palette:
+  w: blanc
+  e: bleu_ecran
+  b: brun_1
+  c: creme
+box: b 0 0 0 16 4 30
+box: w 0 4 0 16 2 30
+box: c 2 6 1 12 2 5
+box: e 0 6 8 16 1 22

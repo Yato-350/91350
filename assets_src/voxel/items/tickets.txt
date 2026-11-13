@@ -1,0 +1,8 @@
+# Tickets de rationnement.
+palette:
+  n: noir
+  r: rouge_propagande
+  c: creme
+box: c 0 0 0 6 4 1
+box: r 1 2 0 4 1 1
+box: n 1 1 0 2 1 1

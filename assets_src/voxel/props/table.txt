@@ -1,0 +1,9 @@
+# Table.
+palette:
+  b: brun_1
+  B: brun_2
+box: B 0 10 0 20 2 12
+box: b 0 0 0 2 10 2
+box: b 18 0 0 2 10 2
+box: b 0 0 10 2 10 2
+box: b 18 0 10 2 10 2

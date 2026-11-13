@@ -1,0 +1,8 @@
+# Haut-parleur.
+palette:
+  n: noir
+  1: beton_1
+  4: beton_4
+box: 1 2 0 2 2 40 2
+box: 4 0 40 0 6 5 6
+box: n 1 41 0 4 3 1

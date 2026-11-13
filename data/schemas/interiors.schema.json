@@ -36,7 +36,8 @@
 			"type": "object",
 			"description": "Caractère du plan → nom du repère. Il en faut un nommé « default ».",
 			"propertyNames": {
-				"pattern": "^[a-z0-9]$"
+				"minLength": 1,
+				"maxLength": 1
 			},
 			"additionalProperties": {
 				"type": "string",
@@ -83,6 +84,65 @@
 					"prompt": {
 						"type": "string",
 						"pattern": "^[A-Z][A-Z0-9_]*$"
+					}
+				}
+			}
+		},
+		"props": {
+			"type": "object",
+			"description": "Caractère du plan → meuble. Des cases voisines de même caractère forment un seul meuble.",
+			"propertyNames": {
+				"minLength": 1,
+				"maxLength": 1
+			},
+			"additionalProperties": {
+				"type": "object",
+				"required": [
+					"model"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"model": {
+						"type": "string",
+						"description": "Modèle de assets_src/voxel/props/."
+					},
+					"yaw": {
+						"type": "number",
+						"description": "Rotation en degrés ; à 0, l'avant du modèle regarde le nord (haut du plan)."
+					},
+					"solid": {
+						"type": "boolean",
+						"description": "Faux : on passe à travers (chaise, tapis)."
+					}
+				}
+			}
+		},
+		"pickups": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"item",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$",
+						"description": "Unique dans le lieu : un objet pris ne revient pas."
+					},
+					"item": {
+						"type": "string"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère où l'objet est posé."
+					},
+					"count": {
+						"type": "integer",
+						"minimum": 1
 					}
 				}
 			}

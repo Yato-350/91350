@@ -1,0 +1,8 @@
+# Piles.
+palette:
+  n: noir
+  f: orange_vif
+box: f 0 0 0 2 4 2
+box: n 0 3 0 2 1 2
+box: f 3 0 0 2 4 2
+box: n 3 3 0 2 1 2

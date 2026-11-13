@@ -34,3 +34,5 @@ signal player_downed
 signal interaction_focus_changed(prompt: String)
 ## Demande de changement de lieu : « grigny2@gare », « appartement_akan ».
 signal travel_requested(target: String)
+## Un court message à montrer au joueur (clé de traduction).
+signal notified(text_key: String)

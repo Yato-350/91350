@@ -1,0 +1,8 @@
+# Banc.
+palette:
+  1: beton_1
+  B: brun_2
+box: B 0 6 0 24 1 7
+box: 1 1 0 1 2 6 5
+box: 1 21 0 1 2 6 5
+box: B 0 7 6 24 5 1

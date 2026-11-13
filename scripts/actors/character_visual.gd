@@ -3,8 +3,7 @@ extends Node3D
 ## Modèle voxel d'un personnage, animé par parties rigides (tête, torse, bras, jambes).
 ## Le modèle vient de tools/build_voxels.py, à partir de la fiche d'apparence du personnage.
 
-const MODEL_PATH := "res://assets/voxel/characters/%s.glb"
-const MATERIAL := preload("res://assets/materials/vertex_color.tres")
+const MODEL_FOLDER := "characters/"
 const STRIDES_PER_METER := 1.6
 const SWING_RADIANS := 0.7
 const TURN_SPEED := 12.0
@@ -97,15 +96,10 @@ func _load_model() -> void:
 	_rest_heights.clear()
 	if character_id.is_empty():
 		return
-	var path := MODEL_PATH % character_id
-	if not ResourceLoader.exists(path):
-		push_error("Modèle de personnage introuvable : %s" % character_id)
+	_model = VoxelModel.instantiate(MODEL_FOLDER + character_id)
+	if _model == null:
 		return
-	var scene: PackedScene = load(path)
-	_model = scene.instantiate()
 	add_child(_model)
-	for node: Node in _model.find_children("*", "MeshInstance3D", true, false):
-		var part := node as MeshInstance3D
-		part.material_override = MATERIAL
+	for part: MeshInstance3D in VoxelModel.parts(_model):
 		_parts[String(part.name)] = part
 		_rest_heights[String(part.name)] = part.position.y

@@ -4,6 +4,8 @@ import struct
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "tools"))
 
@@ -117,3 +119,40 @@ def test_icon_is_32_pixels_with_palette_colours_only():
     opaque = {pixel[:3] for pixel in pixels if pixel[3] == 255}
     assert opaque and opaque <= set(PALETTE.values())
     assert any(pixel[3] == 0 for pixel in pixels)
+
+
+BOXES = """
+palette:
+  r: rouge_propagande
+  n: noir
+box: r 0 0 0 4 1 2     # un plateau
+box: n 1 1 0 2 3 1     # un pied posé dessus
+box: n 0 0 0 1 1 1     # un bloc recouvre ce qui était déjà là
+"""
+
+
+def test_boxes_fill_blocks_of_voxels():
+    part = parse_model(BOXES, PALETTE).parts["main"]
+    assert len(part.voxels) == 4 * 1 * 2 + 2 * 3 * 1
+    assert (part.width, part.height, part.depth) == (4, 4, 2)
+    assert part.voxels[(3, 0, 1)] == PALETTE["rouge_propagande"]
+    assert part.voxels[(2, 3, 0)] == PALETTE["noir"]
+    assert part.voxels[(0, 0, 0)] == PALETTE["noir"]
+
+
+@pytest.mark.parametrize("line", ["box: x 0 0 0 1 1 1", "box: r 0 0 0 1 1", "box: r 0 0 0 1 0 1"])
+def test_a_malformed_box_is_an_error(line):
+    with pytest.raises(ValueError):
+        parse_model("palette:\n  r: noir\n" + line + "\n", PALETTE)
+
+
+def test_icon_of_an_odd_width_model_has_no_gap():
+    model = parse_model("palette:\n  r: rouge_propagande\nbox: r 0 0 0 5 3 1\n", PALETTE)
+    icon = build_icon(model)
+    red = [(x, y) for x in range(32) for y in range(32)
+           if icon.getpixel((x, y))[:3] == PALETTE["rouge_propagande"]]
+    xs = sorted({x for x, _ in red})
+    ys = sorted({y for _, y in red})
+    assert xs == list(range(xs[0], xs[-1] + 1))
+    assert len(red) == len(xs) * len(ys), "un rectangle plein"
+    assert len(xs) * 3 == len(ys) * 5, "aux proportions du modèle"

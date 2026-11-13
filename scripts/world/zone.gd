@@ -64,6 +64,9 @@ func _ready() -> void:
 		sky.use_interior_light(Palette.load_colors()[INTERIOR_BACKGROUND])
 	for door: Dictionary in definition.get("doors", []):
 		_add_door(door)
+	_add_props()
+	_add_pickups()
+	EventBus.item_dropped.connect(_on_item_dropped)
 	player = PLAYER_SCENE.instantiate()
 	player.position = spawn_position(arrival)
 	add_child(player)
@@ -134,6 +137,51 @@ func _read_markers() -> void:
 	for marker: String in points:
 		var point: Array = points[marker]
 		markers[marker] = Vector3(point[0], 0.0, point[1])
+
+
+# Le mobilier d'un intérieur est dessiné dans son plan ; celui d'une zone extérieure est
+# une liste, chaque élément posé sur un repère.
+func _add_props() -> void:
+	var placements: Array[Dictionary] = []
+	if is_interior:
+		placements = InteriorBuilder.prop_placements(definition)
+	else:
+		for prop: Dictionary in definition.get("props", []):
+			var at := marker_position(prop["at"])
+			var solid: bool = prop.get("solid", true)
+			placements.append(
+				{
+					"model": prop["model"],
+					"yaw": prop.get("yaw", 0.0),
+					"solid": solid,
+					"position": at
+				}
+			)
+			if solid:
+				geometry.nav_data.set_solid(geometry.nav_data.cell_of(at))
+	for placement: Dictionary in placements:
+		var prop := Prop.create(placement["model"], placement["solid"])
+		prop.position = placement["position"]
+		prop.rotation_degrees.y = placement["yaw"]
+		add_child(prop)
+
+
+func _add_pickups() -> void:
+	for pickup: Dictionary in definition.get("pickups", []):
+		var id := "%s:%s" % [zone_id, pickup["id"]]
+		if GameState.has_flag(Pickup.TAKEN_FLAG % id):
+			continue
+		var node := Pickup.create(pickup["item"], int(pickup.get("count", 1)), id)
+		node.position = marker_position(pickup["at"])
+		add_child(node)
+
+
+# Ce qui ne tient pas dans le sac tombe aux pieds d'Akan.
+func _on_item_dropped(item_id: String, amount: int) -> void:
+	var node := Pickup.create(item_id, amount)
+	var at := player.global_position
+	node.position = Vector3(at.x, 0.0, at.z)
+	add_child(node)
 
 
 func _add_door(door: Dictionary) -> void:

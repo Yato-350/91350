@@ -1,0 +1,6 @@
+# Paquet de chips.
+palette:
+  O: orange_sombre
+  j: jaune_linge
+box: j 0 0 0 5 7 2
+box: O 1 2 0 3 3 2

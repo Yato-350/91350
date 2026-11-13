@@ -1,8 +1,10 @@
 class_name InteriorBuilder
 ## Construit un intérieur à partir d'un plan en texte (data/interiors/*.json), une case
 ## par mètre : « # » mur, une majuscule un pan de mur particulier (« D » porte, « E »
-## ascenseur, « S » escalier), « espace » le vide, tout le reste du sol. Une minuscule
-## ou un chiffre pose en plus un repère (lit, porte, point d'arrivée).
+## ascenseur, « S » escalier), « espace » le vide, « . » du sol. Les autres caractères
+## sont déclarés par l'intérieur : « floors » (un autre sol), « markers » (un repère :
+## lit, porte, point d'arrivée) ou « props » (un meuble ; des cases voisines de même
+## caractère forment un seul meuble, posé en leur milieu).
 ##
 ## Les murs sont fins, au milieu de leur case, et dessinés bas (coupés à hauteur de
 ## hanche) pour voir dans les pièces ; leur collision monte plus haut.
@@ -15,7 +17,9 @@ const WALL_HEIGHT := 0.9
 const WALL_THICKNESS := 0.25
 const COLLISION_HEIGHT := 3.0
 const FLOOR_THICKNESS := 1.0
+const FLOOR := "."
 const DEFAULT_MARKER := "default"
+const PROP_MODEL_PATH := "props/%s"
 const FLOOR_COLOR := "brun_2"
 const WALL_COLOR := "creme"
 ## Le dessus des murs, là où passe la coupe.
@@ -39,6 +43,7 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 	geometry.zone_size = Vector2(size) * CELL
 	geometry.nav_data = ZoneNavData.create(geometry.zone_size, CELL)
 	var names: Dictionary = definition.get("markers", {})
+	var props: Dictionary = definition.get("props", {})
 	var floor_colors: Dictionary = definition.get("floors", {})
 	var floor_color: String = definition.get("floor_color", FLOOR_COLOR)
 	var wall_color: String = definition.get("wall_color", WALL_COLOR)
@@ -50,7 +55,7 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 		for x: int in size.x:
 			var cell := Vector2i(x, y)
 			var kind := _kind(rows, cell)
-			var center := geometry.nav_data.center_of(cell)
+			var center := _center_of(rows, cell)
 			if kind == VOID:
 				geometry.nav_data.set_solid(cell)
 			elif _is_wall(kind):
@@ -70,14 +75,59 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 				)
 			else:
 				var half := Vector2.ONE * CELL / 2.0
-				var color: Color = palette[floor_colors.get(kind, floor_color)]
+				var color: Color = palette[_floor_color_of(rows, cell, floor_colors, floor_color)]
 				_add_floor(floor_surface, center, -half, half, color)
-				if _is_marker(kind):
-					geometry.markers[names.get(kind, kind)] = center
+				if names.has(kind):
+					geometry.markers[names[kind]] = center
+				var prop: Dictionary = props.get(kind, {})
+				if not prop.is_empty() and prop.get("solid", true):
+					geometry.nav_data.set_solid(cell)
 	MeshKit.commit(geometry, "Floor", floor_surface, MATERIAL)
 	MeshKit.commit(geometry, "Walls", wall_surface, MATERIAL)
 	_add_collisions(geometry, rows, size)
 	return geometry
+
+
+## Les meubles du plan : [{"model", "yaw", "solid", "position"}], un par groupe de cases
+## voisines portant le même caractère.
+static func prop_placements(definition: Dictionary) -> Array[Dictionary]:
+	var placements: Array[Dictionary] = []
+	var rows := _rows(definition)
+	var props: Dictionary = definition.get("props", {})
+	var visited := {}
+	for y: int in rows.size():
+		for x: int in _width(rows):
+			var cell := Vector2i(x, y)
+			var kind := _kind(rows, cell)
+			if not props.has(kind) or visited.has(cell):
+				continue
+			var group: Array[Vector2i] = [cell]
+			visited[cell] = true
+			var index := 0
+			while index < group.size():
+				for side: Vector2i in SIDES:
+					var next := group[index] + side
+					var same := _is_inside(rows, next) and _kind(rows, next) == kind
+					if same and not visited.has(next):
+						visited[next] = true
+						group.append(next)
+				index += 1
+			var middle := Vector3.ZERO
+			for member: Vector2i in group:
+				middle += _center_of(rows, member) / group.size()
+			var prop: Dictionary = props[kind]
+			(
+				placements
+				. append(
+					{
+						"model": prop.get("model", ""),
+						"yaw": float(prop.get("yaw", 0.0)),
+						"solid": prop.get("solid", true),
+						"position": middle,
+					}
+				)
+			)
+	return placements
 
 
 ## Rend les défauts du plan (liste vide s'il est sain) : un plan mal fermé laisserait
@@ -90,6 +140,9 @@ static func plan_errors(definition: Dictionary) -> Array[String]:
 	for y: int in rows.size():
 		if rows[y].length() != _width(rows):
 			return ["largeur : la ligne %d n'a pas la longueur de la première" % y]
+	var names: Dictionary = definition.get("markers", {})
+	var props: Dictionary = definition.get("props", {})
+	var floor_colors: Dictionary = definition.get("floors", {})
 	var seen := {}
 	for y: int in rows.size():
 		for x: int in _width(rows):
@@ -102,16 +155,23 @@ static func plan_errors(definition: Dictionary) -> Array[String]:
 			for side: Vector2i in SIDES:
 				if _kind(rows, cell + side) == VOID:
 					errors.append("sol ouvert sur le vide en %s" % cell)
-			if _is_marker(kind):
-				if seen.has(kind):
-					errors.append("repère %s posé deux fois" % kind)
-				seen[kind] = true
-	var names: Dictionary = definition.get("markers", {})
+			var known := (
+				kind == FLOOR or floor_colors.has(kind) or names.has(kind) or props.has(kind)
+			)
+			if not known:
+				errors.append("caractère inconnu « %s » en %s" % [kind, cell])
+			if names.has(kind) and seen.has(kind):
+				errors.append("repère %s posé deux fois" % kind)
+			seen[kind] = true
 	for marker: String in names:
 		if not seen.has(marker):
 			errors.append("repère %s absent du plan" % marker)
 	if not DEFAULT_MARKER in names.values():
 		errors.append("aucun repère « %s »" % DEFAULT_MARKER)
+	for kind: String in props:
+		var model: String = props[kind].get("model", "")
+		if not ResourceLoader.exists(VoxelModel.PATH % (PROP_MODEL_PATH % model)):
+			errors.append("meuble sans modèle : %s" % model)
 	return errors
 
 
@@ -134,8 +194,29 @@ static func _is_wall(kind: String) -> bool:
 	return kind == WALL or (kind >= "A" and kind <= "Z")
 
 
-static func _is_marker(kind: String) -> bool:
-	return (kind >= "a" and kind <= "z") or (kind >= "0" and kind <= "9")
+## Centre de la case, le plan étant centré sur l'origine (comme ZoneNavData).
+static func _center_of(rows: PackedStringArray, cell: Vector2i) -> Vector3:
+	return Vector3(
+		(cell.x + 0.5 - _width(rows) / 2.0) * CELL, 0.0, (cell.y + 0.5 - rows.size() / 2.0) * CELL
+	)
+
+
+# Couleur du sol d'une case. Un repère ou un meuble n'en dit rien : il prend le sol de la
+# case voisine, pour ne pas faire de tache dans la pièce.
+static func _floor_color_of(
+	rows: PackedStringArray, cell: Vector2i, floor_colors: Dictionary, floor_color: String
+) -> String:
+	var kind := _kind(rows, cell)
+	if floor_colors.has(kind):
+		return floor_colors[kind]
+	if kind != FLOOR:
+		for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			var beside := _kind(rows, cell + side)
+			if floor_colors.has(beside):
+				return floor_colors[beside]
+			if beside == FLOOR:
+				break
+	return floor_color
 
 
 # Un rectangle de sol autour de `center`, de `low` à `high` (x, z).
@@ -170,7 +251,9 @@ static func _add_floor_under_wall(
 			if kind == VOID or _is_wall(kind):
 				continue
 			var corner := Vector2(quadrant) * half
-			var color: Color = palette[floor_colors.get(kind, floor_color)]
+			var color: Color = palette[_floor_color_of(
+				rows, cell + offset, floor_colors, floor_color
+			)]
 			_add_floor(surface, center, corner.min(Vector2.ZERO), corner.max(Vector2.ZERO), color)
 			break
 

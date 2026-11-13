@@ -56,7 +56,7 @@ func test_every_character_of_the_roster_has_a_model() -> void:
 		FileAccess.get_file_as_string("res://data/characters/characters.json")
 	)
 	for character: Dictionary in data["characters"]:
-		var path := CharacterVisual.MODEL_PATH % character["id"]
+		var path := VoxelModel.PATH % (CharacterVisual.MODEL_FOLDER + str(character["id"]))
 		assert_true(ResourceLoader.exists(path), path)
 
 

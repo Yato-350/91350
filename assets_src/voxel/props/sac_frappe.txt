@@ -1,0 +1,10 @@
+# Sac de frappe.
+palette:
+  1: beton_1
+  4: beton_4
+  B: brun_2
+box: 1 0 0 0 10 1 10
+box: 1 0 1 4 2 30 2
+box: 1 0 30 4 8 2 2
+box: 4 6 26 4 1 4 1
+box: B 4 9 2 5 17 5

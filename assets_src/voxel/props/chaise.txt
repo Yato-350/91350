@@ -1,0 +1,10 @@
+# Chaise.
+palette:
+  b: brun_1
+  B: brun_2
+box: B 0 6 0 7 1 7
+box: b 0 0 0 1 6 1
+box: b 6 0 0 1 6 1
+box: b 0 0 6 1 6 1
+box: b 6 0 6 1 6 1
+box: B 0 7 6 7 7 1

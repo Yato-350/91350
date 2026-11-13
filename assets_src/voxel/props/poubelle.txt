@@ -1,0 +1,9 @@
+# Poubelle.
+palette:
+  n: noir
+  1: beton_1
+  v: vert_sombre
+box: v 0 0 0 8 10 8
+box: 1 0 10 0 8 2 8
+box: n 0 0 0 1 1 1
+box: n 7 0 0 1 1 1

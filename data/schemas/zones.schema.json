@@ -50,6 +50,62 @@
 			"items": {
 				"$ref": "#/$defs/door"
 			}
+		},
+		"props": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"model",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"model": {
+						"type": "string"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère où poser l'élément."
+					},
+					"yaw": {
+						"type": "number"
+					},
+					"solid": {
+						"type": "boolean"
+					}
+				}
+			}
+		},
+		"pickups": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"item",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$",
+						"description": "Unique dans le lieu : un objet pris ne revient pas."
+					},
+					"item": {
+						"type": "string"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère où l'objet est posé."
+					},
+					"count": {
+						"type": "integer",
+						"minimum": 1
+					}
+				}
+			}
 		}
 	},
 	"$defs": {

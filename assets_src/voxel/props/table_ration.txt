@@ -1,0 +1,17 @@
+# Table du point de ration.
+palette:
+  n: noir
+  1: beton_1
+  4: beton_4
+  e: bleu_ecran
+box: 4 0 10 0 24 2 10
+box: 1 0 0 0 2 10 2
+box: 1 22 0 0 2 10 2
+box: 1 0 0 8 2 10 2
+box: 1 22 0 8 2 10 2
+box: e 2 12 3 5 7 4
+box: e 9 12 3 5 7 4
+box: e 16 12 3 5 7 4
+box: n 3 19 4 1 1 2
+box: n 10 19 4 1 1 2
+box: n 17 19 4 1 1 2

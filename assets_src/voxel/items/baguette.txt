@@ -1,0 +1,8 @@
+# Baguette.
+palette:
+  O: orange_sombre
+  P: peau_2
+box: P 0 0 0 12 2 2
+box: O 2 1 0 1 1 2
+box: O 5 1 0 1 1 2
+box: O 8 1 0 1 1 2

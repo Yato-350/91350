@@ -13,6 +13,19 @@ const DEFINITION := {
 	"floors": {",": "beton_5"},
 }
 
+const FURNISHED := {
+	"id": "meuble",
+	"plan":
+	[
+		"#######",
+		"#a.tt.#",
+		"#c...c#",
+		"#######",
+	],
+	"markers": {"a": "default"},
+	"props": {"t": {"model": "table"}, "c": {"model": "chaise", "yaw": 90, "solid": false}},
+}
+
 var _palette: Dictionary
 var _geometry: ZoneGeometry
 
@@ -72,6 +85,29 @@ func test_floor_and_walls_are_drawn_and_solid() -> void:
 	assert_false(space.intersect_ray(across).is_empty(), "le mur arrête, plus haut que son dessin")
 
 
+func test_neighbouring_cells_of_a_prop_make_one_piece_of_furniture() -> void:
+	var placements := InteriorBuilder.prop_placements(FURNISHED)
+	assert_eq(placements.size(), 3)
+	assert_eq(placements[0]["model"], "table")
+	assert_eq(placements[0]["position"], Vector3(0.5, 0.0, -0.5))
+	assert_eq(placements[0]["yaw"], 0.0)
+	assert_true(placements[0]["solid"])
+	assert_eq(placements[1]["model"], "chaise")
+	assert_eq(placements[1]["position"], Vector3(-2.0, 0.0, 0.5))
+	assert_eq(placements[1]["yaw"], 90.0)
+	assert_false(placements[1]["solid"])
+	assert_eq(placements[2]["position"], Vector3(2.0, 0.0, 0.5))
+
+
+func test_solid_furniture_blocks_the_navigation_grid() -> void:
+	var furnished := InteriorBuilder.build(FURNISHED, _palette)
+	add_child_autofree(furnished)
+	assert_true(furnished.nav_data.is_solid(Vector2i(3, 1)), "la table")
+	assert_true(furnished.nav_data.is_solid(Vector2i(4, 1)), "la table")
+	assert_false(furnished.nav_data.is_solid(Vector2i(1, 2)), "une chaise se contourne")
+	assert_eq(InteriorBuilder.plan_errors(FURNISHED), [] as Array[String])
+
+
 func test_a_sound_plan_has_no_error() -> void:
 	assert_eq(InteriorBuilder.plan_errors(DEFINITION), [] as Array[String])
 
@@ -85,6 +121,13 @@ func test_plan_errors_name_each_defect() -> void:
 		"deux fois": {"plan": ["#####", "#aa.#", "#####"], "markers": {"a": "default"}},
 		"absent": {"plan": ["####", "#a.#", "####"], "markers": {"a": "default", "z": "lit"}},
 		"default": {"plan": ["####", "#a.#", "####"], "markers": {"a": "lit"}},
+		"inconnu": {"plan": ["####", "#az#", "####"], "markers": {"a": "default"}},
+		"licorne":
+		{
+			"plan": ["####", "#at#", "####"],
+			"markers": {"a": "default"},
+			"props": {"t": {"model": "licorne"}},
+		},
 	}
 	for expected: String in cases:
 		var errors := InteriorBuilder.plan_errors(cases[expected])
