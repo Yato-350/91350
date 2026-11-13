@@ -135,3 +135,17 @@ func test_most_building_entrances_are_reachable_on_foot() -> void:
 		var cell := nav.cell_of(_zone.nearest_free(front))
 		open += reached[cell.y * nav.size.x + cell.x]
 	assert_gte(open, _zone.geometry.entrances.size() * 0.9, "entrées accessibles : %d" % open)
+
+
+func test_grigny2_has_patrols_on_reachable_rounds() -> void:
+	var vigiles := _zone.find_children("*", "Vigile", true, false)
+	assert_gt(vigiles.size(), 1)
+	var nav := _zone.geometry.nav_data
+	var reached := nav.reachable_from(nav.cell_of(_zone.marker_position()))
+	for node: Node in vigiles:
+		var vigile := node as Vigile
+		assert_gt(vigile.patrol.size(), 1, vigile.id)
+		for point: Vector3 in vigile.patrol:
+			var cell := nav.cell_of(point)
+			assert_eq(reached[cell.y * nav.size.x + cell.x], 1, "%s : %s" % [vigile.id, point])
+		assert_eq(vigile.grid, _zone.nav_grid(), "une seule grille par zone")

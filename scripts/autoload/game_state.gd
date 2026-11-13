@@ -14,6 +14,12 @@ const CURFEW_ADVANCE_VIGILANCE := 3
 ## Après un acte interdit (tag, sabotage, coup), Akan reste suspect ce temps-là (s).
 const OFFENCE_MEMORY_SECONDS := 6.0
 const MSEC_PER_SECOND := 1000.0
+## Arrêté, Akan est relâché le lendemain à cette heure, avec cette santé.
+const WAKE_HOUR := 7
+const RELEASE_HEALTH := 50.0
+## L'arrestation laisse la Vigilance de la zone à ce niveau.
+const RELEASE_VIGILANCE := 1
+const CONFISCATED: Array[String] = ["tickets", "billets"]
 ## La quête qui ouvre une nouvelle partie.
 const FIRST_QUEST := "ascenseur_en_panne"
 ## Objectifs « USE » génériques : ce qu'un objet fait, quel qu'il soit.
@@ -67,6 +73,22 @@ func advance_time(seconds: float) -> void:
 		_curfew = now
 		EventBus.curfew_changed.emit(now)
 		EventBus.notified.emit("CURFEW_START" if now else "CURFEW_END")
+
+
+## Akan est tombé : arrêté, interrogé, relâché le lendemain matin. Son statut s'aggrave,
+## la moitié de ses tickets et de son argent est confisquée.
+func arrest() -> void:
+	surveillance.raise_status()
+	surveillance.calm(territory_id, RELEASE_VIGILANCE)
+	for item_id: String in CONFISCATED:
+		inventory.remove(item_id, ceili(inventory.count(item_id) / 2.0))
+	vitals.heal(RELEASE_HEALTH - vitals.health)
+	var until_wake := fposmod(
+		WAKE_HOUR * GameClock.MINUTES_PER_HOUR - clock.minutes, GameClock.MINUTES_PER_DAY
+	)
+	advance_time(until_wake / GameClock.MINUTES_PER_SECOND)
+	_offence_until = -1.0
+	set_flag("deja_arrete")
 
 
 ## Akan vient de faire quelque chose d'interdit : les guetteurs qui le voient s'en

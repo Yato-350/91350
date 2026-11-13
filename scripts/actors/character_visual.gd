@@ -42,6 +42,12 @@ const TALK_ARM := -0.45
 const TALK_SWING := 0.25
 const TALK_SPEED := 5.0
 const NOD := 0.06
+## Un coup de poing : le bras droit jaillit vers l'avant un instant.
+const PUNCH_ANGLE := -1.6
+const PUNCH_SECONDS := 0.2
+## À terre : couché sur le ventre, un peu relevé pour ne pas traverser le sol.
+const KNOCKED_OUT_TILT := -PI / 2.0
+const KNOCKED_OUT_LIFT := 0.2
 
 @export var character_id := "":
 	set(value):
@@ -55,6 +61,12 @@ var crouched := false
 var carrying := false
 ## Le personnage parle : il accompagne ses phrases de gestes.
 var talking := false
+## Hors d'état : couché au sol, immobile.
+var knocked_out := false:
+	set(value):
+		knocked_out = value
+		rotation.x = KNOCKED_OUT_TILT if value else 0.0
+		position.y = KNOCKED_OUT_LIFT if value else 0.0
 
 var _model: Node3D
 var _parts := {}
@@ -66,6 +78,7 @@ var _speed := 0.0
 var _swing := 0.0
 var _time := 0.0
 var _look_target := Vector3.INF
+var _punch_time := 0.0
 
 
 func _ready() -> void:
@@ -102,14 +115,24 @@ func animate(horizontal_velocity: Vector3, delta: float) -> void:
 		var leg: Node3D = _parts.get(part_name)
 		if leg != null:
 			leg.rotation.x = _swing if part_name in SWING_FORWARD else -_swing
-	rotation.x = move_toward(rotation.x, RUN_LEAN * running, LEAN_SPEED * delta)
+	if not knocked_out:
+		rotation.x = move_toward(rotation.x, RUN_LEAN * running, LEAN_SPEED * delta)
 	_crouch = move_toward(_crouch, 1.0 if crouched else 0.0, CROUCH_SPEED * delta)
+	_apply_pose()
+
+
+## Un coup de poing (le bras droit, un instant).
+func punch() -> void:
+	_punch_time = PUNCH_SECONDS
 	_apply_pose()
 
 
 ## Avance l'animation qui ne dépend que du temps : respiration, regard, gestes.
 func update_pose(delta: float) -> void:
 	_time += delta
+	_punch_time = maxf(_punch_time - delta, 0.0)
+	if knocked_out:
+		return
 	var head: Node3D = _parts.get("Head")
 	if head != null:
 		var wanted := 0.0
@@ -152,7 +175,9 @@ func _apply_pose() -> void:
 		var arm: Node3D = _parts.get(part_name)
 		if arm == null:
 			continue
-		if carrying:
+		if _punch_time > 0.0 and part_name == "ArmRight":
+			arm.rotation.x = PUNCH_ANGLE
+		elif carrying:
 			arm.rotation.x = CARRY_ANGLE
 		elif talking and part_name == "ArmRight":
 			arm.rotation.x = TALK_ARM + sin(_time * TALK_SPEED) * TALK_SWING

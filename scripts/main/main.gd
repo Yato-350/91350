@@ -8,6 +8,8 @@ extends Node
 
 const DEFAULT_ZONE := "res://scenes/zones/test_zone.tscn"
 const COLOR_FADE_SECONDS := 1.5
+## Où Akan se réveille après une arrestation.
+const HOME := "zone:appartement_akan"
 ## Durée du fondu au noir, à l'aller comme au retour, quand Akan change de lieu.
 const TRAVEL_FADE_SECONDS := 0.2
 const READY_MARKER := "[91350] prêt"
@@ -57,6 +59,7 @@ func _ready() -> void:
 	_pixel_view.resized.connect(_layout_ui)
 	_layout_ui()
 	EventBus.travel_requested.connect(_on_travel_requested)
+	EventBus.player_downed.connect(_on_player_downed)
 	var screenshot_scene := parse_screenshot_scene(OS.get_cmdline_user_args())
 	if not screenshot_scene.is_empty():
 		_run_screenshot_mode(screenshot_scene)
@@ -109,6 +112,19 @@ func _on_travel_requested(target: String) -> void:
 	_traveling = true
 	await _fade_to(1.0)
 	travel_to(ZONE_PREFIX + target)
+	await _fade_to(0.0)
+	_traveling = false
+
+
+## Akan tombe : fondu, arrestation, réveil chez lui le lendemain.
+func _on_player_downed() -> void:
+	if _traveling:
+		return
+	_traveling = true
+	await _fade_to(1.0)
+	GameState.arrest()
+	travel_to(HOME)
+	EventBus.notified.emit("ARRESTED")
 	await _fade_to(0.0)
 	_traveling = false
 

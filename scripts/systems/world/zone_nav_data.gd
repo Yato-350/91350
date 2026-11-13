@@ -3,6 +3,9 @@ extends Resource
 ## Grille de navigation d'une zone : une case par mètre, pleine (1) ou libre (0).
 ## La zone est centrée sur l'origine ; la case (0, 0) est son coin nord-ouest.
 
+## Rendue quand aucune case libre n'a été trouvée.
+const NO_CELL := Vector2i(-1, -1)
+
 @export var size := Vector2i.ZERO
 @export var cell_size := 1.0
 @export var solid := PackedByteArray()
@@ -112,3 +115,25 @@ func line_of_sight(from: Vector3, to: Vector3) -> bool:
 		if cell != last and is_opaque(cell):
 			return false
 	return true
+
+
+## La case libre la plus proche de `cell` (elle-même si elle est libre), cherchée en
+## anneaux de plus en plus grands ; NO_CELL si aucune à moins de `max_radius` cases.
+func nearest_free_cell(cell: Vector2i, max_radius: int = 40) -> Vector2i:
+	if not is_solid(cell):
+		return cell
+	for radius: int in range(1, max_radius):
+		var best := NO_CELL
+		var best_distance := INF
+		for dy: int in range(-radius, radius + 1):
+			for dx: int in range(-radius, radius + 1):
+				if maxi(absi(dx), absi(dy)) != radius:
+					continue
+				var candidate := cell + Vector2i(dx, dy)
+				var distance := Vector2(dx, dy).length_squared()
+				if not is_solid(candidate) and distance < best_distance:
+					best = candidate
+					best_distance = distance
+		if best != NO_CELL:
+			return best
+	return NO_CELL

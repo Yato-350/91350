@@ -55,6 +55,7 @@ func damage(amount: float) -> void:
 		downed.emit()
 
 
+## Soigne (même à terre : c'est ainsi qu'on se relève).
 func heal(amount: float) -> void:
 	health = minf(health + maxf(amount, 0.0), MAX_HEALTH)
 

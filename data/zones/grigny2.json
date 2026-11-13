@@ -131,5 +131,27 @@
 			"yaw": 243,
 			"sweep": 30
 		}
+	],
+	"vigiles": [
+		{
+			"id": "ronde_tour",
+			"character": "vigile",
+			"patrol": [
+				"-160,-150",
+				"-158,-175",
+				"-135,-178",
+				"-150,-200"
+			]
+		},
+		{
+			"id": "ronde_esplanade",
+			"character": "vigile",
+			"patrol": [
+				"-74,-137",
+				"-63,-137",
+				"-63,-148",
+				"-74,-148"
+			]
+		}
 	]
 }

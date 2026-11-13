@@ -22,6 +22,7 @@ var crouched := false
 var focus: Interactable
 
 var _spawn_position := Vector3.ZERO
+var _attack_cooldown := 0.0
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var _visual: CharacterVisual = $Visual
@@ -44,6 +45,7 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_attack_cooldown = maxf(_attack_cooldown - delta, 0.0)
 	if global_position.y < FALL_LIMIT:
 		teleport(_spawn_position)
 		return
@@ -71,9 +73,41 @@ func _unhandled_input(event: InputEvent) -> void:
 		crouched = not crouched
 	elif event.is_action_pressed(&"interact") and focus != null:
 		focus.interact(self)
+	elif event.is_action_pressed(&"attack"):
+		attack()
 	for index: int in Inventory.QUICK_SLOT_COUNT:
 		if event.is_action_pressed(QUICK_ACTION % (index + 1)):
 			GameState.use_item(GameState.inventory.quick_slots[index])
+
+
+## Un coup de poing devant soi. Par derrière, sur un Vigile qui ne l'a pas repéré, c'est
+## une neutralisation silencieuse ; sinon, un coup. Frapper un Vigile est interdit.
+func attack() -> void:
+	if _attack_cooldown > 0.0:
+		return
+	_attack_cooldown = Combat.PUNCH_COOLDOWN
+	_visual.punch()
+	var enemies: Array[Node3D] = []
+	for node: Node in get_tree().get_nodes_in_group(Vigile.GROUP):
+		var vigile := node as Vigile
+		if vigile != null and vigile.state != Vigile.State.KNOCKED_OUT:
+			enemies.append(vigile)
+	var targets := Combat.targets_in_front(
+		global_position,
+		_visual.global_rotation.y,
+		Combat.PUNCH_REACH,
+		Combat.PUNCH_ARC_DEGREES,
+		enemies
+	)
+	if targets.is_empty():
+		return
+	var target := targets[0] as Vigile
+	GameState.commit_offence()
+	var close := target.global_position.distance_to(global_position) <= Combat.TAKEDOWN_REACH
+	if close and target.can_be_taken_down(global_position):
+		target.knock_out()
+	else:
+		target.take_hit(Combat.PUNCH_DAMAGE, global_position)
 
 
 func teleport(to: Vector3) -> void:

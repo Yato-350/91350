@@ -109,6 +109,23 @@ func test_the_view_comes_closer_indoors() -> void:
 	assert_eq(view.zoom, 1)
 
 
+func test_a_knocked_out_akan_is_arrested_and_wakes_up_at_home() -> void:
+	var main := await _make_main()
+	main.travel_to("zone:grigny2")
+	GameState.give("tickets", 10)
+	GameState.clock.minutes = 22 * 60.0
+	var day := GameState.clock.day
+	GameState.vitals.damage(Vitals.MAX_HEALTH)
+	await wait_seconds(Main.TRAVEL_FADE_SECONDS * 2.0 + 0.3)
+	assert_eq(GameState.place_id(), "appartement_akan")
+	assert_eq(GameState.clock.day, day + 1)
+	assert_eq(GameState.clock.hour(), GameState.WAKE_HOUR)
+	assert_eq(GameState.vitals.health, GameState.RELEASE_HEALTH)
+	assert_eq(GameState.inventory.count("tickets"), 5, "la moitié confisquée")
+	assert_eq(GameState.surveillance.status, Surveillance.Status.SURVEILLE)
+	assert_true(GameState.has_flag("deja_arrete"))
+
+
 func test_travel_can_place_akan_at_a_saved_position() -> void:
 	var main := await _make_main()
 	assert_true(main.travel_to(Main.DEFAULT_ZONE, [2.0, 0.5, -3.0]))

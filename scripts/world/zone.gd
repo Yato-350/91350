@@ -39,6 +39,7 @@ var markers := {}
 var player: Player
 ## Lanternes des lampadaires posés par les données du lieu (en plus des cuits).
 var _extra_lamps := PackedVector3Array()
+var _nav_grid: NavGrid
 
 
 ## Rend le lieu demandé, ou null (erreur journalisée) s'il n'existe pas.
@@ -77,6 +78,7 @@ func _ready() -> void:
 	_add_pickups()
 	_add_npcs()
 	_add_cameras()
+	_add_vigiles()
 	EventBus.item_dropped.connect(_on_item_dropped)
 	player = PLAYER_SCENE.instantiate()
 	player.position = spawn_position(arrival)
@@ -256,6 +258,26 @@ func _add_npcs() -> void:
 		var node := Npc.create(npc)
 		node.position = marker_position(npc["at"])
 		add_child(node)
+
+
+## La grille de chemins de la zone, construite au premier besoin et partagée.
+func nav_grid() -> NavGrid:
+	if _nav_grid == null:
+		_nav_grid = NavGrid.new(geometry.nav_data)
+	return _nav_grid
+
+
+func _add_vigiles() -> void:
+	for vigile_data: Dictionary in definition.get("vigiles", []):
+		if not Conditions.check(vigile_data.get("if", {})):
+			continue
+		var vigile := Vigile.create(vigile_data)
+		vigile.nav = geometry.nav_data
+		vigile.grid = nav_grid()
+		for marker: String in vigile_data["patrol"]:
+			vigile.patrol.append(marker_position(marker))
+		vigile.position = vigile.patrol[0] + Vector3.UP * SPAWN_HEIGHT
+		add_child(vigile)
 
 
 func _add_cameras() -> void:

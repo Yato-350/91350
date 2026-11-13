@@ -45,3 +45,5 @@ signal dialogue_ended(dialogue: String)
 signal curfew_changed(active: bool)
 ## Un guetteur (caméra, Vigile) a repéré Akan à cet endroit.
 signal player_spotted(position: Vector3, source: String)
+## Un ennemi est hors d'état (à terre).
+signal enemy_knocked_out(enemy_id: String)

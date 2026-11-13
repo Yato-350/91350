@@ -51,6 +51,20 @@ func tick(zone_id: String, delta: float, hidden: bool) -> void:
 	_hidden_seconds[zone_id] = seconds
 
 
+## Un cran de plus (arrestation…), jusqu'à ennemi public.
+func raise_status() -> void:
+	if status == Status.ENNEMI_PUBLIC:
+		return
+	status = (status + 1) as Status
+	status_changed.emit(status)
+
+
+## Ramène la Vigilance de la zone à `value` (au plus).
+func calm(zone_id: String, value: int) -> void:
+	if level(zone_id) > value:
+		_set_heat(zone_id, value)
+
+
 ## Le statut ne redescend jamais seul : il faut de faux papiers ou changer de tête.
 func lower_status() -> void:
 	if status == Status.CONFORME:
