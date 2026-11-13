@@ -131,6 +131,20 @@ func test_crouching_toggles_and_is_slow_and_never_runs() -> void:
 	assert_false(player.crouched)
 
 
+func test_a_quick_slot_action_uses_its_item() -> void:
+	_make_player_on_floor()
+	GameState.needs.thirst = 10.0
+	GameState.give("bouteille_eau", 1)
+	GameState.inventory.assign_quick_slot(2, "bouteille_eau")
+	_send_action("quick_3")
+	await wait_process_frames(2)
+	assert_gt(GameState.needs.thirst, 10.0)
+	assert_eq(GameState.inventory.count("bouteille_eau"), 0)
+	_send_action("quick_1")
+	await wait_process_frames(2)
+	pass_test("un raccourci vide ne fait rien")
+
+
 func test_move_actions_use_physical_keys() -> void:
 	for action: String in GAME_ACTIONS:
 		for event: InputEvent in InputMap.action_get_events(action):

@@ -36,3 +36,5 @@ signal interaction_focus_changed(prompt: String)
 signal travel_requested(target: String)
 ## Un court message à montrer au joueur (clé de traduction).
 signal notified(text_key: String)
+## Akan vient d'entrer dans un lieu (voir GameState.location).
+signal location_changed

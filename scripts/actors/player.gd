@@ -11,6 +11,8 @@ const FALL_LIMIT := -20.0
 ## Paramètre global des shaders : là où s'ouvre la vue à travers les bâtiments.
 const SHADER_POSITION := &"player_position"
 const GROUP := &"player"
+## Actions des raccourcis du sac : quick_1 à quick_4.
+const QUICK_ACTION := "quick_%d"
 
 ## Accroupi : lent, silencieux, et jamais en course.
 var crouched := false
@@ -63,6 +65,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		crouched = not crouched
 	elif event.is_action_pressed(&"interact") and focus != null:
 		focus.interact(self)
+	for index: int in Inventory.QUICK_SLOT_COUNT:
+		if event.is_action_pressed(QUICK_ACTION % (index + 1)):
+			GameState.use_item(GameState.inventory.quick_slots[index])
 
 
 func teleport(to: Vector3) -> void:

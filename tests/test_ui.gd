@@ -71,14 +71,14 @@ func test_saving_shows_a_message() -> void:
 	EventBus.game_saved.emit(0)
 	assert_true(message.visible)
 	assert_eq(message.text, tr("HUD_SAVED"))
-	await wait_seconds(DebugHud.MESSAGE_SECONDS + 0.2)
+	await wait_seconds(Hud.MESSAGE_SECONDS + 0.2)
 	assert_false(message.visible)
 
 
 func test_status_shows_the_version() -> void:
 	var main := await _make_main()
-	var status: Label = main.get_node("UI/Hud/Status")
-	await wait_seconds(DebugHud.STATUS_SECONDS + 0.1)
+	var status: Label = main.get_node("UI/Hud/Debug")
+	await wait_seconds(Hud.DEBUG_SECONDS + 0.1)
 	var version: String = ProjectSettings.get_setting("application/config/version")
 	assert_string_contains(status.text, version)
 
@@ -114,7 +114,7 @@ func _translation_keys() -> Array[String]:
 
 func test_status_shows_whole_frames_per_second() -> void:
 	var main := await _make_main()
-	var status: Label = main.get_node("UI/Hud/Status")
-	await wait_seconds(DebugHud.STATUS_SECONDS + 0.1)
+	var status: Label = main.get_node("UI/Hud/Debug")
+	await wait_seconds(Hud.DEBUG_SECONDS + 0.1)
 	var pattern := RegEx.create_from_string("· \\d+ IPS$")
 	assert_not_null(pattern.search(status.text), status.text)

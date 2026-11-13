@@ -14,8 +14,8 @@ const READY_MARKER := "[91350] prêt"
 const SCREENSHOT_ARGUMENT := "--screenshot"
 const SCREENSHOT_DIR := "res://build/screenshots"
 const SCREENSHOT_FRAMES := 30
-## « zone:<identifiant> » désigne une zone de data/zones/ plutôt qu'un fichier de scène.
-const ZONE_PREFIX := "zone:"
+## « zone:<identifiant> » désigne un lieu des données plutôt qu'un fichier de scène.
+const ZONE_PREFIX := GameState.ZONE_PREFIX
 
 var _colour_enabled := true
 var _traveling := false
@@ -51,6 +51,10 @@ func _ready() -> void:
 	print(READY_MARKER)
 
 
+func _input(event: InputEvent) -> void:
+	InputHints.note_event(event)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"quick_save"):
 		save_game()
@@ -70,9 +74,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func travel_to(ref: String, position: Array = []) -> bool:
 	if not load_zone(ref):
 		return false
-	GameState.location = ref
 	var zone := _pixel_view.get_zone() as Zone
-	GameState.territory_id = zone.territory_id if zone != null else ""
+	GameState.enter(ref, zone.territory_id if zone != null else "")
 	_pixel_view.zoom = zone.get_zoom() if zone != null else 1
 	var player := get_player()
 	if player != null and position.size() == 3:

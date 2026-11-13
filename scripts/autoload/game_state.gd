@@ -4,6 +4,10 @@ extends Node
 ## Autoload sauvegardable. Il relaie les signaux des systèmes sur l'EventBus, pour que
 ## l'interface et le monde n'aient pas à connaître les systèmes eux-mêmes.
 
+## Un lieu décrit par les données s'écrit « zone:<identifiant>[@repère] ».
+const ZONE_PREFIX := "zone:"
+const MARKER_SEPARATOR := "@"
+
 var save_id: StringName = &"game"
 
 var clock: GameClock
@@ -43,6 +47,20 @@ func new_game() -> void:
 	saved_position = []
 	territory_id = ""
 	EventBus.game_state_reset.emit()
+
+
+## Akan entre dans un lieu ; `territory` est la zone de territoire qui l'abrite.
+func enter(new_location: String, territory: String) -> void:
+	location = new_location
+	territory_id = territory
+	EventBus.location_changed.emit()
+
+
+## Identifiant du lieu courant (« hall_tour », « grigny2 »), ou "" pour une scène d'essai.
+func place_id() -> String:
+	if not location.begins_with(ZONE_PREFIX):
+		return ""
+	return location.trim_prefix(ZONE_PREFIX).get_slice(MARKER_SEPARATOR, 0)
 
 
 ## Avance le corps d'Akan : endurance, faim, soif, et ce qu'elles coûtent à la santé.

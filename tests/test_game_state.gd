@@ -155,3 +155,16 @@ func test_loading_an_old_or_partial_save_resets_what_is_missing() -> void:
 func test_game_state_is_written_by_the_save_manager() -> void:
 	assert_true(GameState.is_in_group(SaveManager.SAVEABLE_GROUP))
 	assert_eq(GameState.save_id, &"game")
+
+
+func test_entering_a_place_is_announced() -> void:
+	watch_signals(EventBus)
+	GameState.enter("zone:hall_tour", "grigny2")
+	assert_eq(GameState.location, "zone:hall_tour")
+	assert_eq(GameState.territory_id, "grigny2")
+	assert_signal_emitted(EventBus, "location_changed")
+	assert_eq(GameState.place_id(), "hall_tour")
+	GameState.enter("zone:grigny2@gare", "grigny2")
+	assert_eq(GameState.place_id(), "grigny2")
+	GameState.enter("res://scenes/zones/test_zone.tscn", "")
+	assert_eq(GameState.place_id(), "")
