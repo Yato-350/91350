@@ -44,17 +44,24 @@ func test_an_unknown_sound_is_reported() -> void:
 
 
 func test_music_loops_and_crossfades() -> void:
+	AudioManager.play_music(&"", 0.0)
 	AudioManager.play_music(&"libre", 0.0)
 	assert_eq(AudioManager.music(), &"libre")
 	var stream := load(AudioManager.SOUND_PATH % AudioManager.MUSIC[&"libre"]) as AudioStreamWAV
 	assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_FORWARD, "la boucle vient du fichier")
 	AudioManager.play_music(&"regime", 0.1)
 	await wait_seconds(0.3)
-	var playing := _players_on(&"Music")
-	assert_eq(playing.size(), 1, "l'ancienne musique s'est tue")
-	assert_eq(
-		playing[0].stream.resource_path, AudioManager.SOUND_PATH % AudioManager.MUSIC[&"regime"]
-	)
+	_assert_only_music(&"regime", "l'ancienne musique s'est tue")
+
+
+func test_a_quick_second_change_is_not_cut_by_the_first_fade() -> void:
+	AudioManager.play_music(&"", 0.0)
+	AudioManager.play_music(&"regime", 0.0)
+	AudioManager.play_music(&"maison", 0.3)
+	await wait_seconds(0.1)
+	AudioManager.play_music(&"libre", 0.05)
+	await wait_seconds(0.5)
+	_assert_only_music(&"libre", "la fin du premier fondu ne coupe pas la nouvelle musique")
 
 
 func test_music_steps_back_under_a_dialogue() -> void:
@@ -86,6 +93,14 @@ func test_akan_walks_with_footsteps_but_crouches_in_silence() -> void:
 	player.walk_steps(Player.STEP_DISTANCE * 3.5)
 	assert_eq(heard.count(&"pas"), 0, "accroupi, on ne s'entend pas")
 	EventBus.sound_requested.disconnect(listen)
+
+
+func _assert_only_music(track: StringName, message: String) -> void:
+	var playing := _players_on(&"Music")
+	assert_eq(playing.size(), 1, message)
+	if playing.size() == 1:
+		var path := AudioManager.SOUND_PATH % AudioManager.MUSIC[track]
+		assert_eq(playing[0].stream.resource_path, path, message)
 
 
 func _player_of(bus: StringName) -> AudioStreamPlayer:

@@ -63,6 +63,7 @@ var _music_track := &""
 var _ambience := AudioStreamPlayer.new()
 var _ambience_track := &""
 var _duck_tween: Tween
+var _music_fade: Tween
 
 
 func _ready() -> void:
@@ -124,9 +125,13 @@ func play_music(track: StringName, seconds: float) -> void:
 	if track == _music_track:
 		return
 	_music_track = track
+	# Un fondu encore en cours s'arrête là : sa fin couperait le lecteur qu'on reprend.
+	if _music_fade != null:
+		_music_fade.kill()
 	var outgoing := _music_players[0]
 	var incoming := _music_players[1]
 	_music_players.reverse()
+	incoming.stop()
 	if not track.is_empty():
 		incoming.stream = load(SOUND_PATH % MUSIC[track])
 		incoming.volume_db = SILENT_DB if seconds > 0.0 else 0.0
@@ -134,11 +139,11 @@ func play_music(track: StringName, seconds: float) -> void:
 	if seconds <= 0.0:
 		outgoing.stop()
 		return
-	var fade := create_tween().set_parallel(true)
-	fade.tween_property(outgoing, ^"volume_db", SILENT_DB, seconds)
+	_music_fade = create_tween().set_parallel(true)
+	_music_fade.tween_property(outgoing, ^"volume_db", SILENT_DB, seconds)
 	if not track.is_empty():
-		fade.tween_property(incoming, ^"volume_db", 0.0, seconds)
-	fade.chain().tween_callback(outgoing.stop)
+		_music_fade.tween_property(incoming, ^"volume_db", 0.0, seconds)
+	_music_fade.chain().tween_callback(outgoing.stop)
 
 
 func music() -> StringName:
