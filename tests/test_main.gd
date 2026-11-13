@@ -33,6 +33,13 @@ func test_parse_screenshot_scene(params: Array = use_parameters(PARSE_CASES)) ->
 	assert_eq(Main.parse_screenshot_scene(args), params[1])
 
 
+func test_parse_hour() -> void:
+	assert_eq(Main.parse_hour(PackedStringArray(["--hour", "23.5"])), 23.5)
+	assert_eq(Main.parse_hour(PackedStringArray(["--hour"])), -1.0)
+	assert_eq(Main.parse_hour(PackedStringArray(["--hour", "minuit"])), -1.0)
+	assert_eq(Main.parse_hour(PackedStringArray([])), -1.0)
+
+
 func test_main_loads_the_default_zone() -> void:
 	var main := await _make_main()
 	var view: PixelView = main.get_node("PixelView")

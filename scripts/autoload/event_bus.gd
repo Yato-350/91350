@@ -41,3 +41,5 @@ signal location_changed
 ## Demande de dialogue : un fichier de dialogue/ et l'entrée à y jouer.
 signal dialogue_requested(dialogue: String, cue: String)
 signal dialogue_ended(dialogue: String)
+## Le couvre-feu commence (true) ou se lève (false).
+signal curfew_changed(active: bool)

@@ -7,6 +7,10 @@ extends Node
 ## Un lieu décrit par les données s'écrit « zone:<identifiant>[@repère] ».
 const ZONE_PREFIX := "zone:"
 const MARKER_SEPARATOR := "@"
+## Le haut-parleur prévient tant de minutes avant le couvre-feu.
+const CURFEW_WARNING_MINUTES := 10.0
+## À partir de cette Vigilance, le régime avance le couvre-feu d'une heure.
+const CURFEW_ADVANCE_VIGILANCE := 3
 ## La quête qui ouvre une nouvelle partie.
 const FIRST_QUEST := "ascenseur_en_panne"
 ## Objectifs « USE » génériques : ce qu'un objet fait, quel qu'il soit.
@@ -34,6 +38,8 @@ var territory_id := ""
 ## Le temps ne passe que pendant le jeu, pas dans les menus.
 var playing := false
 
+var _curfew := false
+
 
 func _ready() -> void:
 	add_to_group(SaveManager.SAVEABLE_GROUP)
@@ -42,7 +48,38 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if playing:
-		clock.advance(delta)
+		advance_time(delta)
+
+
+## Avance l'heure de `seconds` secondes réelles et annonce le couvre-feu.
+func advance_time(seconds: float) -> void:
+	var before := clock.minutes
+	clock.advance(seconds)
+	var warning := (GameClock.CURFEW_START_HOUR - _curfew_advance()) * GameClock.MINUTES_PER_HOUR
+	if _crossed(before, clock.minutes, warning - CURFEW_WARNING_MINUTES):
+		EventBus.notified.emit("CURFEW_WARNING")
+	var now := is_curfew()
+	if now != _curfew:
+		_curfew = now
+		EventBus.curfew_changed.emit(now)
+		EventBus.notified.emit("CURFEW_START" if now else "CURFEW_END")
+
+
+## Vrai pendant le couvre-feu (avancé d'une heure quand la Vigilance est haute).
+func is_curfew() -> bool:
+	return clock.is_curfew(_curfew_advance())
+
+
+func _curfew_advance() -> int:
+	var high := surveillance.level(territory_id) >= CURFEW_ADVANCE_VIGILANCE
+	return 1 if high and not territory_id.is_empty() else 0
+
+
+# L'heure `mark` (en minutes) a-t-elle été passée en allant de `before` à `after` ?
+static func _crossed(before: float, after: float, mark: float) -> bool:
+	if after >= before:
+		return before < mark and mark <= after
+	return mark > before or mark <= after
 
 
 func new_game() -> void:
@@ -51,6 +88,7 @@ func new_game() -> void:
 	location = ""
 	saved_position = []
 	territory_id = ""
+	_curfew = is_curfew()
 	EventBus.game_state_reset.emit()
 
 
@@ -197,6 +235,7 @@ func load_state(state: Dictionary) -> void:
 	flags = SaveCodec.table(state, "flags").duplicate()
 	location = SaveCodec.text(state, "location", "")
 	saved_position = _read_position(SaveCodec.list(state, "position"))
+	_curfew = is_curfew()
 	EventBus.game_state_reset.emit()
 
 

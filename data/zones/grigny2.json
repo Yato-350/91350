@@ -67,6 +67,18 @@
 			"model": "ecran_propagande",
 			"at": "-68.5,-149",
 			"yaw": 0
+		},
+		{
+			"model": "lampadaire",
+			"at": "-74.5,-140.5",
+			"yaw": 270,
+			"solid": false
+		},
+		{
+			"model": "lampadaire",
+			"at": "-62.5,-140.5",
+			"yaw": 90,
+			"solid": false
 		}
 	],
 	"npcs": [

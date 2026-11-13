@@ -19,6 +19,7 @@ const BARS := {
 	"Thirst": ["HUD_THIRST", "eau_claire"],
 }
 const QUICK_SLOT_SIZE := 34
+const CURFEW_COLOR := "orange_vif"
 const ZONE_PREFIX := "zone:"
 
 var _palette := Palette.load_colors()
@@ -60,6 +61,7 @@ func _ready() -> void:
 	EventBus.zone_liberated.connect(func(_zone: String) -> void: _refresh_place())
 	EventBus.vigilance_changed.connect(func(_zone: String, _level: int) -> void: _refresh_place())
 	EventBus.status_changed.connect(func(_status: int) -> void: _refresh_place())
+	EventBus.curfew_changed.connect(func(_active: bool) -> void: _refresh_place())
 	_refresh_all()
 
 
@@ -137,6 +139,10 @@ func _refresh_place() -> void:
 	var level := GameState.surveillance.level(zone)
 	vigilance.text = tr("HUD_VIGILANCE").format({"level": level, "max": Surveillance.MAX_LEVEL})
 	status.text = tr("STATUS_%d" % GameState.surveillance.status)
+	var curfew: Label = _info.get_node("Curfew")
+	curfew.text = tr("HUD_CURFEW")
+	curfew.visible = GameState.is_curfew()
+	curfew.add_theme_color_override(&"font_color", _palette[CURFEW_COLOR])
 
 
 # Un intérieur porte son propre nom ; une zone, celui du régime tant qu'elle n'est pas libre.
@@ -203,7 +209,7 @@ func _add_info() -> VBoxContainer:
 	info.add_theme_constant_override(&"separation", 0)
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(info)
-	for line: String in ["Place", "Clock", "Vigilance", "Status"]:
+	for line: String in ["Place", "Clock", "Curfew", "Vigilance", "Status"]:
 		var label := Label.new()
 		label.name = line
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT

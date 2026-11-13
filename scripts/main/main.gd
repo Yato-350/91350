@@ -12,6 +12,8 @@ const COLOR_FADE_SECONDS := 1.5
 const TRAVEL_FADE_SECONDS := 0.2
 const READY_MARKER := "[91350] prêt"
 const SCREENSHOT_ARGUMENT := "--screenshot"
+## « --hour 23.5 » : l'heure du jeu au moment de la capture.
+const HOUR_ARGUMENT := "--hour"
 const SCREENSHOT_DIR := "res://build/screenshots"
 const SCREENSHOT_FRAMES := 30
 ## « zone:<identifiant> » désigne un lieu des données plutôt qu'un fichier de scène.
@@ -40,6 +42,14 @@ static func parse_screenshot_scene(args: PackedStringArray) -> String:
 	if path.begins_with("res://") or path.begins_with(ZONE_PREFIX):
 		return path
 	return "res://" + path
+
+
+## L'heure demandée par « --hour <h> » (en heures), ou -1 si absente ou illisible.
+static func parse_hour(args: PackedStringArray) -> float:
+	var index := args.find(HOUR_ARGUMENT)
+	if index == -1 or index + 1 >= args.size() or not args[index + 1].is_valid_float():
+		return -1.0
+	return args[index + 1].to_float()
 
 
 func _ready() -> void:
@@ -166,6 +176,9 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		printerr("Le mode --screenshot a besoin d'un rendu : ne pas le lancer avec --headless.")
 		get_tree().quit(1)
 		return
+	var hour := parse_hour(OS.get_cmdline_user_args())
+	if hour >= 0.0:
+		GameState.clock.minutes = hour * GameClock.MINUTES_PER_HOUR
 	if not travel_to(scene_path):
 		get_tree().quit(1)
 		return
@@ -176,6 +189,9 @@ func _run_screenshot_mode(scene_path: String) -> void:
 	if not scene_path.begins_with(ZONE_PREFIX):
 		file_name = file_name.get_basename()
 	file_name = file_name.replace(":", "_")
+	if hour >= 0.0:
+		var args := OS.get_cmdline_user_args()
+		file_name += "_%sh" % args[args.find(HOUR_ARGUMENT) + 1]
 	var path := SCREENSHOT_DIR.path_join(file_name + ".png")
 	if save_screenshot(path) != OK:
 		printerr("Capture impossible : %s" % path)

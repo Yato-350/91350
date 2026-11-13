@@ -19,6 +19,8 @@ const SPAWN_HEIGHT := 0.1
 ## Un objectif « aller à un repère » est atteint à cette distance (m).
 const GOTO_RADIUS := 2.0
 const TARGET_SEPARATOR := ":"
+## L'applique d'une entrée : à tant de mètres devant la façade, à tant de hauteur.
+const ENTRANCE_LIGHT_OFFSET := Vector2(0.6, 2.6)
 ## Distance à laquelle on considère qu'Akan arrive par l'entrée d'un immeuble.
 const ENTRANCE_REACH := 3.0
 ## Rayon maximal (en cases) de la recherche d'une case libre.
@@ -35,6 +37,8 @@ var geometry: ZoneGeometry
 ## Repères du lieu : nom → position.
 var markers := {}
 var player: Player
+## Lanternes des lampadaires posés par les données du lieu (en plus des cuits).
+var _extra_lamps := PackedVector3Array()
 
 
 ## Rend le lieu demandé, ou null (erreur journalisée) s'il n'existe pas.
@@ -79,6 +83,8 @@ func _ready() -> void:
 	var rig: CameraRig = CAMERA_RIG_SCENE.instantiate()
 	rig.target = player
 	add_child(rig)
+	if not is_interior and not (geometry.lamp_positions.is_empty() and _extra_lamps.is_empty()):
+		_add_lamp_lights()
 	var guide := QuestGuide.new()
 	guide.name = "QuestGuide"
 	guide.zone = self
@@ -154,6 +160,19 @@ func nearest_free(position: Vector3) -> Vector3:
 	return best
 
 
+# Les lanternes des lampadaires, et les appliques au-dessus des entrées d'immeubles.
+func _add_lamp_lights() -> void:
+	var lamps := LampLights.new()
+	lamps.name = "LampLights"
+	lamps.player = player
+	lamps.positions = geometry.lamp_positions.duplicate()
+	lamps.positions.append_array(_extra_lamps)
+	for entrance: Dictionary in geometry.entrances:
+		var at: Vector3 = entrance["position"] + entrance["normal"] * ENTRANCE_LIGHT_OFFSET.x
+		lamps.positions.append(at + Vector3.UP * ENTRANCE_LIGHT_OFFSET.y)
+	add_child(lamps)
+
+
 # L'entrée d'immeuble la plus proche du point, à moins de ENTRANCE_REACH mètres, ou {}.
 func _entrance_near(at: Vector3) -> Dictionary:
 	var found := {}
@@ -214,6 +233,8 @@ func _add_props() -> void:
 		prop.position = placement["position"]
 		prop.rotation_degrees.y = placement["yaw"]
 		add_child(prop)
+		if placement["model"] == ZoneDressing.LAMP_MODEL:
+			_extra_lamps.append(prop.position + prop.basis * ZoneDressing.LAMP_HEAD)
 
 
 func _add_pickups() -> void:
