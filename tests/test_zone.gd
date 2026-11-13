@@ -116,3 +116,22 @@ func test_leaving_a_building_shows_its_facade() -> void:
 	await wait_physics_frames(2)
 	var rig: CameraRig = outside.find_children("*", "CameraRig", true, false)[0]
 	assert_eq(rig.yaw_step, 2, "l'entrée de la tour regarde le nord-ouest")
+
+
+func test_every_marker_is_reachable_on_foot_from_the_default_spawn() -> void:
+	var nav := _zone.geometry.nav_data
+	var reached := nav.reachable_from(nav.cell_of(_zone.marker_position()))
+	for marker: String in _zone.markers:
+		var cell := nav.cell_of(_zone.marker_position(marker))
+		assert_eq(reached[cell.y * nav.size.x + cell.x], 1, "%s enfermé" % marker)
+
+
+func test_most_building_entrances_are_reachable_on_foot() -> void:
+	var nav := _zone.geometry.nav_data
+	var reached := nav.reachable_from(nav.cell_of(_zone.marker_position()))
+	var open := 0
+	for entrance: Dictionary in _zone.geometry.entrances:
+		var front: Vector3 = entrance["position"] + entrance["normal"] * 1.5
+		var cell := nav.cell_of(_zone.nearest_free(front))
+		open += reached[cell.y * nav.size.x + cell.x]
+	assert_gte(open, _zone.geometry.entrances.size() * 0.9, "entrées accessibles : %d" % open)

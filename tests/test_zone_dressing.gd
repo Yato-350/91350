@@ -165,3 +165,15 @@ func _positions(models: Array) -> Array[Vector3]:
 func _ray(from: Vector3, to: Vector3) -> Dictionary:
 	var query := PhysicsRayQueryParameters3D.create(from, to)
 	return _geometry.get_world_3d().direct_space_state.intersect_ray(query)
+
+
+func test_reachable_from_floods_the_free_cells_only() -> void:
+	var nav := ZoneNavData.create(Vector2(5.0, 3.0))
+	for y: int in 3:
+		nav.set_solid(Vector2i(2, y))
+	var reached := nav.reachable_from(Vector2i(0, 0))
+	assert_eq(reached[0], 1)
+	assert_eq(reached[1 * 5 + 1], 1)
+	assert_eq(reached[2], 0, "mur")
+	assert_eq(reached[4], 0, "de l'autre côté du mur")
+	assert_eq(nav.reachable_from(Vector2i(2, 0)).count(1), 0, "départ dans un mur")

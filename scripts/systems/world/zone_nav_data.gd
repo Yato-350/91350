@@ -44,3 +44,23 @@ func is_solid_at(position: Vector3) -> bool:
 func set_solid(cell: Vector2i, value: bool = true) -> void:
 	if contains(cell):
 		solid[cell.y * size.x + cell.x] = 1 if value else 0
+
+
+## Cases atteignables à pied depuis `start` (1) ou non (0), en ne passant que par des
+## cases libres et voisines (haut, bas, gauche, droite).
+func reachable_from(start: Vector2i) -> PackedByteArray:
+	var reached := PackedByteArray()
+	reached.resize(size.x * size.y)
+	if is_solid(start):
+		return reached
+	var pending: Array[Vector2i] = [start]
+	reached[start.y * size.x + start.x] = 1
+	while not pending.is_empty():
+		var cell: Vector2i = pending.pop_back()
+		for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			var next := cell + side
+			if is_solid(next) or reached[next.y * size.x + next.x] != 0:
+				continue
+			reached[next.y * size.x + next.x] = 1
+			pending.append(next)
+	return reached
