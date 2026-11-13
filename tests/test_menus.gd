@@ -63,6 +63,19 @@ func test_continue_reloads_the_last_save() -> void:
 	assert_eq(GameState.place_id(), "palier_7")
 
 
+func test_an_unreadable_save_keeps_the_title_on_screen() -> void:
+	DirAccess.make_dir_recursive_absolute(TEST_DIR)
+	var file := FileAccess.open(SaveManager.slot_path(0), FileAccess.WRITE)
+	file.store_string("pas du JSON")
+	file.close()
+	var main := await _make_main(true)
+	var screens: Screens = main.get_node("UI/Screens")
+	_button(screens, "continue").pressed.emit()
+	await wait_process_frames(3)
+	assert_eq(screens.top_name(), "Title", "le titre reste là")
+	assert_false(GameState.playing)
+
+
 func test_pause_opens_and_closes_with_its_key() -> void:
 	var main := await _make_main(false)
 	var screens: Screens = main.get_node("UI/Screens")

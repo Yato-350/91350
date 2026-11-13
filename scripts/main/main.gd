@@ -129,13 +129,12 @@ func start_new_game() -> void:
 	travel_to(start_place)
 
 
-## Reprend la partie sauvegardée ; rend false (et ne change rien) s'il n'y en a pas.
+## Reprend la partie sauvegardée ; rend false (et ne change rien) s'il n'y en a pas ou
+## si elle est illisible.
 func continue_game() -> bool:
-	if not SaveManager.has_save():
+	if not SaveManager.has_save() or not load_game():
 		return false
 	_screens.close_all()
-	if not load_game():
-		return false
 	GameState.playing = true
 	_hud.visible = true
 	return true

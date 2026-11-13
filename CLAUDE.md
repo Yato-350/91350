@@ -23,6 +23,8 @@ anglais ; commentaires et docs en français.
 
 ```bash
 tools/install_godot.sh --templates web   # Godot épinglé + modèles d'export web (Linux)
+tools/install_godot.sh --templates all   # + Windows, Linux, macOS (exports de release)
+python3 tools/build_sounds.py            # régénère les sons (assets/audio/)
 python3 -m venv .venv && .venv/bin/pip install -r tools/requirements.txt
 tools/check.sh all                       # lint, data, import, test, render, web
 tools/check.sh test                      # tests GUT sans affichage
