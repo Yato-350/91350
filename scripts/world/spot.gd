@@ -38,6 +38,14 @@ func refresh() -> void:
 	enabled = Conditions.check(condition)
 
 
+func _ready() -> void:
+	# Une étape qui change, un objet ramassé : le geste devient possible aussitôt.
+	for changed: Signal in [
+		EventBus.flag_changed, EventBus.quest_progressed, EventBus.inventory_changed
+	]:
+		changed.connect(refresh.unbind(1))
+
+
 func _process(delta: float) -> void:
 	_refresh_left -= delta
 	if _refresh_left <= 0.0:

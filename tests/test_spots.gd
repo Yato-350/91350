@@ -99,3 +99,34 @@ func test_the_ration_point_is_open_by_day_only() -> void:
 	await wait_process_frames(2)
 	assert_null(night.get_node_or_null("VigileRation"), "fermé la nuit")
 	assert_null(night.get_node_or_null("VoisineFile"))
+
+
+func test_a_spot_opens_as_soon_as_its_step_comes() -> void:
+	GameState.quests = QuestLog.new(
+		{
+			"essai":
+			{
+				"id": "essai",
+				"steps":
+				[
+					{"id": "a", "type": "TALK", "target": "x"},
+					{"id": "b", "type": "TALK", "target": "y"}
+				]
+			}
+		}
+	)
+	GameState.connect_quests()
+	GameState.quests.start("essai")
+	var spot := Spot.create(
+		{
+			"id": "boite",
+			"at": "default",
+			"prompt": "PROMPT_FOUILLER",
+			"dialogue": ["tour", "boites"],
+			"if": {"step": "essai:b"}
+		}
+	)
+	add_child_autofree(spot)
+	assert_false(spot.enabled)
+	GameState.objective("TALK", "x")
+	assert_true(spot.enabled, "sans attendre la relecture périodique")
