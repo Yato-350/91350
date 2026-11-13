@@ -1,0 +1,40 @@
+~ emissaire
+if step("le_contact", "coursier")
+	emissaire: T'es le petit du Grand ? Zed m'envoie. Il a une offre.
+	emissaire: Clause numéro un : on dit pas « arme ». On dit « matériel ».
+	emissaire: Tu livres ce colis au relais, devant la gare. Sans l'ouvrir. Et le matériel est à toi.
+	emissaire: Ou tu paies. Quarante billets. Délai : maintenant.
+	- Je livre. Sans ouvrir. [#ton=calme]
+		emissaire: Contrat conclu. Zed aime les gens ponctuels.
+		$> give("colis_zed")
+		$> objective("USE", "deal_zed")
+	- Je paie. Quarante billets. [#ton=cash] [if has("billets", 40) /]
+		$> take("billets", 40)
+		$> give("lance_pierre")
+		emissaire: Cash. Zed aime les gens cash.
+		emissaire: Un lance-pierre. Ça éteint une caméra. Ça endort pas un homme. Garde-le comme ça.
+		$> set_flag("contact_paye")
+		$> objective("USE", "payer_zed")
+	- Il y a quoi, dans ce colis ? [#ton=malin]
+		emissaire: Clause numéro deux : on pose pas de questions.
+		emissaire: Réfléchis. Je reste là jusqu'à ce que tu te décides.
+elif step("le_contact", "colis")
+	emissaire: Le relais est devant la gare. Délai : avant que je change d'avis.
+else
+	emissaire: Zed te salue. Le salut, c'est gratuit. Le reste, non.
+=> END
+
+~ relais
+if step("le_contact", "colis") and has("colis_zed")
+	relais_zed: Le colis. Pose-le là. Merci de ta ponctualité.
+	$> take("colis_zed")
+	$> give("lance_pierre")
+	$> rep("reseau", 10)
+	$> rep("familles", -10)
+	relais_zed: Un lance-pierre. Ça éteint une caméra, ça endort pas un homme. Contrat honoré.
+	relais_zed: Zed n'oublie jamais un service. Il n'oublie jamais rien, d'ailleurs.
+	$> set_flag("contact_livre")
+	$> objective("DELIVER", "relais_zed")
+else
+	relais_zed: Je connais personne. J'attends personne. C'est mon métier.
+=> END

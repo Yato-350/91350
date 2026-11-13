@@ -1,0 +1,92 @@
+{
+	"id": "palier_11",
+	"name": "PLACE_PALIER_11",
+	"territory": "grigny2",
+	"plan": [
+		"###D###D###",
+		"#..c.o.d..#",
+		"Ea.......bS",
+		"E........tS",
+		"#..e...f..#",
+		"###D###D###"
+	],
+	"markers": {
+		"c": "default",
+		"a": "ascenseur",
+		"b": "escalier",
+		"d": "voisin_1",
+		"e": "voisin_2",
+		"f": "voisin_3",
+		"o": "rebord",
+		"t": "toit"
+	},
+	"floor_color": "beton_4",
+	"wall_color": "beton_5",
+	"doors": [
+		{
+			"at": "default",
+			"to": "appartement_akan@porte",
+			"prompt": "PROMPT_ENTRER"
+		},
+		{
+			"at": "escalier",
+			"to": "palier_7@escalier_haut",
+			"prompt": "PROMPT_DESCENDRE"
+		},
+		{
+			"at": "toit",
+			"to": "toit_tour",
+			"prompt": "PROMPT_MONTER",
+			"if": {
+				"quests_done": [
+					"le_vieux_du_7e"
+				]
+			}
+		}
+	],
+	"npcs": [
+		{
+			"id": "bernard",
+			"character": "bernard",
+			"at": "voisin_1",
+			"dialogue": "bernard",
+			"yaw": 180,
+			"if": {
+				"not_flags": [
+					"bernard_denonce",
+					"bernard_parti"
+				]
+			}
+		},
+		{
+			"id": "huguette",
+			"character": "huguette",
+			"at": "voisin_2",
+			"dialogue": "voisins_tour",
+			"cue": "huguette",
+			"yaw": 0,
+			"if": {
+				"not_flags": [
+					"descente"
+				]
+			}
+		}
+	],
+	"spots": [
+		{
+			"id": "rebord",
+			"at": "rebord",
+			"prompt": "PROMPT_FOUILLER",
+			"dialogue": [
+				"tour",
+				"rebord"
+			],
+			"if": {
+				"step": "la_tour_se_leve:indices",
+				"not_flags": [
+					"indice_telephone"
+				]
+			}
+		}
+	]
+}

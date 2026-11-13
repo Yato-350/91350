@@ -122,12 +122,25 @@ export_web() {
 # Capture une scène dans build/screenshots/ (voir scripts/main/main.gd).
 screenshot() {
 	local scene="$1"
+	local hour="${2:-}"
+	local view="${3:-}"
 	local output
-	output="build/screenshots/$(basename "$scene" .tscn).png"
+	local extra=()
+	output="$(basename "$scene" .tscn)"
+	output="${output//:/_}"
+	if [[ -n "$hour" ]]; then
+		output="${output}_${hour}h"
+		extra=(--hour "$hour")
+	fi
+	if [[ -n "$view" ]]; then
+		output="${output}_v${view}"
+		extra+=(--view "$view")
+	fi
+	output="build/screenshots/${output}.png"
 	prepare_build_dir
 	rm -f "$output"
 	with_display tools/godot.sh --path . --rendering-driver opengl3 --audio-driver Dummy \
-		--resolution 1280x720 -- --screenshot "$scene"
+		--resolution 1280x720 -- --screenshot "$scene" "${extra[@]}"
 	if [[ ! -f "$output" || "$(wc -c < "$output")" -lt 2048 ]]; then
 		echo "Échec : capture absente ou vide ($output)." >&2
 		exit 1
@@ -141,7 +154,7 @@ case "${1:-all}" in
 	test) run_tests ;;
 	render) render ;;
 	web) export_web ;;
-	screenshot) screenshot "${2:?usage : tools/check.sh screenshot <scène>}" ;;
+	screenshot) screenshot "${2:?usage : tools/check.sh screenshot <scène> [heure] [vue]}" "${3:-}" "${4:-}" ;;
 	all)
 		lint
 		check_data
@@ -151,7 +164,7 @@ case "${1:-all}" in
 		export_web
 		;;
 	*)
-		echo "usage : tools/check.sh <lint|data|import|test|render|screenshot <scène>|web|all>" >&2
+		echo "usage : tools/check.sh <lint|data|import|test|render|screenshot <scène> [heure] [vue]|web|all>" >&2
 		exit 2
 		;;
 esac

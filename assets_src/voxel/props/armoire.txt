@@ -1,0 +1,10 @@
+# Armoire.
+palette:
+  b: brun_1
+  B: brun_2
+  j: jaune_linge
+box: b 0 0 0 16 30 8
+box: B 1 1 0 6 28 1
+box: B 9 1 0 6 28 1
+box: j 7 14 0 1 2 1
+box: j 8 14 0 1 2 1

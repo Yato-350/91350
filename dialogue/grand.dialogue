@@ -1,0 +1,44 @@
+~ start
+if step("le_grand", "salle")
+	le_grand: Lucien t'envoie.
+	le_grand: ...
+	le_grand: Tu sais pourquoi on m'appelle le Grand ?
+	- Parce que t'es grand ? [#ton=cash]
+		le_grand: Mauvaise réponse. Bonne réponse aussi.
+	- Parce que t'as été champion ? [#ton=calme]
+		le_grand: Champion de quoi ? D'un ring ? Ça compte, un ring ?
+	- Parce que t'es le seul grand frère qu'on a choisi. [#ton=malin]
+		le_grand: ...
+		le_grand: Lucien t'a bien briefé.
+	le_grand: Ici, on frappe les sacs. Pas les gens. Tu sens la différence ?
+	le_grand: Trois bidons. Mme Huguette au onzième, M. Ferreira au septième, et Lucien.
+	le_grand: L'ascenseur ? Tu crois qu'il marche ?
+	$> give("bidon_plein", 3)
+	le_grand: Après, Mamie Scooter cherche quelqu'un pour tenir les paos.
+elif step("le_grand", "eau")
+	le_grand: Trois bidons, trois portes. Lourd ?
+	le_grand: C'est fait pour.
+elif step("le_grand", "paos")
+	le_grand: Mamie Scooter t'attend. Tu crois qu'elle tape doucement ?
+elif step("le_grand", "question")
+	le_grand: Assieds-toi.
+	le_grand: ...
+	le_grand: Pourquoi tu te bats, Akan ?
+	- Pour Paul. Et pour tous les noms de la liste de Lucien. [#ton=calme]
+		le_grand: Pour les autres. C'est lourd, les autres. Tu vas tenir ?
+		akan: Onze étages avec un bidon. Je tiens.
+	- Parce que j'en ai marre d'avoir peur. [#ton=cash]
+		le_grand: La peur, ça se garde. Ça empêche de faire n'importe quoi. Tu le sais ?
+		akan: Je le sais.
+	- Pour que Maya grandisse ailleurs que sous un écran. [#ton=malin]
+		le_grand: ...
+		le_grand: Ta petite sœur. Ouais.
+	le_grand: T'as porté l'eau sans qu'on te regarde. T'as tenu les paos sans rien demander.
+	le_grand: Et t'as tué personne. Tu sais ce que ça vaut, ici ?
+	le_grand: Je suis avec toi. Pas avec ta colère. Avec toi.
+	le_grand: Va voir Zed. Il a ce qu'on n'a pas. Son prix ? Tu crois que je le connais ?
+elif quest_active("le_contact")
+	le_grand: La passerelle, vers la Grande Borne. Le coursier de Zed t'attend. Les cadeaux, ça se paie.
+else
+	le_grand: Tu viens taper ou tu viens parler ?
+=> END

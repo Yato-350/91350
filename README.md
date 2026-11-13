@@ -16,13 +16,20 @@ libération de Paris.
 
 | Action | Clavier (position des touches) | Manette |
 |---|---|---|
-| Bouger | ZQSD (WASD en QWERTY) ou flèches | Stick gauche ou croix |
+| Bouger | ZQSD (WASD en QWERTY) ou flèches | Stick gauche |
 | Courir | Maj | B |
+| S'accroupir (discret, pas silencieux) | C | Clic du stick gauche |
+| Interagir, parler | F | A |
+| Frapper (par derrière : neutraliser) | Espace ou clic gauche | X |
+| Raccourcis 1 à 4 (boire, manger…) | 1 à 4 | Croix directionnelle |
+| Sac | Tab ou I | Y |
+| Journal des quêtes | J | Select |
+| Pause (sauvegarder, charger, titre) | Échap | Start |
 | Tourner la caméra | A / E (Q / E en QWERTY) | LB / RB |
 | Sauvegarde / chargement rapides | F5 / F9 | — |
-| Gris ↔ couleur (démonstration) | F2 | — |
-| Crédits | F1 | Select |
+| Crédits | F1 | — |
 | Plein écran | F11 | — |
+| Gris ↔ couleur (démonstration) | F2 | — |
 
 ## Installer et lancer
 
@@ -106,6 +113,9 @@ tools/         installation de Godot, vérifications, validation des données
 
 - Moteur : [Godot Engine](https://godotengine.org/license) (MIT).
 - Police : Tiny5, The Tiny5 Project Authors (SIL Open Font License 1.1).
+- Dialogues : [Dialogue Manager](https://github.com/nathanhoad/godot_dialogue_manager), Nathan Hoad (MIT).
+- Cartes : © les contributeurs d'OpenStreetMap — données sous licence ODbL.
+- Sons et musiques : synthétisés pour le jeu par `tools/build_sounds.py` (CC0).
 - Tests : [GUT](https://github.com/bitwes/Gut) (MIT), non distribué avec le jeu.
 - Le code et le contenu du jeu ne sont pas sous licence libre : tous droits réservés.
 

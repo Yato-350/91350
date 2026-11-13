@@ -1,0 +1,9 @@
+# Lettre de menaces.
+palette:
+  w: blanc
+  4: beton_4
+  r: rouge_propagande
+box: w 0 0 0 7 5 1
+box: 4 1 3 0 5 1 1
+box: 4 1 1 0 3 1 1
+box: r 5 1 0 1 1 1

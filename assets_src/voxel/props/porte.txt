@@ -1,0 +1,8 @@
+# Porte d'entrée d'un bâtiment.
+palette:
+  b: brun_1
+  B: brun_2
+  j: jaune_linge
+box: b 0 0 0 14 32 2
+box: B 1 0 0 12 31 1
+box: j 10 15 0 1 2 1

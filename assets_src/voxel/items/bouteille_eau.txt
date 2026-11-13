@@ -1,0 +1,9 @@
+# Bouteille d'eau.
+palette:
+  w: blanc
+  e: bleu_ecran
+  D: eau_claire
+box: D 0 0 0 3 6 3
+box: e 0 2 0 3 2 3
+box: D 1 6 1 1 2 1
+box: w 1 8 1 1 1 1

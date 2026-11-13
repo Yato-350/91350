@@ -1,0 +1,25 @@
+# Tag d'Akan, espoir : le soleil se lève derrière les tours.
+palette:
+  n: noir
+  o: orange_vif
+  j: jaune_linge
+  J: creme
+  v: violet_tag
+  g: vert_tag
+scale: 2
+offset: 0 3 0
+panel:
+  .....non...non..non.....
+  ......non..non.non......
+  ..nn..noon.nonnoon..nn..
+  .noon..non.nonnon..noon.
+  ..noonnnoonjjnoonnnoon..
+  ...nnoonjjjjjjjjnoonn...
+  nnn..nojvvvjjjjjjon..nnn
+  ooonnnnjvvvJJJjvvvnnnooo
+  nnvvvvjjvvvJJJJvvvooonnn
+  .nvvvvjjvvvJJJJvvvnvvvvn
+  .nvvvvjjvvvJJJJvvvnvvvvn
+  .nvvvvjjvvvJJJJvvvnvvvvn
+  nnvvvvnjvvvJJJjvvvnvvvvn
+  gggggggggggggggggggggggg

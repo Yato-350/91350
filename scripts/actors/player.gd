@@ -1,27 +1,36 @@
 class_name Player
 extends CharacterBody3D
-## Akan : déplacement relatif à la caméra, au clavier comme à la manette.
-## Le visuel en boîtes est provisoire (remplacé par le pipeline voxel au jalon M1).
+## Akan : déplacement relatif à la caméra, course (endurance), accroupi, interactions.
 
 const WALK_SPEED := 2.5
 const RUN_SPEED := 5.5
+const CROUCH_SPEED := 1.5
+## Avec une charge lourde (le bidon de vingt litres), on marche moins vite et on ne court pas.
+const HEAVY_FACTOR := 0.7
 const ACCELERATION := 30.0
-const TURN_SPEED := 12.0
 ## Sous cette altitude, le joueur est tombé hors du monde : retour à l'apparition.
 const FALL_LIMIT := -20.0
-const STRIDES_PER_METER := 1.6
-const SWING_RADIANS := 0.7
+## Paramètre global des shaders : là où s'ouvre la vue à travers les bâtiments.
+const SHADER_POSITION := &"player_position"
+const GROUP := &"player"
+## Actions des raccourcis du sac : quick_1 à quick_4.
+const QUICK_ACTION := "quick_%d"
+## Un pas s'entend tous les tant de mètres ; en courant, les foulées s'allongent.
+const STEP_DISTANCE := 0.8
+const RUN_STRIDE_FACTOR := 1.6
 
-@export var save_id: StringName = &"player"
+## Accroupi : lent, silencieux, et jamais en course.
+var crouched := false
+## L'élément du monde avec lequel Akan peut interagir, ou null.
+var focus: Interactable
 
 var _spawn_position := Vector3.ZERO
+var _attack_cooldown := 0.0
+## Mètres parcourus depuis le dernier pas entendu.
 var _stride := 0.0
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-@onready var _visual: Node3D = $Visual
-@onready var _swinging: Array[Node3D] = [
-	$Visual/LegLeft, $Visual/ArmRight, $Visual/LegRight, $Visual/ArmLeft
-]
+@onready var _visual: CharacterVisual = $Visual
 
 
 ## Direction de déplacement dans le monde pour une entrée du stick (x à droite,
@@ -31,63 +40,118 @@ static func move_direction(input: Vector2, camera_yaw: float) -> Vector3:
 
 
 func _ready() -> void:
+	add_to_group(GROUP)
 	_spawn_position = global_position
 
 
+func _process(_delta: float) -> void:
+	var at := get_global_transform_interpolated().origin
+	RenderingServer.global_shader_parameter_set(SHADER_POSITION, at)
+
+
 func _physics_process(delta: float) -> void:
+	_attack_cooldown = maxf(_attack_cooldown - delta, 0.0)
 	if global_position.y < FALL_LIMIT:
-		_teleport(_spawn_position)
+		teleport(_spawn_position)
 		return
 	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	var direction := move_direction(input, _camera_yaw())
-	var speed := RUN_SPEED if Input.is_action_pressed(&"run") else WALK_SPEED
+	var heavy := GameState.inventory.carries_heavy()
+	var wants_run := Input.is_action_pressed(&"run") and not direction.is_zero_approx()
+	var running := wants_run and not crouched and not heavy and GameState.vitals.can_run()
+	GameState.tick_body(delta, running)
+	var speed := CROUCH_SPEED if crouched else RUN_SPEED if running else WALK_SPEED
+	if heavy:
+		speed *= HEAVY_FACTOR
+	_visual.carrying = heavy
 	var horizontal := Vector3(velocity.x, 0.0, velocity.z)
 	horizontal = horizontal.move_toward(direction * speed, ACCELERATION * delta)
 	velocity = Vector3(horizontal.x, velocity.y - _gravity * delta, horizontal.z)
 	move_and_slide()
-	_animate(horizontal, delta)
+	if is_on_floor():
+		var stride := STEP_DISTANCE * (RUN_STRIDE_FACTOR if running else 1.0)
+		walk_steps(Vector2(horizontal.x, horizontal.z).length() * delta, stride)
+	_visual.crouched = crouched
+	_visual.animate(horizontal, delta)
+	_update_focus()
 
 
-func save_state() -> Dictionary:
-	var at := global_position
-	return {"position": [at.x, at.y, at.z], "yaw": _visual.rotation.y}
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"crouch"):
+		crouched = not crouched
+	elif event.is_action_pressed(&"interact") and focus != null:
+		focus.interact(self)
+	elif event.is_action_pressed(&"attack"):
+		attack()
+	for index: int in Inventory.QUICK_SLOT_COUNT:
+		if event.is_action_pressed(QUICK_ACTION % (index + 1)):
+			GameState.use_item(GameState.inventory.quick_slots[index])
 
 
-## Ignore un état mal formé : la position actuelle est conservée.
-func load_state(state: Dictionary) -> void:
-	var raw: Variant = state.get("position")
-	if not raw is Array or raw.size() != 3:
+## Un coup de poing devant soi. Par derrière, sur un Vigile qui ne l'a pas repéré, c'est
+## une neutralisation silencieuse ; sinon, un coup. Frapper un Vigile est interdit.
+func attack() -> void:
+	if _attack_cooldown > 0.0:
 		return
-	for value: Variant in raw:
-		if not (value is float or value is int):
-			return
-	_teleport(Vector3(raw[0], raw[1], raw[2]))
-	var yaw: Variant = state.get("yaw")
-	if yaw is float or yaw is int:
-		_visual.rotation.y = yaw
+	_attack_cooldown = Combat.PUNCH_COOLDOWN
+	_visual.punch()
+	var enemies: Array[Node3D] = []
+	for node: Node in get_tree().get_nodes_in_group(Vigile.GROUP):
+		var vigile := node as Vigile
+		if vigile != null and vigile.state != Vigile.State.KNOCKED_OUT:
+			enemies.append(vigile)
+	var targets := Combat.targets_in_front(
+		global_position,
+		_visual.global_rotation.y,
+		Combat.PUNCH_REACH,
+		Combat.PUNCH_ARC_DEGREES,
+		enemies
+	)
+	if targets.is_empty():
+		return
+	var target := targets[0] as Vigile
+	GameState.commit_offence()
+	EventBus.sound_requested.emit(&"coup")
+	var close := target.global_position.distance_to(global_position) <= Combat.TAKEDOWN_REACH
+	if close and target.can_be_taken_down(global_position):
+		target.knock_out()
+	else:
+		target.take_hit(Combat.PUNCH_DAMAGE, global_position)
 
 
-func _teleport(to: Vector3) -> void:
+## Compte les pas sur `distance` mètres : un bruit de pas à chaque foulée, sauf accroupi.
+func walk_steps(distance: float, stride: float = STEP_DISTANCE) -> void:
+	_stride += distance
+	while _stride >= stride:
+		_stride -= stride
+		if not crouched:
+			EventBus.sound_requested.emit(&"pas")
+
+
+func teleport(to: Vector3) -> void:
 	global_position = to
 	velocity = Vector3.ZERO
 	# Sans cela, l'interpolation physique ferait glisser le joueur jusqu'à sa nouvelle place.
 	reset_physics_interpolation()
 
 
+# Vise l'élément interactif actif le plus proche, s'il est à portée.
+func _update_focus() -> void:
+	var nearest: Interactable = null
+	var nearest_distance := INF
+	for node: Node in get_tree().get_nodes_in_group(Interactable.GROUP):
+		var candidate := node as Interactable
+		if candidate == null or not candidate.enabled:
+			continue
+		var distance := candidate.global_position.distance_to(global_position)
+		if distance <= candidate.radius and distance < nearest_distance:
+			nearest = candidate
+			nearest_distance = distance
+	if nearest != focus:
+		focus = nearest
+		EventBus.interaction_focus_changed.emit(nearest.prompt if nearest != null else "")
+
+
 func _camera_yaw() -> float:
 	var camera := get_viewport().get_camera_3d()
 	return camera.global_rotation.y if camera != null else 0.0
-
-
-# Tourne le visuel vers la marche et balance bras et jambes selon la distance parcourue.
-func _animate(horizontal: Vector3, delta: float) -> void:
-	var speed := horizontal.length()
-	if speed > 0.1:
-		var facing := atan2(-horizontal.x, -horizontal.z)
-		_visual.rotation.y = lerp_angle(_visual.rotation.y, facing, minf(1.0, TURN_SPEED * delta))
-		_stride += speed * delta * STRIDES_PER_METER * TAU
-	else:
-		_stride = 0.0
-	var swing := sin(_stride) * SWING_RADIANS * minf(1.0, speed / WALK_SPEED)
-	for index: int in _swinging.size():
-		_swinging[index].rotation.x = swing if index < 2 else -swing

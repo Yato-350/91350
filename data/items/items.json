@@ -1,0 +1,261 @@
+{
+	"items": [
+		{
+			"id": "bouteille_eau",
+			"name": "ITEM_BOUTEILLE_EAU",
+			"description": "ITEM_BOUTEILLE_EAU_DESC",
+			"category": "ressource",
+			"stack": 5,
+			"value": 2,
+			"use": {
+				"thirst": 35
+			}
+		},
+		{
+			"id": "bidon_vide",
+			"name": "ITEM_BIDON_VIDE",
+			"description": "ITEM_BIDON_VIDE_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0
+		},
+		{
+			"id": "bidon_plein",
+			"name": "ITEM_BIDON_PLEIN",
+			"description": "ITEM_BIDON_PLEIN_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0,
+			"heavy": true
+		},
+		{
+			"id": "baguette",
+			"name": "ITEM_BAGUETTE",
+			"description": "ITEM_BAGUETTE_DESC",
+			"category": "ressource",
+			"stack": 3,
+			"value": 2,
+			"use": {
+				"hunger": 30
+			}
+		},
+		{
+			"id": "conserve",
+			"name": "ITEM_CONSERVE",
+			"description": "ITEM_CONSERVE_DESC",
+			"category": "ressource",
+			"stack": 5,
+			"value": 4,
+			"use": {
+				"hunger": 45
+			}
+		},
+		{
+			"id": "chips",
+			"name": "ITEM_CHIPS",
+			"description": "ITEM_CHIPS_DESC",
+			"category": "ressource",
+			"stack": 5,
+			"value": 1,
+			"use": {
+				"hunger": 15,
+				"thirst": -5
+			}
+		},
+		{
+			"id": "kebab",
+			"name": "ITEM_KEBAB",
+			"description": "ITEM_KEBAB_DESC",
+			"category": "ressource",
+			"stack": 2,
+			"value": 6,
+			"use": {
+				"hunger": 70
+			}
+		},
+		{
+			"id": "ration_grise",
+			"name": "ITEM_RATION_GRISE",
+			"description": "ITEM_RATION_GRISE_DESC",
+			"category": "ressource",
+			"stack": 5,
+			"value": 1,
+			"use": {
+				"hunger": 35,
+				"thirst": 10
+			}
+		},
+		{
+			"id": "fruits",
+			"name": "ITEM_FRUITS",
+			"description": "ITEM_FRUITS_DESC",
+			"category": "ressource",
+			"stack": 5,
+			"value": 2,
+			"use": {
+				"hunger": 15,
+				"thirst": 10
+			}
+		},
+		{
+			"id": "trousse_soins",
+			"name": "ITEM_TROUSSE_SOINS",
+			"description": "ITEM_TROUSSE_SOINS_DESC",
+			"category": "ressource",
+			"stack": 3,
+			"value": 12,
+			"use": {
+				"health": 50
+			}
+		},
+		{
+			"id": "antidouleurs",
+			"name": "ITEM_ANTIDOULEURS",
+			"description": "ITEM_ANTIDOULEURS_DESC",
+			"category": "ressource",
+			"stack": 5,
+			"value": 5,
+			"use": {
+				"health": 20
+			}
+		},
+		{
+			"id": "piles",
+			"name": "ITEM_PILES",
+			"description": "ITEM_PILES_DESC",
+			"category": "ressource",
+			"stack": 10,
+			"value": 3
+		},
+		{
+			"id": "tickets",
+			"name": "ITEM_TICKETS",
+			"description": "ITEM_TICKETS_DESC",
+			"category": "monnaie",
+			"stack": 99,
+			"value": 1
+		},
+		{
+			"id": "billets",
+			"name": "ITEM_BILLETS",
+			"description": "ITEM_BILLETS_DESC",
+			"category": "monnaie",
+			"stack": 99,
+			"value": 1
+		},
+		{
+			"id": "bombe_peinture",
+			"name": "ITEM_BOMBE_PEINTURE",
+			"description": "ITEM_BOMBE_PEINTURE_DESC",
+			"category": "gadget",
+			"stack": 3,
+			"value": 8
+		},
+		{
+			"id": "lance_pierre",
+			"name": "ITEM_LANCE_PIERRE",
+			"description": "ITEM_LANCE_PIERRE_DESC",
+			"category": "distance",
+			"stack": 1,
+			"value": 30,
+			"weapon": {
+				"damage": 12,
+				"stun": 3.0,
+				"range": 14,
+				"cooldown": 0.8
+			}
+		},
+		{
+			"id": "batte",
+			"name": "ITEM_BATTE",
+			"description": "ITEM_BATTE_DESC",
+			"category": "melee",
+			"stack": 1,
+			"value": 15,
+			"weapon": {
+				"damage": 22,
+				"reach": 1.6,
+				"cooldown": 0.5
+			}
+		},
+		{
+			"id": "matraque",
+			"name": "ITEM_MATRAQUE",
+			"description": "ITEM_MATRAQUE_DESC",
+			"category": "melee",
+			"stack": 1,
+			"value": 20,
+			"weapon": {
+				"damage": 18,
+				"reach": 1.4,
+				"cooldown": 0.4
+			}
+		},
+		{
+			"id": "sac_petit",
+			"name": "ITEM_SAC_PETIT",
+			"description": "ITEM_SAC_PETIT_DESC",
+			"category": "equipement",
+			"stack": 1,
+			"value": 25,
+			"bag": "sac_petit"
+		},
+		{
+			"id": "provisions_guet",
+			"name": "ITEM_PROVISIONS_GUET",
+			"description": "ITEM_PROVISIONS_GUET_DESC",
+			"category": "quete",
+			"stack": 3,
+			"value": 0,
+			"contraband": true
+		},
+		{
+			"id": "colis_zed",
+			"name": "ITEM_COLIS_ZED",
+			"description": "ITEM_COLIS_ZED_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0
+		},
+		{
+			"id": "carnet_bernard",
+			"name": "ITEM_CARNET_BERNARD",
+			"description": "ITEM_CARNET_BERNARD_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0
+		},
+		{
+			"id": "telephone_bernard",
+			"name": "ITEM_TELEPHONE_BERNARD",
+			"description": "ITEM_TELEPHONE_BERNARD_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0
+		},
+		{
+			"id": "lettre_menaces",
+			"name": "ITEM_LETTRE_MENACES",
+			"description": "ITEM_LETTRE_MENACES_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0
+		},
+		{
+			"id": "liste_disparus",
+			"name": "ITEM_LISTE_DISPARUS",
+			"description": "ITEM_LISTE_DISPARUS_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0
+		},
+		{
+			"id": "titre_residence",
+			"name": "ITEM_TITRE_RESIDENCE",
+			"description": "ITEM_TITRE_RESIDENCE_DESC",
+			"category": "quete",
+			"stack": 1,
+			"value": 0
+		}
+	]
+}

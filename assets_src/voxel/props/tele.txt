@@ -1,0 +1,9 @@
+# Télévision sur son meuble.
+palette:
+  n: noir
+  e: bleu_ecran
+  b: brun_1
+box: b 0 0 0 16 6 6
+box: n 7 6 2 2 1 2
+box: n 1 7 2 14 9 2
+box: e 2 8 2 12 7 1

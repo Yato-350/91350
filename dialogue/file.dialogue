@@ -1,0 +1,35 @@
+~ controle
+if step("la_file", "controle")
+	vigile: Contrôle de conformité. Votre titre de résidence. Merci de votre calme.
+	vigile: Motif du déplacement ?
+	- Je viens chercher l'eau pour ma mère. Voilà mon titre. [#ton=calme]
+		vigile: Conforme. Circulez dans le sens de la sérénité.
+	- Le motif ? J'habite ici. Le déplacement, c'est vous. [#ton=cash]
+		vigile: Votre humour est noté, citoyen. Tout est noté.
+		$> vigilance(1)
+		$> rep("familles", 5)
+	- Mission citoyenne : ma ration avant le couvre-feu, comme l'a dit l'écran. [#ton=malin]
+		vigile: Correct. Ne traînez pas : la relève est à dix-huit heures.
+		$> set_flag("info_releve")
+	monsieur_paul: Je n'ai rien fait ! J'ai mes papiers, regardez !
+	vigile: Citoyen Paul, vous êtes orienté vers un parcours d'harmonisation.
+	vigile: Souhaitons-lui tous un bon retour.
+	- (Te taire. Compter les dalles.) [#ton=calme]
+		akan: Une, deux, trois, quatre...
+	- Lâchez-le ! Il a soixante-dix ans ! [#ton=cash]
+		vigile: Une inquiétude de plus. Notée.
+		$> vigilance(1)
+		$> rep("familles", 5)
+	- (Renverser la pile de bidons pour faire diversion.) [#ton=malin]
+		akan: Oh pardon, ça glisse, ces trucs !
+		akan: (Le sac de Monsieur Paul... je le garde. Pour lui.)
+		$> set_flag("sac_paul")
+	$> set_flag("paul_embarque")
+	vigile: Votre ration. Une attention de la Concorde. Ne la gaspillez pas.
+	$> take("bidon_vide")
+	$> give("bidon_plein")
+elif quest_active("la_file")
+	vigile: Votre ration vous a été remise. Circulez.
+else
+	vigile: Un rassemblement est une inquiétude. Dispersez votre inquiétude.
+=> END

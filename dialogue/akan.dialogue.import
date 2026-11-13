@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://ij43i66pb7gw"
+path="res://.godot/imported/akan.dialogue-f554a232c5f27174b4f9bd24936c33c5.tres"
+
+[deps]
+
+source_file="res://dialogue/akan.dialogue"
+dest_files=["res://.godot/imported/akan.dialogue-f554a232c5f27174b4f9bd24936c33c5.tres"]
+
+[params]
+
+defaults=true

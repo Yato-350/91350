@@ -1,0 +1,37 @@
+~ start
+if step("ascenseur_en_panne", "parler")
+	daronne: Enfin debout. Tu descends chercher l'eau. Je répète pas.
+	akan: Et l'ascenseur, il est réparé ?
+	daronne: Mange d'abord. Un héros le ventre vide, c'est juste un problème de plus.
+	$> give("bouteille_eau", 1)
+	$> give("baguette", 1)
+	$> shortcut(0, "bouteille_eau")
+	$> shortcut(1, "baguette")
+	daronne: Bois, mange. Et prends le bidon, près de l'évier.
+elif quest_active("ascenseur_en_panne")
+	daronne: Le bidon, Akan. Près de l'évier. Je répète pas.
+elif step("la_file", "rapporter") and has("bidon_plein")
+	daronne: Vingt litres. Onze étages. Tu vois, quand tu veux.
+	$> take("bidon_plein")
+	$> objective("DELIVER", "daronne")
+	akan: Ils ont embarqué Monsieur Paul. Devant tout le monde.
+	daronne: Paul...
+	daronne: Lucien, au 7e. Lui, il sait où ils les emmènent.
+	daronne: Mais il n'ouvre à personne. Demande à Bernard, il connaît tout le palier.
+elif quest_active("la_file")
+	daronne: L'eau, Akan. Le point de ration, c'est sur l'esplanade.
+elif quest_active("le_vieux_du_7e")
+	daronne: Lucien, au 7e. Et tu frappes poliment.
+elif step("la_tour_se_leve", "voisins") and not flag("mobilise_daronne")
+	daronne: Les Vigiles. Dans ma tour. Dans mon hall.
+	daronne: Maya reste ici, porte fermée. Moi, je garde le onzième. Personne ne monte.
+	akan: Maman...
+	daronne: Toi, tu tiens le hall. Je répète pas.
+	$> set_flag("mobilise_daronne")
+	$> objective("TALK", "voisins")
+elif quest_done("la_tour_se_leve")
+	daronne: Tout le monde en parle, en bas. Mon fils.
+	daronne: Mange. Tu es tout maigre, pour un héros.
+else
+	daronne: Mange. Je répète pas.
+=> END

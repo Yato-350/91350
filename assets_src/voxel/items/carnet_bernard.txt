@@ -1,0 +1,8 @@
+# Carnet de Bernard.
+palette:
+  n: noir
+  R: rouge_sombre
+  c: creme
+box: R 0 0 0 5 7 1
+box: n 0 0 0 1 7 1
+box: c 2 4 0 2 1 1

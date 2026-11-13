@@ -1,0 +1,11 @@
+# Barrière de check-point.
+palette:
+  w: blanc
+  1: beton_1
+  r: rouge_propagande
+box: 1 0 0 0 2 14 2
+box: 1 22 0 0 2 14 2
+box: w 0 10 0 24 3 2
+box: r 4 10 0 4 3 2
+box: r 12 10 0 4 3 2
+box: r 20 10 0 2 3 2

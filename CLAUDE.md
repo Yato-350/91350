@@ -23,11 +23,14 @@ anglais ; commentaires et docs en français.
 
 ```bash
 tools/install_godot.sh --templates web   # Godot épinglé + modèles d'export web (Linux)
+tools/install_godot.sh --templates all   # + Windows, Linux, macOS (exports de release)
+python3 tools/build_sounds.py            # régénère les sons (assets/audio/)
 python3 -m venv .venv && .venv/bin/pip install -r tools/requirements.txt
 tools/check.sh all                       # lint, data, import, test, render, web
 tools/check.sh test                      # tests GUT sans affichage
 tools/check.sh render                    # tests de rendu + capture de la zone de test
 tools/check.sh screenshot res://scenes/zones/test_zone.tscn
+tools/check.sh screenshot zone:grigny2@mur_tag 22 3   # lieu@repère, heure, quart de tour
 tools/check.sh web && node tools/web_smoke.cjs   # build web + essai dans Chromium
 .venv/bin/gdformat scripts tests tools   # formate avant le lint
 ```

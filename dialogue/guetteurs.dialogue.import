@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cch3j88nlv3at"
+path="res://.godot/imported/guetteurs.dialogue-b742738c774eafe89a7a9044f8b6fc0c.tres"
+
+[deps]
+
+source_file="res://dialogue/guetteurs.dialogue"
+dest_files=["res://.godot/imported/guetteurs.dialogue-b742738c774eafe89a7a9044f8b6fc0c.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,6 @@
+# Antidouleurs.
+palette:
+  w: blanc
+  e: bleu_ecran
+box: w 0 0 0 5 3 2
+box: e 0 0 0 2 3 2

@@ -1,0 +1,7 @@
+# Matraque.
+palette:
+  1: beton_1
+  4: beton_4
+box: 1 1 0 1 1 12 1
+box: 1 2 3 1 2 1 1
+box: 4 1 0 1 1 1 1

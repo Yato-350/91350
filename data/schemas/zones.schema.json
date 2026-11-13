@@ -1,0 +1,318 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Zone",
+	"description": "Contenu de jeu d'une zone extérieure. Les coordonnées sont en mètres : [x, z], x vers l'est, z vers le sud, origine au centre de la zone.",
+	"type": "object",
+	"required": [
+		"id",
+		"name_regime",
+		"name_real",
+		"control",
+		"support",
+		"markers"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9_]*$"
+		},
+		"name_regime": {
+			"type": "string",
+			"pattern": "^[A-Z][A-Z0-9_]*$"
+		},
+		"name_real": {
+			"type": "string",
+			"pattern": "^[A-Z][A-Z0-9_]*$"
+		},
+		"control": {
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 100
+		},
+		"support": {
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 100
+		},
+		"markers": {
+			"type": "object",
+			"required": [
+				"default"
+			],
+			"additionalProperties": {
+				"$ref": "#/$defs/point"
+			},
+			"description": "Repères nommés : points d'arrivée, portes, lieux de quête."
+		},
+		"doors": {
+			"type": "array",
+			"items": {
+				"$ref": "#/$defs/door"
+			}
+		},
+		"props": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"model",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"model": {
+						"type": "string"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère où poser l'élément."
+					},
+					"yaw": {
+						"type": "number"
+					},
+					"solid": {
+						"type": "boolean"
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
+					},
+					"exact": {
+						"type": "boolean",
+						"description": "Posé au centimètre près (« x,z » en mètres), même contre un mur : une fresque."
+					}
+				}
+			}
+		},
+		"pickups": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"item",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$",
+						"description": "Unique dans le lieu : un objet pris ne revient pas."
+					},
+					"item": {
+						"type": "string"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère où l'objet est posé."
+					},
+					"count": {
+						"type": "integer",
+						"minimum": 1
+					}
+				}
+			}
+		},
+		"npcs": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"character",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"character": {
+						"type": "string",
+						"description": "Fiche de data/characters/."
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère où se tient le personnage."
+					},
+					"dialogue": {
+						"type": "string",
+						"description": "Fichier de dialogue/ (sans extension)."
+					},
+					"cue": {
+						"type": "string"
+					},
+					"yaw": {
+						"type": "number"
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
+					}
+				}
+			}
+		},
+		"spots": {
+			"type": "array",
+			"description": "Points d'action : interagir joue un dialogue (lit, mur à taguer, boîtier).",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"at",
+					"prompt",
+					"dialogue"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère du point."
+					},
+					"prompt": {
+						"type": "string",
+						"description": "Clé du verbe affiché."
+					},
+					"dialogue": {
+						"type": "array",
+						"description": "[fichier de dialogue/, entrée].",
+						"items": {
+							"type": "string"
+						},
+						"minItems": 2,
+						"maxItems": 2
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition pour que le geste soit possible (voir conditions.gd)."
+					},
+					"offence": {
+						"type": "boolean",
+						"description": "Vrai pour un geste interdit : les guetteurs qui voient Akan s'inquiètent."
+					}
+				}
+			}
+		},
+		"cameras": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère ou « x,z »."
+					},
+					"yaw": {
+						"type": "number",
+						"description": "Axe du regard, en degrés (0 : vers le nord)."
+					},
+					"sweep": {
+						"type": "number",
+						"description": "Balayage de part et d'autre de l'axe, en degrés."
+					},
+					"range": {
+						"type": "number",
+						"exclusiveMinimum": 0
+					},
+					"if": {
+						"type": "object"
+					}
+				}
+			}
+		},
+		"vigiles": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"patrol"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"character": {
+						"type": "string"
+					},
+					"patrol": {
+						"type": "array",
+						"minItems": 1,
+						"items": {
+							"type": "string"
+						},
+						"description": "La ronde : repères ou « x,z », parcourus en boucle."
+					},
+					"if": {
+						"type": "object"
+					}
+				}
+			}
+		}
+	},
+	"$defs": {
+		"point": {
+			"type": "array",
+			"items": {
+				"type": "number"
+			},
+			"minItems": 2,
+			"maxItems": 2
+		},
+		"door": {
+			"type": "object",
+			"required": [
+				"at",
+				"to",
+				"prompt"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"at": {
+					"type": "string",
+					"description": "Repère où se trouve la porte."
+				},
+				"to": {
+					"type": "string",
+					"pattern": "^[a-z][a-z0-9_]*(@[a-z0-9_]+)?$",
+					"description": "Lieu d'arrivée, avec ou sans repère : « hall_tour », « grigny2@gare »."
+				},
+				"prompt": {
+					"type": "string",
+					"pattern": "^[A-Z][A-Z0-9_]*$"
+				},
+				"dialogue": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 2,
+					"maxItems": 2,
+					"description": "[fichier, entrée] : on frappe, et le dialogue décide si l'on entre."
+				},
+				"if": {
+					"type": "object",
+					"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
+				}
+			}
+		}
+	}
+}

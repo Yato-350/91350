@@ -45,3 +45,29 @@ static func migrate(data: Dictionary, steps: Dictionary, target_version: int) ->
 		version += 1
 		data["save_version"] = version
 	return data
+
+
+## Lit un nombre d'un état relu ; `fallback` si la clé manque ou n'est pas un nombre.
+static func number(state: Dictionary, key: String, fallback: float) -> float:
+	var value: Variant = state.get(key)
+	return float(value) if value is float or value is int else fallback
+
+
+static func text(state: Dictionary, key: String, fallback: String) -> String:
+	var value: Variant = state.get(key)
+	return value if value is String else fallback
+
+
+static func flag(state: Dictionary, key: String, fallback: bool) -> bool:
+	var value: Variant = state.get(key)
+	return value if value is bool else fallback
+
+
+static func table(state: Dictionary, key: String) -> Dictionary:
+	var value: Variant = state.get(key)
+	return value if value is Dictionary else {}
+
+
+static func list(state: Dictionary, key: String) -> Array:
+	var value: Variant = state.get(key)
+	return value if value is Array else []

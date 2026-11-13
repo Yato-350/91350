@@ -1,0 +1,111 @@
+{
+	"id": "appartement_akan",
+	"name": "PLACE_APPARTEMENT_AKAN",
+	"territory": "grigny2",
+	"home": true,
+	"plan": [
+		"#############",
+		"#b.w#B.w#fkc#",
+		"#bzl#B..#de,#",
+		"#...#..m#,,i#",
+		"##.###.###.##",
+		"#s........v.#",
+		"#s..tt.....pD",
+		"#a..hh.y....#",
+		"#############"
+	],
+	"markers": {
+		"l": "default",
+		"m": "chambre",
+		"a": "sejour",
+		"p": "porte",
+		"i": "cuisine",
+		"e": "evier",
+		"d": "daronne",
+		"y": "maya",
+		"z": "lit"
+	},
+	"floors": {
+		",": "beton_5"
+	},
+	"doors": [
+		{
+			"at": "porte",
+			"to": "palier_11",
+			"prompt": "PROMPT_SORTIR"
+		}
+	],
+	"props": {
+		"b": {
+			"model": "lit"
+		},
+		"B": {
+			"model": "lit_double"
+		},
+		"w": {
+			"model": "armoire",
+			"yaw": 180
+		},
+		"f": {
+			"model": "frigo",
+			"yaw": 180
+		},
+		"k": {
+			"model": "plan_travail",
+			"yaw": 180
+		},
+		"c": {
+			"model": "cuisiniere",
+			"yaw": 180
+		},
+		"s": {
+			"model": "canape",
+			"yaw": -90
+		},
+		"v": {
+			"model": "tele",
+			"yaw": 90
+		},
+		"t": {
+			"model": "table"
+		},
+		"h": {
+			"model": "chaise",
+			"solid": false
+		}
+	},
+	"pickups": [
+		{
+			"id": "bidon",
+			"item": "bidon_vide",
+			"at": "evier"
+		}
+	],
+	"spots": [
+		{
+			"id": "lit",
+			"at": "lit",
+			"prompt": "PROMPT_DORMIR",
+			"dialogue": [
+				"akan",
+				"dormir"
+			]
+		}
+	],
+	"npcs": [
+		{
+			"id": "daronne",
+			"character": "daronne",
+			"at": "daronne",
+			"dialogue": "daronne",
+			"yaw": 90
+		},
+		{
+			"id": "maya",
+			"character": "maya",
+			"at": "maya",
+			"dialogue": "maya",
+			"yaw": 180
+		}
+	]
+}

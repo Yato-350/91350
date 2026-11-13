@@ -41,9 +41,10 @@ func save_game(slot: int = 0) -> bool:
 	if file == null:
 		push_warning("Sauvegarde impossible : %s" % temp_path)
 		return false
-	file.store_string(text)
+	var written := file.store_string(text)
 	file.close()
-	if DirAccess.rename_absolute(temp_path, slot_path(slot)) != OK:
+	if not written or DirAccess.rename_absolute(temp_path, slot_path(slot)) != OK:
+		DirAccess.remove_absolute(temp_path)
 		push_warning("Sauvegarde impossible : %s" % slot_path(slot))
 		return false
 	EventBus.game_saved.emit(slot)

@@ -1,0 +1,41 @@
+~ start
+if step("premier_tag", "pixel")
+	pixel: Akan ! Les Jumeaux m'ont dit. Bienvenue à l'atelier.
+	pixel: Le gris, c'est pas une couleur, c'est une punition.
+	pixel: Moi je suis daltonien. Leur gris, je le vois même pas. Je vois du vide.
+	pixel: Il nous faut un mur. Le mur de ta tour, côté avenue. Tout le monde passe devant.
+	akan: Les Vigiles aussi.
+	pixel: Après le couvre-feu. Le soir, les caméras ont sommeil. Un peu.
+	pixel: Ils m'ont pris mes bombes. Il m'en reste une, planquée derrière ta tour, près du local technique.
+	- On met quoi, sur ce mur ? [#ton=calme]
+		pixel: Ce que tu ressens. Le mur, c'est toi qui le choisis.
+	- Un tag, ça va pas libérer Paul. [#ton=cash]
+		pixel: Non. Mais ça dit à tout le monde que quelqu'un pense encore à lui.
+	- Je signe « Grand Frère ». Ils vont devenir fous. [#ton=malin]
+		pixel: Ha ! Garde-la pour la prochaine. Celui-là, il est pour nous.
+elif quest_active("premier_tag")
+	pixel: La bombe est derrière ta tour. Le mur, côté avenue. Après le couvre-feu.
+	pixel: Et tu traînes pas après : les Vigiles adorent les couleurs.
+elif quest_done("premier_tag")
+	pixel: T'as vu ? Les gens s'arrêtent devant ton mur. Ils font semblant de pas regarder.
+else
+	pixel: Passe-moi le rose. Non, l'autre rose.
+=> END
+
+~ tag
+akan: Un mur gris. Trois mètres de gris. Allez.
+- Une colère rouge : l'œil de leurs caméras, crevé. [#ton=cash]
+	$> set_flag("tag_colere")
+	akan: Voilà ce qu'on pense de vos yeux.
+- Un soleil qui se lève derrière les tours. [#ton=calme]
+	$> set_flag("tag_espoir")
+	akan: Il va bien finir par se lever, ce soleil.
+- Leur caméra, en lunettes noires, qui fait une bulle de chewing-gum. [#ton=malin]
+	$> set_flag("tag_humour")
+	akan: Souris, t'es filmée.
+$> sound("bombe")
+$> take("bombe_peinture")
+$> objective("PUBLISH", "mur_tour")
+$> alarm()
+akan: Des sifflets. Des lampes. Faut filer.
+=> END

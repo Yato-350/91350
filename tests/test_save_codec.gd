@@ -43,3 +43,19 @@ func _rename_hero(data: Dictionary) -> Dictionary:
 func _add_water(data: Dictionary) -> Dictionary:
 	data["systems"]["player"]["water"] = 100
 	return data
+
+
+func test_typed_readers_fall_back_on_missing_or_malformed_values() -> void:
+	var state := {"n": 3, "f": 2.5, "s": "eau", "b": true, "d": {"a": 1}, "l": [1, 2]}
+	assert_eq(SaveCodec.number(state, "n", 9.0), 3.0)
+	assert_eq(SaveCodec.number(state, "f", 9.0), 2.5)
+	assert_eq(SaveCodec.number(state, "s", 9.0), 9.0)
+	assert_eq(SaveCodec.number(state, "absent", 9.0), 9.0)
+	assert_eq(SaveCodec.text(state, "s", "x"), "eau")
+	assert_eq(SaveCodec.text(state, "n", "x"), "x")
+	assert_true(SaveCodec.flag(state, "b", false))
+	assert_true(SaveCodec.flag(state, "n", true))
+	assert_eq(SaveCodec.table(state, "d"), {"a": 1})
+	assert_eq(SaveCodec.table(state, "l"), {})
+	assert_eq(SaveCodec.list(state, "l"), [1, 2])
+	assert_eq(SaveCodec.list(state, "d"), [])

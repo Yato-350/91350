@@ -1,0 +1,7 @@
+# Batte.
+palette:
+  n: noir
+  B: brun_2
+box: n 1 0 1 1 2 1
+box: B 1 2 1 1 5 1
+box: B 0 7 0 3 10 3

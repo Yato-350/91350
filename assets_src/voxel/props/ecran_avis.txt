@@ -1,0 +1,24 @@
+# Écran de propagande, version avis de recherche : le visage d'Akan en gros pixels,
+# capuche jaune, sur fond d'alerte rouge.
+palette:
+  n: noir
+  w: blanc
+  1: beton_1
+  e: bleu_ecran
+  r: rouge_propagande
+  s: peau_1
+  S: brun_2
+  j: jaune_linge
+box: 1 10 0 1 2 30 2
+box: n 0 30 0 22 14 4
+box: r 1 31 0 20 12 1
+box: e 4 32 0 14 9 1
+box: j 6 32 0 10 2 1
+box: j 6 34 0 2 6 1
+box: j 14 34 0 2 6 1
+box: n 8 38 0 6 2 1
+box: s 8 34 0 6 4 1
+box: n 9 36 0 1 1 1
+box: n 12 36 0 1 1 1
+box: S 10 34 0 2 1 1
+box: w 1 42 0 20 1 1

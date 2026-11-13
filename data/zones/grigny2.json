@@ -1,0 +1,494 @@
+{
+	"id": "grigny2",
+	"name_regime": "ZONE_GRIGNY2_REGIME",
+	"name_real": "ZONE_GRIGNY2_REAL",
+	"control": 85,
+	"support": 15,
+	"markers": {
+		"default": [
+			-143.5,
+			-154.5
+		],
+		"gare": [
+			100,
+			10
+		],
+		"derriere_la_tour": [
+			-150,
+			-160
+		],
+		"tour_akan": [
+			-142.2,
+			-153.1
+		],
+		"point_ration": [
+			-68.5,
+			-142.5
+		],
+		"epicerie": [
+			-148.0,
+			-212.0
+		],
+		"mur_tag": [
+			-142.73,
+			-139.16
+		],
+		"salle": [
+			-138.8,
+			-240.2
+		],
+		"panier": [
+			-131.5,
+			-231.5
+		],
+		"pixel": [
+			-155.2,
+			-228.0
+		],
+		"garage": [
+			-131.0,
+			-254.0
+		],
+		"passerelle": [
+			-252.0,
+			-128.5
+		],
+		"poste_coteau": [
+			-180.0,
+			-195.0
+		],
+		"poste_parking": [
+			-92.0,
+			-229.0
+		],
+		"poste_conteneurs": [
+			-48.0,
+			-197.0
+		]
+	},
+	"doors": [
+		{
+			"at": "tour_akan",
+			"to": "hall_tour",
+			"prompt": "PROMPT_ENTRER"
+		},
+		{
+			"at": "salle",
+			"to": "salle_boxe",
+			"prompt": "PROMPT_ENTRER"
+		}
+	],
+	"props": [
+		{
+			"model": "table_ration",
+			"at": "-68.5,-145",
+			"yaw": 180
+		},
+		{
+			"model": "barriere",
+			"at": "-72.5,-143.5",
+			"yaw": 90,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"model": "barriere",
+			"at": "-64.5,-143.5",
+			"yaw": 90,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"model": "haut_parleur",
+			"at": "-63.5,-148",
+			"yaw": 225,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"model": "ecran_propagande",
+			"at": "-68.5,-149",
+			"yaw": 0,
+			"if": {
+				"not_flags": [
+					"avis_recherche"
+				],
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"model": "lampadaire",
+			"at": "-74.5,-140.5",
+			"yaw": 270,
+			"solid": false
+		},
+		{
+			"model": "lampadaire",
+			"at": "-62.5,-140.5",
+			"yaw": 90,
+			"solid": false
+		},
+		{
+			"model": "ecran_avis",
+			"at": "-68.5,-149",
+			"yaw": 0,
+			"if": {
+				"flags": [
+					"avis_recherche"
+				],
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"model": "tag_colere",
+			"at": "-141.80,-139.94",
+			"yaw": 130.2,
+			"solid": false,
+			"exact": true,
+			"if": {
+				"flags": [
+					"tag_colere"
+				]
+			}
+		},
+		{
+			"model": "tag_espoir",
+			"at": "-141.80,-139.94",
+			"yaw": 130.2,
+			"solid": false,
+			"exact": true,
+			"if": {
+				"flags": [
+					"tag_espoir"
+				]
+			}
+		},
+		{
+			"model": "tag_humour",
+			"at": "-141.80,-139.94",
+			"yaw": 130.2,
+			"solid": false,
+			"exact": true,
+			"if": {
+				"flags": [
+					"tag_humour"
+				]
+			}
+		},
+		{
+			"model": "chaise",
+			"at": "-180.8,-195",
+			"yaw": 270,
+			"solid": false
+		},
+		{
+			"model": "voiture_blanche",
+			"at": "-95.5,-229",
+			"yaw": 0
+		},
+		{
+			"model": "conteneurs",
+			"at": "-50,-196",
+			"yaw": 90
+		},
+		{
+			"model": "table",
+			"at": "-130.6,-232.4",
+			"yaw": 315
+		},
+		{
+			"model": "caisse",
+			"at": "-132.4,-230.6",
+			"yaw": 315
+		},
+		{
+			"model": "scooter",
+			"at": "-129.5,-255.5",
+			"yaw": 45
+		},
+		{
+			"model": "caisse",
+			"at": "-132.5,-255.5",
+			"yaw": 45
+		},
+		{
+			"model": "panneau",
+			"at": "-254,-130",
+			"yaw": 90
+		},
+		{
+			"model": "barriere",
+			"at": "-256,-127",
+			"yaw": 0
+		}
+	],
+	"npcs": [
+		{
+			"id": "vigile_ration",
+			"character": "vigile",
+			"at": "-68.5,-143.5",
+			"dialogue": "file",
+			"cue": "controle",
+			"if": {
+				"hours": [
+					7,
+					20
+				],
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"id": "monsieur_paul",
+			"character": "monsieur_paul",
+			"at": "-68.5,-141",
+			"dialogue": "voisins",
+			"cue": "paul",
+			"if": {
+				"not_flags": [
+					"paul_embarque"
+				],
+				"hours": [
+					7,
+					20
+				]
+			}
+		},
+		{
+			"id": "voisine_file",
+			"character": "civil_2",
+			"at": "-68.5,-139.5",
+			"dialogue": "voisins",
+			"cue": "file",
+			"if": {
+				"hours": [
+					7,
+					20
+				]
+			}
+		},
+		{
+			"id": "voisin_file",
+			"character": "civil_3",
+			"at": "-68.5,-138",
+			"dialogue": "voisins",
+			"cue": "file_2",
+			"if": {
+				"hours": [
+					7,
+					20
+				]
+			}
+		},
+		{
+			"id": "tonton",
+			"character": "tonton",
+			"at": "epicerie",
+			"dialogue": "tonton",
+			"yaw": 0
+		},
+		{
+			"id": "jo",
+			"character": "jo",
+			"at": "poste_coteau",
+			"dialogue": "guetteurs",
+			"cue": "jo",
+			"yaw": 270
+		},
+		{
+			"id": "sandra",
+			"character": "sandra",
+			"at": "poste_parking",
+			"dialogue": "guetteurs",
+			"cue": "sandra",
+			"yaw": 180
+		},
+		{
+			"id": "nadia",
+			"character": "nadia",
+			"at": "poste_conteneurs",
+			"dialogue": "guetteurs",
+			"cue": "nadia",
+			"yaw": 0
+		},
+		{
+			"id": "pixel",
+			"character": "pixel",
+			"at": "pixel",
+			"dialogue": "pixel",
+			"yaw": 270
+		},
+		{
+			"id": "tata_rose",
+			"character": "tata_rose",
+			"at": "panier",
+			"dialogue": "tata_rose",
+			"yaw": 315
+		},
+		{
+			"id": "cle_de_12",
+			"character": "cle_de_12",
+			"at": "garage",
+			"dialogue": "cle_de_12",
+			"yaw": 135
+		},
+		{
+			"id": "emissaire",
+			"character": "emissaire",
+			"at": "passerelle",
+			"dialogue": "zed",
+			"cue": "emissaire",
+			"yaw": 270,
+			"if": {
+				"quests_active": [
+					"le_contact"
+				]
+			}
+		},
+		{
+			"id": "relais_zed",
+			"character": "relais_zed",
+			"at": "gare",
+			"dialogue": "zed",
+			"cue": "relais",
+			"yaw": 0,
+			"if": {
+				"quests_active": [
+					"le_contact"
+				]
+			}
+		}
+	],
+	"cameras": [
+		{
+			"id": "ration",
+			"at": "-73.5,-147.5",
+			"yaw": 218,
+			"sweep": 35,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"id": "parvis_tour",
+			"at": "-156,-160",
+			"yaw": 243,
+			"sweep": 30,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"id": "coteau",
+			"at": "-165,-198",
+			"yaw": 90,
+			"sweep": 40,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"id": "parking",
+			"at": "-101,-232",
+			"yaw": 270,
+			"sweep": 35,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"id": "conteneurs",
+			"at": "-52,-188",
+			"yaw": 333,
+			"sweep": 40,
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		}
+	],
+	"vigiles": [
+		{
+			"id": "ronde_tour",
+			"character": "vigile",
+			"patrol": [
+				"-160,-150",
+				"-158,-175",
+				"-135,-178",
+				"-150,-200"
+			],
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"id": "ronde_esplanade",
+			"character": "vigile",
+			"patrol": [
+				"-74,-137",
+				"-63,-137",
+				"-63,-148",
+				"-74,-148"
+			],
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		}
+	],
+	"pickups": [
+		{
+			"id": "bombe_pixel",
+			"item": "bombe_peinture",
+			"at": "derriere_la_tour"
+		}
+	],
+	"spots": [
+		{
+			"id": "mur_tag",
+			"at": "mur_tag",
+			"prompt": "PROMPT_TAGUER",
+			"dialogue": [
+				"pixel",
+				"tag"
+			],
+			"offence": true,
+			"if": {
+				"step": "premier_tag:tag",
+				"items": {
+					"bombe_peinture": 1
+				},
+				"hours": [
+					21,
+					6
+				]
+			}
+		}
+	]
+}

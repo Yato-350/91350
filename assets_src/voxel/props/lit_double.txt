@@ -1,0 +1,11 @@
+# Grand lit.
+palette:
+  w: blanc
+  R: rouge_sombre
+  b: brun_1
+  c: creme
+box: b 0 0 0 26 4 30
+box: w 0 4 0 26 2 30
+box: c 2 6 1 10 2 5
+box: c 14 6 1 10 2 5
+box: R 0 6 8 26 1 22

@@ -1,0 +1,12 @@
+~ start
+if step("le_vieux_du_7e", "tonton")
+	tonton: Tu cherches Lucien ? Et moi je cherche quoi, à ton avis ? Des piles.
+	akan: Des piles ?
+	tonton: Sa radio, c'est sa vie. Tu crois qu'elle marche à l'air du temps ?
+	$> give("piles", 4)
+	tonton: Il ouvre pas aux inconnus. Trois coups, un silence, deux coups. Compris ?
+	$> set_flag("code_lucien")
+	akan: Trois, silence, deux. Trois, silence, deux.
+else
+	tonton: Sous le comptoir, y a de tout. Au-dessus, y a que des oreilles.
+=> END

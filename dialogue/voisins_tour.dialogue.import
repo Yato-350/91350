@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://c7iak24h75atr"
+path="res://.godot/imported/voisins_tour.dialogue-9b04cc70d7e2ed18391678c6dcbca07d.tres"
+
+[deps]
+
+source_file="res://dialogue/voisins_tour.dialogue"
+dest_files=["res://.godot/imported/voisins_tour.dialogue-9b04cc70d7e2ed18391678c6dcbca07d.tres"]
+
+[params]
+
+defaults=true

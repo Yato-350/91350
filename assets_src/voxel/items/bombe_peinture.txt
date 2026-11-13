@@ -1,0 +1,9 @@
+# Bombe de peinture.
+palette:
+  w: blanc
+  5: beton_5
+  k: rose_tag
+box: k 0 0 0 3 6 3
+box: 5 1 6 1 1 1 1
+box: w 0 6 0 3 1 3
+box: w 1 7 1 1 1 1

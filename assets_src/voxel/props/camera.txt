@@ -1,0 +1,14 @@
+# Caméra de surveillance : un mât et une tête qui balaie.
+palette:
+  1: beton_1
+  2: beton_2
+  n: noir
+  r: rouge_propagande
+part: Pole
+box: 1 0 0 0 2 40 2
+part: Head
+pivot: 0 40 0
+offset: 0 40 0
+box: 2 0 0 0 6 4 8
+box: n 2 1 0 2 2 1
+box: r 4 3 0 1 1 1

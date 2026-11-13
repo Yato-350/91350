@@ -1,0 +1,52 @@
+~ porte
+if quest_done("le_vieux_du_7e")
+	lucien: C'est ouvert, petit.
+	$> travel("appartement_lucien")
+elif quest_active("le_vieux_du_7e") and not step("le_vieux_du_7e", "bernard") and not step("le_vieux_du_7e", "tonton")
+	akan: Comment il a dit, Tonton, déjà ?
+	- Trois coups, un silence, deux coups.
+		if flag("code_lucien")
+			lucien: Entre, petit. Vite. Les couloirs ont des oreilles.
+			$> travel("appartement_lucien")
+		else
+			lucien: Je n'attends personne.
+	- Cinq coups, bien fort.
+		lucien: Il n'y a personne ici. Plus personne.
+	- Appeler : « Monsieur Lucien ! »
+		lucien: Il n'y a pas de Lucien ici.
+else
+	akan: Personne ne répond. Ou personne ne veut répondre.
+=> END
+
+~ start
+if step("le_vieux_du_7e", "livrer") and has("piles", 4)
+	lucien: Des piles. Tu es le fils d'Adjoua, toi.
+	$> take("piles", 4)
+	$> objective("DELIVER", "lucien")
+	lucien: Petit, quand l'écran te donne ton prénom, c'est qu'il te l'a déjà pris.
+	lucien: Quarante-deux noms. Tous partis au Centre de Rééducation.
+	$> give("liste_disparus")
+	lucien: Paul sera le quarante-troisième. Si personne ne fait rien.
+	akan: Quarante-trois...
+	lucien: La radio dit ce que l'écran ne dit pas. Reviens l'écouter.
+	lucien: Et monte voir les Jumeaux, sur le toit. Ils veulent te connaître.
+elif quest_active("les_yeux_du_quartier")
+	lucien: Les Jumeaux t'attendent sur le toit, petit. L'escalier du onzième monte jusque là-haut.
+elif step("le_grand", "lucien")
+	lucien: Ton mur. Tout le monde en parle, petit. Même l'écran.
+	lucien: La colère, c'est un feu. Il faut quelqu'un pour tenir le bois.
+	lucien: Va voir le Grand. À la salle de boxe, dans la maison de quartier. Dis-lui que je t'envoie.
+elif step("le_grand", "eau") and has("bidon_plein") and not flag("eau_lucien")
+	lucien: De l'eau. Le Grand te met à l'épreuve, hein ? Il a raison.
+	$> take("bidon_plein")
+	$> set_flag("eau_lucien")
+	$> objective("DELIVER", "eau_voisins")
+	lucien: Un homme qui porte l'eau des autres, petit, on peut lui confier le reste.
+elif step("la_tour_se_leve", "voisins") and not flag("mobilise_lucien")
+	lucien: Bernard... Je m'en doutais. La peur fait écrire des choses, petit.
+	lucien: Je reste à ma radio. Quand ça commencera, tout Grigny l'entendra.
+	$> set_flag("mobilise_lucien")
+	$> objective("TALK", "voisins")
+else
+	lucien: Une radio qui se tait, petit, c'est une ville qui s'endort.
+=> END

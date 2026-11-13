@@ -1,0 +1,45 @@
+~ jo
+if step("les_yeux_du_quartier", "coteau")
+	if hot()
+		jo: Recule, petit ! T'as une caméra dans le dos. Sème-les et reviens.
+	else
+		jo: Des piles ! Et du café ! T'es un ange tombé du onzième.
+		$> take("provisions_guet")
+		$> objective("STEALTH", "poste_coteau")
+		jo: Trente ans électricien. Maintenant je compte les Vigiles. C'est moins bien payé.
+		jo: Va voir Sandra, au parking. Discret.
+elif step("les_yeux_du_quartier", "jumeaux")
+	jo: Les Jumeaux t'envoient ? Alors monte d'abord les voir. Ils aiment l'ordre.
+else
+	jo: D'ici, on voit toute l'avenue. Et personne nous voit.
+=> END
+
+~ sandra
+if step("les_yeux_du_quartier", "parking")
+	if hot()
+		sandra: Tu brilles comme un gyrophare. Va-t'en, reviens quand ça s'est calmé.
+	else
+		sandra: Café, piles... Merci. Le jour je livre des colis, la nuit je livre des infos.
+		$> take("provisions_guet")
+		$> objective("STEALTH", "poste_parking")
+		sandra: Nadia est aux conteneurs, de l'autre côté. Fais gaffe à la caméra du carrefour.
+elif quest_active("les_yeux_du_quartier") and not quest_done("les_yeux_du_quartier") and not step("les_yeux_du_quartier", "conteneurs") and not step("les_yeux_du_quartier", "retour")
+	sandra: D'abord Jo, sur le coteau. Les Jumeaux ont leurs raisons.
+else
+	sandra: Trois cents colis par jour. Et pas un pour moi.
+=> END
+
+~ nadia
+if step("les_yeux_du_quartier", "conteneurs")
+	if hot()
+		nadia: Pas maintenant, mon grand. Tout le carrefour te regarde.
+	else
+		nadia: Personne regarde une éboueuse. C'est mon super-pouvoir.
+		$> take("provisions_guet")
+		$> objective("STEALTH", "poste_conteneurs")
+		nadia: Remonte au toit. Les Jumeaux vont être contents. Enfin, à leur façon.
+elif step("les_yeux_du_quartier", "coteau") or step("les_yeux_du_quartier", "parking")
+	nadia: Pas encore, mon grand. D'abord Jo, puis Sandra.
+else
+	nadia: Le régime trie ses déchets. Nous, on trie le régime.
+=> END

@@ -1,0 +1,49 @@
+~ huguette
+if step("le_grand", "eau") and has("bidon_plein") and not flag("eau_huguette")
+	huguette: Oh ! De l'eau ! Monté à pied ? Mon petit, tu vas te casser le dos.
+	$> take("bidon_plein")
+	$> set_flag("eau_huguette")
+	$> objective("DELIVER", "eau_voisins")
+	huguette: Depuis que l'ascenseur est mort, je descends une fois par semaine. Et je remonte en deux jours.
+elif step("la_tour_se_leve", "voisins") and not flag("mobilise_huguette")
+	huguette: Bernard ? Ce pauvre Bernard... Et maintenant, ils viennent pour nous tous ?
+	huguette: Soixante ans dans cette tour. Je descendrai au hall. Avec ma canne, s'il le faut.
+	$> set_flag("mobilise_huguette")
+	$> objective("TALK", "voisins")
+else
+	huguette: Tu salueras ta mère. Elle fait le meilleur gâteau du onzième.
+=> END
+
+~ ferreira
+if step("le_grand", "eau") and has("bidon_plein") and not flag("eau_ferreira")
+	ferreira: Pour moi ? Le Grand t'envoie ? Ce garçon a toujours eu bon cœur.
+	$> take("bidon_plein")
+	$> set_flag("eau_ferreira")
+	$> objective("DELIVER", "eau_voisins")
+	ferreira: Trente ans maçon. J'ai monté des murs comme ceux-là. Maintenant, je monte même plus l'escalier.
+elif step("la_tour_se_leve", "voisins") and not flag("mobilise_ferreira")
+	ferreira: Tenir le hall ? J'ai coulé la dalle de ce hall, petit. Je vais pas le leur laisser.
+	$> set_flag("mobilise_ferreira")
+	$> objective("TALK", "voisins")
+else
+	ferreira: Tu vois cette fissure ? Elle était là avant le régime. Elle sera là après.
+=> END
+
+~ gardienne
+if step("la_tour_se_leve", "voisins") and not flag("mobilise_gardienne")
+	gardienne: Les clés du hall, c'est moi qui les ai. Toutes. Même celle du local.
+	gardienne: S'ils descendent, je ferme les portes des étages. Ils auront que le hall.
+	$> set_flag("mobilise_gardienne")
+	$> objective("TALK", "voisins")
+elif step("la_tour_se_leve", "defendre")
+	gardienne: Tiens bon, Akan. On est tous là.
+else
+	gardienne: Essuie tes pieds. Le régime passe, le carrelage reste.
+=> END
+
+~ foule
+if quest_done("la_tour_se_leve")
+	voisins: Grigny 2. Dis-le avec nous : Grigny 2 !
+else
+	voisins: On est là. On bouge pas.
+=> END

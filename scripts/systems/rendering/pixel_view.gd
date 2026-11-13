@@ -27,6 +27,11 @@ var saturation: float = 1.0:
 		if is_node_ready():
 			_grade_material.set_shader_parameter(&"saturation", saturation)
 
+## Rapprochement de la vue : 1 dehors (16 pixels par mètre), 2 dans un intérieur.
+var zoom := 1:
+	set(value):
+		zoom = maxi(1, value)
+
 var _pixel_scale := 0
 var _base_position := Vector2.ZERO
 var _palette_size := 0
@@ -53,12 +58,13 @@ func _process(_delta: float) -> void:
 	if camera == null or camera.projection != Camera3D.PROJECTION_ORTHOGONAL:
 		_container.position = _base_position
 		return
-	camera.size = _world.size.y / PixelSnap.PIXELS_PER_METER
+	var texel := PixelSnap.TEXEL / zoom
+	camera.size = _world.size.y * texel
 	var ideal := camera.global_position
 	var camera_basis := camera.global_basis.orthonormalized()
-	var snapped := PixelSnap.snap_position(ideal, camera_basis, PixelSnap.TEXEL)
+	var snapped := PixelSnap.snap_position(ideal, camera_basis, texel)
 	camera.global_position = snapped
-	var offset := PixelSnap.display_offset(ideal, snapped, camera_basis, PixelSnap.TEXEL)
+	var offset := PixelSnap.display_offset(ideal, snapped, camera_basis, texel)
 	_container.position = _base_position + (offset * _pixel_scale).round()
 
 

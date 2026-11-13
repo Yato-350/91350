@@ -1,0 +1,6 @@
+# Téléphone de Bernard.
+palette:
+  n: noir
+  e: bleu_ecran
+box: n 0 0 0 4 7 1
+box: e 1 2 0 2 4 1

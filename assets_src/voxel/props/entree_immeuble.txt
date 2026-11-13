@@ -1,0 +1,19 @@
+# Entrée d'immeuble : encadrement, double porte vitrée, auvent, applique et digicode.
+# L'arrière (dernière rangée) touche la façade. Voxels de 1/8 m.
+palette:
+  1: beton_1
+  2: beton_2
+  4: beton_4
+  5: beton_5
+  N: bleu_nuit
+  e: bleu_ecran
+  o: orange_sodium
+scale: 2
+box: 2 0 0 3 16 22 1
+box: N 2 0 2 12 19 1
+box: e 3 3 2 2 13 1
+box: e 9 3 2 2 13 1
+box: 1 7 0 2 1 19 1
+box: 4 0 22 0 16 1 4
+box: o 7 21 2 2 1 1
+box: 5 13 9 2 2 3 1

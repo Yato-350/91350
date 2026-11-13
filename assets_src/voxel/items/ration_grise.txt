@@ -1,0 +1,8 @@
+# Ration grise du régime.
+palette:
+  3: beton_3
+  4: beton_4
+  r: rouge_propagande
+box: 3 0 0 0 6 3 4
+box: 4 0 3 0 6 1 4
+box: r 2 1 0 2 1 4

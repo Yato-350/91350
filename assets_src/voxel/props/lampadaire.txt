@@ -1,0 +1,11 @@
+# Lampadaire de rue (près de 6 m) : mât, crosse et lanterne au sodium, voxels de 1/8 m.
+palette:
+  1: beton_1
+  2: beton_2
+  o: orange_sodium
+scale: 2
+box: 2 1 0 3 3 2 3
+box: 1 2 0 4 1 46 1
+box: 1 2 45 1 1 1 4
+box: 2 1 44 0 3 2 2
+box: o 1 43 0 3 1 2

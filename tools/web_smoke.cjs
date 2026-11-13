@@ -62,16 +62,27 @@ async function main() {
       throw new Error(`le marqueur « ${READY_MARKER} » n'est pas apparu en ${READY_TIMEOUT_MS / 1000} s`);
     }
     await page.click('canvas');
-    await page.waitForTimeout(1500);
-    const before = await page.screenshot({ path: path.join(SHOT_DIR, 'web_1.png') });
-    await page.keyboard.down('KeyD');
-    await page.waitForTimeout(1000);
-    await page.keyboard.up('KeyD');
     await page.waitForTimeout(500);
-    const after = await page.screenshot({ path: path.join(SHOT_DIR, 'web_2.png') });
+    await page.screenshot({ path: path.join(SHOT_DIR, 'web_0_titre.png') });
+    // L'écran titre donne le focus à « Nouvelle partie » : Entrée lance la partie.
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(2500);
+    await page.screenshot({ path: path.join(SHOT_DIR, 'web_1.png') });
+    // Le monde bouge tout seul (horloge, respiration) : on compare une zone que seul le
+    // panneau du sac recouvre, loin d'Akan (au centre) et de l'horloge (en haut à droite).
+    const view = page.viewportSize();
+    const clip = {
+      x: Math.round(view.width * 0.3), y: Math.round(view.height * 0.4),
+      width: Math.round(view.width * 0.1), height: Math.round(view.height * 0.1),
+    };
+    const before = await page.screenshot({ clip });
+    await page.keyboard.press('Tab');
+    await page.waitForTimeout(500);
+    const after = await page.screenshot({ clip });
+    await page.screenshot({ path: path.join(SHOT_DIR, 'web_2.png') });
 
     if (errors.length > 0) throw new Error(`erreurs dans la console :\n  ${errors.join('\n  ')}`);
-    if (before.equals(after)) throw new Error('la touche D n\'a rien changé à l\'image');
+    if (before.equals(after)) throw new Error('la touche Tab n\'a pas ouvert le sac');
     console.log('OK : le build web démarre, s\'affiche et répond au clavier.');
   } finally {
     await browser.close();

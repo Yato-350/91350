@@ -1,0 +1,11 @@
+# Plan de travail avec évier.
+palette:
+  2: beton_2
+  3: beton_3
+  5: beton_5
+  c: creme
+box: c 0 0 0 16 13 10
+box: 2 0 13 0 16 1 10
+box: 5 3 13 2 6 1 6
+box: 3 3 8 0 1 2 1
+box: 3 12 8 0 1 2 1

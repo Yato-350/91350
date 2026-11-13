@@ -1,0 +1,9 @@
+# Frigo.
+palette:
+  w: blanc
+  3: beton_3
+  4: beton_4
+box: w 0 0 0 10 27 10
+box: 4 0 17 0 10 1 1
+box: 3 8 19 0 1 4 1
+box: 3 8 10 0 1 5 1

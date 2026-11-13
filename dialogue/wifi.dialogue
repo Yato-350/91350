@@ -1,0 +1,36 @@
+~ start
+if step("la_tour_se_leve", "wifi")
+	wifi: Ferme la porte. Non, l'autre porte. Bon, y en a qu'une.
+	wifi: Téma. La caméra du hall, c'est un œil avec un mot de passe à quatre chiffres.
+	wifi: Sauf que j'ai pas besoin du mot de passe. J'ai besoin d'un câble coupé.
+	wifi: Le boîtier est sous la caméra. Tu coupes, je regarde l'image tomber.
+	wifi: Et après, on cherche qui leur envoie nos têtes. Parce que quelqu'un, ici, poucave.
+elif step("la_tour_se_leve", "camera")
+	wifi: Le boîtier, sous la caméra du hall. Pince, câble, clac.
+elif step("la_tour_se_leve", "indices")
+	wifi: L'image est tombée. Maintenant, les traces : la boîte aux lettres, la poubelle du hall, le palier du onzième.
+	wifi: Les gens cachent tout aux mêmes endroits. Comme les mots de passe sous les claviers.
+elif step("la_tour_se_leve", "bernard")
+	wifi: Bernard. Le monsieur qui s'excuse. Va lui parler. Moi, je parle qu'aux machines.
+elif step("la_tour_se_leve", "voisins")
+	wifi: Cinq voisins. La daronne, Lucien, Mme Huguette, M. Ferreira, Mme Lopes. Le vrai réseau, c'est eux.
+elif step("la_tour_se_leve", "defendre")
+	wifi: Ils arrivent par la porte du hall. Tiens le hall !
+elif step("la_tour_se_leve", "planque") or quest_done("la_tour_se_leve")
+	wifi: Bienvenue à la planque. Wifi gratuit. Évidemment.
+	wifi: Dors ici quand tu veux. Ici, plus personne te regarde.
+else
+	wifi: Je compile. Repasse plus tard.
+=> END
+
+~ alerte
+wifi: Akan ! Leurs radios s'affolent. Une unité descend sur la tour.
+wifi: Tout le monde au hall. On tient la porte.
+=> END
+
+~ victoire
+wifi: Ils reculent. Ils RECULENT.
+wifi: Téma les écrans : plus d'image. Plus de « Secteur 7-A ».
+huguette: Grigny 2. Ça s'appelle Grigny 2.
+wifi: Retrouve-moi au local. C'est notre planque, maintenant.
+=> END

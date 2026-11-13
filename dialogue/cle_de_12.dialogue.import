@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://tbroj3cdixwk"
+path="res://.godot/imported/cle_de_12.dialogue-3b112baafc117472f0a6b8b49cd5cd90.tres"
+
+[deps]
+
+source_file="res://dialogue/cle_de_12.dialogue"
+dest_files=["res://.godot/imported/cle_de_12.dialogue-3b112baafc117472f0a6b8b49cd5cd90.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://8a7v0sodtf1n"
+path="res://.godot/imported/jumeaux.dialogue-928d177962e1e823868b714039cc333c.tres"
+
+[deps]
+
+source_file="res://dialogue/jumeaux.dialogue"
+dest_files=["res://.godot/imported/jumeaux.dialogue-928d177962e1e823868b714039cc333c.tres"]
+
+[params]
+
+defaults=true

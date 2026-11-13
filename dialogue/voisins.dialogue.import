@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bicp36rkc76hk"
+path="res://.godot/imported/voisins.dialogue-de7206063e95ffe3b2b33d163ef3b836.tres"
+
+[deps]
+
+source_file="res://dialogue/voisins.dialogue"
+dest_files=["res://.godot/imported/voisins.dialogue-de7206063e95ffe3b2b33d163ef3b836.tres"]
+
+[params]
+
+defaults=true

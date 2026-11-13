@@ -20,7 +20,7 @@ montrés avec respect ; les personnages qui y vivent sont tous imaginaires.
 | Godot Engine 4.7.2 | MIT (+ licences tierces du moteur) | Oui | Reproduire la licence : panneau des crédits (F1), `Engine.get_license_text()` |
 | Police Tiny5 | SIL Open Font License 1.1 | Oui | Joindre la licence (`assets/fonts/Tiny5-OFL.txt`) ; ne pas vendre la police seule |
 | GUT 9.7.1 | MIT | Non (exclu de l'export) | Licence conservée dans `addons/gut/` |
-| Dialogue Manager 4.x (à partir de M1) | MIT | Oui | Créditer et joindre la licence |
+| Dialogue Manager 4.2.0 | MIT | Oui | Crédité dans le panneau des crédits ; licence jointe (`addons/dialogue_manager/LICENSE`) |
 | gdtoolkit, jsonschema, pytest | MIT | Non (outils) | — |
 
 Le **code et le contenu du jeu** ne sont pas sous licence libre : en l'absence de fichier

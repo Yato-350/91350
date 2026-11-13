@@ -1,0 +1,22 @@
+# Voiture.
+palette:
+  n: noir
+  3: beton_3
+  4: beton_4
+  N: bleu_nuit
+  R: rouge_sombre
+  j: jaune_linge
+box: 4 0 3 0 28 9 64
+box: 3 2 12 14 24 8 30
+box: N 3 13 14 22 6 1
+box: N 3 13 43 22 6 1
+box: N 2 13 16 1 6 26
+box: N 25 13 16 1 6 26
+box: n 0 0 6 4 6 10
+box: n 24 0 6 4 6 10
+box: n 0 0 48 4 6 10
+box: n 24 0 48 4 6 10
+box: j 2 7 0 5 2 1
+box: j 21 7 0 5 2 1
+box: R 2 7 63 5 2 1
+box: R 21 7 63 5 2 1

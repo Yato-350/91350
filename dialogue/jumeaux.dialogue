@@ -1,0 +1,52 @@
+~ start
+if step("les_yeux_du_quartier", "jumeaux")
+	ines: Le fils de la daronne du onzième.
+	yanis: Celui qui compte les étages.
+	ines: Lucien dit que t'es fiable.
+	yanis: Nous, on vérifie. On vérifie tout.
+	ines: Trois postes de guet. Jo sur le coteau, Sandra au parking, Nadia aux conteneurs.
+	yanis: Plus de piles, plus de café, plus rien.
+	ines: Tu leur portes ça. Et les caméras te voient pas.
+	$> give("provisions_guet", 3)
+	$> set_flag("carte_surveillance")
+	yanis: Prends notre carte. Les cônes, là, c'est ce que voient les caméras.
+	ines: Avec ça dans le sac, t'es suspect. Accroupis-toi, attends que l'œil tourne.
+	yanis: La caméra du hall tourne toutes les six secondes.
+	ines: Sept.
+	yanis: Six.
+	- C'est carré. Jo, Sandra, Nadia. [#ton=calme]
+		ines: Dans cet ordre. On a nos raisons.
+	- Et si je me fais griller ? [#ton=cash]
+		yanis: Tu sèmes les Vigiles, tu attends que ça refroidisse...
+		ines: ...et tu y retournes. Un guetteur grillé, il ouvre plus à personne.
+	- Six, sept... Je compterai moi-même. [#ton=malin]
+		ines: Il compte, lui.
+		yanis: Il compte bien. On l'aime bien.
+		$> rep("collectif", 2)
+elif step("les_yeux_du_quartier", "retour")
+	ines: Les trois postes ont parlé à la radio.
+	yanis: « Livré, propre, personne a rien vu. »
+	ines: T'es des nôtres, Akan. Garde la carte.
+	$> give("billets", 15)
+	yanis: Et va voir Pixel, derrière la dalle commerciale.
+	ines: Il a un mur à te montrer.
+	yanis: Un mur tout gris. Il supporte pas.
+elif quest_active("les_yeux_du_quartier")
+	ines: Jo, Sandra, Nadia. Dans l'ordre.
+	yanis: Et accroupi devant les caméras.
+elif quest_active("premier_tag")
+	ines: Pixel t'attend derrière la dalle commerciale.
+	yanis: Côté avenue.
+else
+	ines: D'ici, on voit tout Grigny.
+	yanis: Et Grigny nous voit pas.
+=> END
+
+~ yanis
+if quest_active("les_yeux_du_quartier")
+	yanis: C'est Inès qui donne les ordres.
+	ines: C'est Yanis qui oublie de les suivre.
+else
+	yanis: Tu vois la gare, là-bas ? Le régime arrive toujours par là.
+	ines: Et il repartira par là. Un jour.
+=> END

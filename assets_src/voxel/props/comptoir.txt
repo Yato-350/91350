@@ -1,0 +1,8 @@
+# Comptoir.
+palette:
+  2: beton_2
+  b: brun_1
+  B: brun_2
+box: B 0 0 0 28 13 9
+box: 2 0 13 0 28 1 9
+box: b 1 1 0 26 11 1

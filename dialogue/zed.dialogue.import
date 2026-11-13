@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://baomoqrlosn6d"
+path="res://.godot/imported/zed.dialogue-903aeb2ec4e876c9e3510f3d45be5601.tres"
+
+[deps]
+
+source_file="res://dialogue/zed.dialogue"
+dest_files=["res://.godot/imported/zed.dialogue-903aeb2ec4e876c9e3510f3d45be5601.tres"]
+
+[params]
+
+defaults=true

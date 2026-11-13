@@ -1,0 +1,83 @@
+name: Release
+
+# Une étiquette v* (v0.1.0…) construit le jeu pour Windows, Linux, macOS et le web, puis
+# publie une GitHub Release avec les quatre archives et des notes générées.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Exports et GitHub Release
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
+
+      - name: Outils Python
+        run: pip install -r tools/requirements.txt
+
+      - name: Lint et données
+        run: |
+          tools/check.sh lint
+          tools/check.sh data
+
+      - name: Cache de Godot et des modèles d'export
+        uses: actions/cache@v6
+        with:
+          path: |
+            .tools/godot
+            ~/.local/share/godot/export_templates
+          key: godot-all-${{ hashFiles('.godot-version') }}
+
+      - name: Godot et tous les modèles d'export (version épinglée)
+        run: tools/install_godot.sh --templates all
+
+      - name: Import et tests GUT
+        run: |
+          tools/check.sh import
+          tools/check.sh test
+
+      - name: Exports
+        run: |
+          mkdir -p build/windows build/linux build/macos
+          tools/godot.sh --headless --path . --export-release "Windows Desktop" build/windows/91350.exe
+          tools/godot.sh --headless --path . --export-release "Linux" build/linux/91350.x86_64
+          tools/godot.sh --headless --path . --export-release "macOS" build/macos/91350.zip
+          tools/check.sh web
+
+      - name: Le build Linux démarre
+        run: |
+          timeout 120 ./build/linux/91350.x86_64 --headless --quit-after 300 | tee build/run.log
+          grep -q "\[91350\] prêt" build/run.log
+
+      - name: Archives
+        run: |
+          version="${GITHUB_REF_NAME}"
+          mkdir -p build/release
+          (cd build/windows && zip -q -r "../release/91350-${version}-windows.zip" .)
+          (cd build/linux && zip -q -r "../release/91350-${version}-linux.zip" .)
+          cp build/macos/91350.zip "build/release/91350-${version}-macos.zip"
+          (cd build/web && zip -q -r "../release/91350-${version}-web.zip" .)
+          ls -la build/release
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" build/release/*.zip \
+            --title "91350 ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --prerelease

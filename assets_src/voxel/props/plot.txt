@@ -1,0 +1,7 @@
+# Plot de béton (bloc anti-voiture). Voxels de 1/8 m.
+palette:
+  4: beton_4
+  5: beton_5
+scale: 2
+box: 4 0 0 0 8 4 4
+box: 5 0 3 0 8 1 4

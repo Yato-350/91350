@@ -1,0 +1,14 @@
+# Écran de propagande : un visage qui ne ressemble à personne.
+palette:
+  n: noir
+  w: blanc
+  1: beton_1
+  e: bleu_ecran
+  r: rouge_propagande
+box: 1 10 0 1 2 30 2
+box: n 0 30 0 22 14 4
+box: e 1 31 0 20 12 1
+box: r 1 31 0 20 2 1
+box: w 7 38 0 2 2 1
+box: w 13 38 0 2 2 1
+box: w 8 35 0 6 1 1

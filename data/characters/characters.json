@@ -1,0 +1,727 @@
+{
+	"characters": [
+		{
+			"id": "akan",
+			"name": "CHAR_AKAN",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "noir",
+				"hair_style": "court",
+				"top": "jaune_linge",
+				"top_style": "hoodie",
+				"bottom": "bleu_acier",
+				"shoes": "blanc",
+				"bottom_style": "jogging",
+				"detail": "blanc"
+			}
+		},
+		{
+			"id": "daronne",
+			"name": "CHAR_DARONNE",
+			"group": "familles",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "noir",
+				"hair_style": "chignon",
+				"top": "blanc",
+				"top_style": "blouse",
+				"bottom": "bleu_ecran",
+				"shoes": "blanc",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "maya",
+			"name": "CHAR_MAYA",
+			"group": "familles",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "noir",
+				"hair_style": "tresses",
+				"top": "rose_tag",
+				"top_style": "tshirt",
+				"bottom": "violet_tag",
+				"shoes": "blanc",
+				"build": "enfant",
+				"bottom_style": "jupe"
+			}
+		},
+		{
+			"id": "nino",
+			"name": "CHAR_NINO",
+			"group": "collectif",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "brun_1",
+				"hair_style": "casquette",
+				"top": "vert_tag",
+				"top_style": "tshirt",
+				"bottom": "beton_2",
+				"shoes": "blanc",
+				"accessory_color": "rouge_sombre",
+				"bottom_style": "jogging",
+				"detail": "vert_tag"
+			}
+		},
+		{
+			"id": "lucien",
+			"name": "CHAR_LUCIEN",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "beton_5",
+				"hair_style": "rase",
+				"top": "brun_2",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "brun_1",
+				"accessory": "lunettes",
+				"detail": "creme",
+				"bottom_style": "pantalon",
+				"facial_hair": "barbe"
+			}
+		},
+		{
+			"id": "le_grand",
+			"name": "CHAR_LE_GRAND",
+			"group": "anciens",
+			"appearance": {
+				"skin": "brun_2",
+				"hair": "noir",
+				"hair_style": "rase",
+				"top": "beton_5",
+				"top_style": "tshirt",
+				"bottom": "noir",
+				"shoes": "blanc",
+				"build": "fort",
+				"bottom_style": "jogging",
+				"detail": "beton_5",
+				"facial_hair": "barbe"
+			}
+		},
+		{
+			"id": "wifi",
+			"name": "CHAR_WIFI",
+			"group": "collectif",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "violet_tag",
+				"hair_style": "long",
+				"top": "noir",
+				"top_style": "hoodie",
+				"bottom": "beton_2",
+				"shoes": "cyan_neon",
+				"accessory": "ecouteurs",
+				"accessory_color": "cyan_neon",
+				"detail": "cyan_neon",
+				"bottom_style": "jean"
+			}
+		},
+		{
+			"id": "zed",
+			"name": "CHAR_ZED",
+			"group": "reseau",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "noir",
+				"hair_style": "court",
+				"top": "noir",
+				"top_style": "veste",
+				"bottom": "beton_1",
+				"shoes": "noir",
+				"accessory": "lunettes",
+				"detail": "rouge_sombre",
+				"bottom_style": "pantalon",
+				"facial_hair": "bouc"
+			}
+		},
+		{
+			"id": "tonton",
+			"name": "CHAR_TONTON",
+			"group": "anciens",
+			"appearance": {
+				"skin": "brun_2",
+				"hair": "beton_4",
+				"hair_style": "rase",
+				"top": "vert_feuille",
+				"top_style": "tablier",
+				"bottom": "brun_2",
+				"shoes": "noir",
+				"detail": "creme",
+				"bottom_style": "pantalon",
+				"facial_hair": "moustache"
+			}
+		},
+		{
+			"id": "mc_beton",
+			"name": "CHAR_MC_BETON",
+			"group": "collectif",
+			"appearance": {
+				"skin": "brun_1",
+				"hair": "noir",
+				"hair_style": "afro",
+				"top": "orange_vif",
+				"top_style": "hoodie",
+				"bottom": "bleu_acier",
+				"shoes": "blanc",
+				"accessory": "ecouteurs",
+				"accessory_color": "blanc",
+				"bottom_style": "jogging",
+				"detail": "orange_vif"
+			}
+		},
+		{
+			"id": "tata_rose",
+			"name": "CHAR_TATA_ROSE",
+			"group": "familles",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "noir",
+				"hair_style": "chignon",
+				"top": "rose_tag",
+				"top_style": "tablier",
+				"bottom": "beton_3",
+				"shoes": "brun_1",
+				"detail": "blanc",
+				"bottom_style": "jupe"
+			}
+		},
+		{
+			"id": "cle_de_12",
+			"name": "CHAR_CLE_DE_12",
+			"group": "reseau",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "brun_1",
+				"hair_style": "casquette",
+				"top": "bleu_acier",
+				"top_style": "blouse",
+				"bottom": "bleu_acier",
+				"shoes": "noir",
+				"accessory_color": "orange_sombre",
+				"bottom_style": "pantalon",
+				"facial_hair": "barbe"
+			}
+		},
+		{
+			"id": "bernard",
+			"name": "CHAR_BERNARD",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "beton_4",
+				"hair_style": "court",
+				"top": "beton_3",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "noir",
+				"detail": "bleu_ecran",
+				"bottom_style": "pantalon",
+				"facial_hair": "moustache"
+			}
+		},
+		{
+			"id": "vasseur",
+			"name": "CHAR_VASSEUR",
+			"group": "regime",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "beton_5",
+				"hair_style": "casquette",
+				"top": "bleu_nuit",
+				"top_style": "uniforme",
+				"bottom": "bleu_nuit",
+				"shoes": "noir",
+				"accessory_color": "bleu_nuit",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "la_prof",
+			"name": "CHAR_LA_PROF",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "beton_5",
+				"hair_style": "chignon",
+				"top": "bleu_ecran",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "brun_1",
+				"accessory": "lunettes",
+				"detail": "blanc",
+				"bottom_style": "jupe"
+			}
+		},
+		{
+			"id": "mamie_scooter",
+			"name": "CHAR_MAMIE_SCOOTER",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "blanc",
+				"hair_style": "chignon",
+				"top": "violet_tag",
+				"top_style": "veste",
+				"bottom": "beton_3",
+				"shoes": "brun_1",
+				"detail": "creme",
+				"bottom_style": "pantalon",
+				"accessory": "lunettes"
+			}
+		},
+		{
+			"id": "yanis",
+			"name": "CHAR_YANIS",
+			"group": "collectif",
+			"appearance": {
+				"skin": "brun_2",
+				"hair": "noir",
+				"hair_style": "court",
+				"top": "cyan_neon",
+				"top_style": "tshirt",
+				"bottom": "noir",
+				"shoes": "blanc",
+				"accessory": "sac",
+				"accessory_color": "beton_2",
+				"bottom_style": "jogging",
+				"detail": "cyan_neon"
+			}
+		},
+		{
+			"id": "ines",
+			"name": "CHAR_INES",
+			"group": "collectif",
+			"appearance": {
+				"skin": "brun_2",
+				"hair": "noir",
+				"hair_style": "tresses",
+				"top": "turquoise",
+				"top_style": "hoodie",
+				"bottom": "noir",
+				"shoes": "blanc",
+				"accessory": "sac",
+				"accessory_color": "beton_2",
+				"bottom_style": "jean"
+			}
+		},
+		{
+			"id": "doc",
+			"name": "CHAR_DOC",
+			"group": "familles",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "brun_1",
+				"hair_style": "long",
+				"top": "blanc",
+				"top_style": "blouse",
+				"bottom": "eau_claire",
+				"shoes": "blanc",
+				"accessory": "lunettes",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "pixel",
+			"name": "CHAR_PIXEL",
+			"group": "collectif",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "orange_vif",
+				"hair_style": "bonnet",
+				"top": "blanc",
+				"top_style": "tshirt",
+				"bottom": "beton_2",
+				"shoes": "rose_tag",
+				"accessory": "sac",
+				"accessory_color": "vert_tag",
+				"bottom_style": "jean"
+			}
+		},
+		{
+			"id": "aubry",
+			"name": "CHAR_AUBRY",
+			"group": "regime",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "brun_2",
+				"hair_style": "chignon",
+				"top": "bleu_nuit",
+				"top_style": "uniforme",
+				"bottom": "bleu_nuit",
+				"shoes": "noir",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "colonel",
+			"name": "CHAR_COLONEL",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "blanc",
+				"hair_style": "casquette",
+				"top": "creme",
+				"top_style": "veste",
+				"bottom": "brun_2",
+				"shoes": "brun_1",
+				"accessory_color": "beton_3",
+				"detail": "blanc",
+				"bottom_style": "pantalon",
+				"facial_hair": "moustache"
+			}
+		},
+		{
+			"id": "sofia",
+			"name": "CHAR_SOFIA",
+			"group": "familles",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "rouge_propagande",
+				"hair_style": "long",
+				"top": "noir",
+				"top_style": "tablier",
+				"bottom": "noir",
+				"shoes": "rose_tag",
+				"detail": "rose_tag",
+				"bottom_style": "jupe"
+			}
+		},
+		{
+			"id": "mehdi",
+			"name": "CHAR_MEHDI",
+			"group": "familles",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "noir",
+				"hair_style": "court",
+				"top": "blanc",
+				"top_style": "tablier",
+				"bottom": "noir",
+				"shoes": "noir",
+				"detail": "orange_vif",
+				"bottom_style": "pantalon",
+				"facial_hair": "barbe"
+			}
+		},
+		{
+			"id": "cable",
+			"name": "CHAR_CABLE",
+			"group": "reseau",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "noir",
+				"hair_style": "afro",
+				"top": "orange_sombre",
+				"top_style": "blouse",
+				"bottom": "orange_sombre",
+				"shoes": "noir",
+				"accessory": "sac",
+				"accessory_color": "jaune_linge",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "monsieur_paul",
+			"name": "CHAR_MONSIEUR_PAUL",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "beton_4",
+				"hair_style": "rase",
+				"top": "eau_sombre",
+				"top_style": "veste",
+				"bottom": "brun_2",
+				"shoes": "noir",
+				"detail": "creme",
+				"bottom_style": "pantalon",
+				"facial_hair": "moustache"
+			}
+		},
+		{
+			"id": "vigile",
+			"name": "CHAR_VIGILE",
+			"group": "regime",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "noir",
+				"hair_style": "casque",
+				"top": "bleu_nuit",
+				"top_style": "uniforme",
+				"bottom": "bleu_nuit",
+				"shoes": "noir",
+				"accessory": "matraque",
+				"accessory_color": "beton_2",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "garde",
+			"name": "CHAR_GARDE",
+			"group": "regime",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "noir",
+				"hair_style": "casque",
+				"top": "beton_1",
+				"top_style": "uniforme",
+				"bottom": "beton_1",
+				"shoes": "noir",
+				"accessory": "gilet",
+				"accessory_color": "beton_2",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "intervention",
+			"name": "CHAR_INTERVENTION",
+			"group": "regime",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "noir",
+				"hair_style": "casque",
+				"top": "noir",
+				"top_style": "uniforme",
+				"bottom": "noir",
+				"shoes": "noir",
+				"accessory": "gilet",
+				"accessory_color": "rouge_sombre",
+				"bottom_style": "pantalon"
+			}
+		},
+		{
+			"id": "civil_1",
+			"name": "CHAR_CIVIL_1",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "noir",
+				"hair_style": "court",
+				"top": "beton_5",
+				"top_style": "tshirt",
+				"bottom": "bleu_acier",
+				"shoes": "blanc",
+				"bottom_style": "jean"
+			}
+		},
+		{
+			"id": "civil_2",
+			"name": "CHAR_CIVIL_2",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "brun_2",
+				"hair_style": "long",
+				"top": "rouge_sombre",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "noir",
+				"detail": "creme",
+				"bottom_style": "jupe"
+			}
+		},
+		{
+			"id": "civil_3",
+			"name": "CHAR_CIVIL_3",
+			"group": "habitants",
+			"appearance": {
+				"skin": "brun_2",
+				"hair": "noir",
+				"hair_style": "afro",
+				"top": "turquoise",
+				"top_style": "tshirt",
+				"bottom": "noir",
+				"shoes": "blanc",
+				"bottom_style": "short",
+				"facial_hair": "bouc"
+			}
+		},
+		{
+			"id": "civil_4",
+			"name": "CHAR_CIVIL_4",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "brun_1",
+				"hair_style": "capuche",
+				"top": "beton_3",
+				"top_style": "hoodie",
+				"bottom": "bleu_nuit",
+				"shoes": "blanc",
+				"bottom_style": "jogging",
+				"detail": "blanc"
+			}
+		},
+		{
+			"id": "civil_5",
+			"name": "CHAR_CIVIL_5",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "beton_5",
+				"hair_style": "bonnet",
+				"top": "orange_sombre",
+				"top_style": "veste",
+				"bottom": "brun_2",
+				"shoes": "brun_1",
+				"accessory_color": "vert_sombre",
+				"bottom_style": "pantalon",
+				"facial_hair": "barbe"
+			}
+		},
+		{
+			"id": "civil_6",
+			"name": "CHAR_CIVIL_6",
+			"group": "habitants",
+			"appearance": {
+				"skin": "brun_1",
+				"hair": "noir",
+				"hair_style": "tresses",
+				"top": "jaune_linge",
+				"top_style": "tshirt",
+				"bottom": "eau_sombre",
+				"shoes": "blanc",
+				"accessory": "sac",
+				"accessory_color": "rose_tag",
+				"bottom_style": "jean"
+			}
+		},
+		{
+			"id": "emissaire",
+			"name": "CHAR_EMISSAIRE",
+			"group": "reseau",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "noir",
+				"hair_style": "casquette",
+				"top": "noir",
+				"top_style": "hoodie",
+				"bottom": "beton_2",
+				"shoes": "blanc",
+				"bottom_style": "jogging",
+				"accessory": "sac",
+				"accessory_color": "rouge_sombre",
+				"detail": "rouge_sombre"
+			}
+		},
+		{
+			"id": "relais_zed",
+			"name": "CHAR_RELAIS_ZED",
+			"group": "reseau",
+			"appearance": {
+				"skin": "brun_2",
+				"hair": "beton_4",
+				"hair_style": "court",
+				"top": "brun_1",
+				"top_style": "veste",
+				"bottom": "noir",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"accessory": "lunettes",
+				"facial_hair": "moustache",
+				"detail": "orange_sombre"
+			}
+		},
+		{
+			"id": "sandra",
+			"name": "CHAR_SANDRA",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_1",
+				"hair": "brun_2",
+				"hair_style": "chignon",
+				"top": "bleu_nuit",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"accessory": "gilet",
+				"accessory_color": "jaune_linge"
+			}
+		},
+		{
+			"id": "jo",
+			"name": "CHAR_JO",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "blanc",
+				"hair_style": "casquette",
+				"top": "vert_sombre",
+				"top_style": "veste",
+				"bottom": "brun_2",
+				"shoes": "brun_1",
+				"bottom_style": "pantalon",
+				"facial_hair": "barbe",
+				"detail": "creme"
+			}
+		},
+		{
+			"id": "nadia",
+			"name": "CHAR_NADIA",
+			"group": "habitants",
+			"appearance": {
+				"skin": "brun_1",
+				"hair": "noir",
+				"hair_style": "tresses",
+				"top": "vert_feuille",
+				"top_style": "uniforme",
+				"bottom": "vert_sombre",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"accessory": "gilet",
+				"accessory_color": "orange_vif"
+			}
+		},
+		{
+			"id": "huguette",
+			"name": "CHAR_HUGUETTE",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_3",
+				"hair": "blanc",
+				"hair_style": "court",
+				"top": "violet_tag",
+				"top_style": "blouse",
+				"bottom": "beton_3",
+				"shoes": "brun_1",
+				"bottom_style": "jupe",
+				"accessory": "lunettes",
+				"detail": "creme"
+			}
+		},
+		{
+			"id": "ferreira",
+			"name": "CHAR_FERREIRA",
+			"group": "anciens",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "beton_4",
+				"hair_style": "chauve",
+				"top": "bleu_acier",
+				"top_style": "veste",
+				"bottom": "beton_2",
+				"shoes": "noir",
+				"bottom_style": "pantalon",
+				"facial_hair": "moustache"
+			}
+		},
+		{
+			"id": "gardienne",
+			"name": "CHAR_GARDIENNE",
+			"group": "habitants",
+			"appearance": {
+				"skin": "peau_2",
+				"hair": "brun_1",
+				"hair_style": "court",
+				"top": "bleu_ciel",
+				"top_style": "tablier",
+				"bottom": "bleu_nuit",
+				"shoes": "blanc",
+				"bottom_style": "pantalon",
+				"detail": "blanc"
+			}
+		}
+	]
+}

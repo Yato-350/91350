@@ -1,0 +1,7 @@
+# Caisse.
+palette:
+  b: brun_1
+  B: brun_2
+box: B 0 0 0 10 10 10
+box: b 0 4 0 10 2 1
+box: b 4 0 0 2 10 1

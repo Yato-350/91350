@@ -1,0 +1,18 @@
+# Étagère pleine.
+palette:
+  a: bleu_acier
+  e: bleu_ecran
+  R: rouge_sombre
+  B: brun_2
+  v: vert_sombre
+  c: creme
+  j: jaune_linge
+  k: rose_tag
+box: B 0 0 0 14 24 5
+box: R 1 2 0 3 4 1
+box: e 5 2 0 2 4 1
+box: j 8 2 0 4 4 1
+box: v 2 9 0 4 4 1
+box: c 7 9 0 5 4 1
+box: k 1 16 0 2 4 1
+box: a 4 16 0 6 4 1

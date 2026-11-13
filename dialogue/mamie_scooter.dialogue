@@ -1,0 +1,59 @@
+~ start
+if step("le_grand", "paos")
+	mamie_scooter: Ah, le petit du onzième ! Viens là, mon lapin. Lève les paos.
+	mamie_scooter: J'annonce, tu présentes. Si tu te trompes, je tape quand même.
+	=> paos
+elif quest_done("le_grand")
+	mamie_scooter: Toujours vivant, mon lapin ? Reviens tenir les paos quand tu veux.
+else
+	mamie_scooter: Soixante-quatorze ans, mon lapin, et toujours le crochet du gauche.
+=> END
+
+~ paos
+mamie_scooter: Écoute bien : gauche, gauche, droite.
+mamie_scooter: Un !
+- Pao gauche.
+- Pao droit.
+	=> rate
+- Les deux en haut.
+	=> rate
+mamie_scooter: Deux !
+- Pao gauche.
+- Pao droit.
+	=> rate
+- Les deux en haut.
+	=> rate
+mamie_scooter: Trois !
+- Pao gauche.
+	=> rate
+- Pao droit.
+- Les deux en haut.
+	=> rate
+mamie_scooter: Pan, pan, PAN ! Tu vois, quand tu veux.
+mamie_scooter: Le crochet, maintenant : droite, en haut, gauche.
+mamie_scooter: Un !
+- Pao gauche.
+	=> rate
+- Pao droit.
+- Les deux en haut.
+	=> rate
+mamie_scooter: Deux !
+- Pao gauche.
+	=> rate
+- Pao droit.
+	=> rate
+- Les deux en haut.
+mamie_scooter: Trois !
+- Pao gauche.
+- Pao droit.
+	=> rate
+- Les deux en haut.
+	=> rate
+mamie_scooter: Ah ! Tu tiens mieux les paos que le Grand tient sa langue.
+$> objective("USE", "paos")
+mamie_scooter: Dis-lui que t'es bon. Il te croira pas. Moi, je lui dirai.
+=> END
+
+~ rate
+mamie_scooter: Aïe ! Mon lapin, j'ai tapé dans le vide. On reprend.
+=> paos

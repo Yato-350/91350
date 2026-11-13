@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://boroleaqutsrf"
+path="res://.godot/imported/mamie_scooter.dialogue-94219b3e733122902dd338484e87a4ac.tres"
+
+[deps]
+
+source_file="res://dialogue/mamie_scooter.dialogue"
+dest_files=["res://.godot/imported/mamie_scooter.dialogue-94219b3e733122902dd338484e87a4ac.tres"]
+
+[params]
+
+defaults=true
