@@ -3,8 +3,8 @@ shader_type spatial;
 // « Vision à travers les murs » : quand un bâtiment cache le joueur, un disque tramé
 // s'ouvre autour de lui (pas de transparence alpha : on jette des pixels).
 
-global uniform vec3 player_position;
-global uniform float xray_radius;
+#include "res://shaders/cutaway.gdshaderinc"
+
 global uniform float night_factor;
 
 uniform vec3 window_dark : source_color = vec3(0.071, 0.102, 0.180);
@@ -14,12 +14,6 @@ uniform vec2 window_cell = vec2(3.0, 2.8);
 uniform float cut_height = 2.4;
 
 varying vec3 world_position;
-
-const float BAYER[16] = float[16](
-	0.0, 8.0, 2.0, 10.0,
-	12.0, 4.0, 14.0, 6.0,
-	3.0, 11.0, 1.0, 9.0,
-	15.0, 7.0, 13.0, 5.0);
 
 float hash(vec2 cell) {
 	return fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);
@@ -32,16 +26,8 @@ void vertex() {
 void fragment() {
 	// Ce qui se trouve entre la caméra et le joueur est découpé autour de lui :
 	// tout près, on voit à travers ; un peu plus loin, les bâtiments sont arasés.
-	vec3 player_view = (VIEW_MATRIX * vec4(player_position + vec3(0.0, 1.0, 0.0), 1.0)).xyz;
-	if (VERTEX.z > player_view.z + 0.75) {
-		ivec2 dither_cell = ivec2(FRAGCOORD.xy) % 4;
-		float threshold = 0.9 + 0.1 * BAYER[dither_cell.x + dither_cell.y * 4] / 16.0;
-		float distance_to_player = length(VERTEX.xy - player_view.xy);
-		bool near = distance_to_player < xray_radius * 0.4 * threshold;
-		bool above = world_position.y > cut_height && distance_to_player < xray_radius * threshold;
-		if (near || above) {
-			discard;
-		}
+	if (cutaway(VERTEX, world_position.y, FRAGCOORD.xy, VIEW_MATRIX, cut_height, -1.0)) {
+		discard;
 	}
 
 	// COLOR.a vaut 1 sur les murs et 0 sur les toits ; UV = (distance le long du mur, hauteur).

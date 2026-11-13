@@ -16,6 +16,8 @@ const INTERIOR_BACKGROUND := "noir"
 const INTERIOR_ZOOM := 2
 ## Hauteur d'apparition au-dessus du sol : le joueur se pose tout seul.
 const SPAWN_HEIGHT := 0.1
+## Distance à laquelle on considère qu'Akan arrive par l'entrée d'un immeuble.
+const ENTRANCE_REACH := 3.0
 ## Rayon maximal (en cases) de la recherche d'une case libre.
 const FREE_SEARCH_RADIUS := 40
 
@@ -74,6 +76,10 @@ func _ready() -> void:
 	var rig: CameraRig = CAMERA_RIG_SCENE.instantiate()
 	rig.target = player
 	add_child(rig)
+	# En sortant d'un immeuble, on voit sa façade plutôt que son dos.
+	var entrance := _entrance_near(player.position)
+	if not entrance.is_empty():
+		rig.face(entrance["normal"])
 
 
 func get_zoom() -> int:
@@ -81,7 +87,12 @@ func get_zoom() -> int:
 
 
 ## Position d'un repère (ou du repère par défaut), toujours sur une case libre.
+## Un repère peut aussi s'écrire en mètres, « x,z » : pratique pour les captures.
 func marker_position(marker: String = DEFAULT_MARKER) -> Vector3:
+	var coordinates := marker.split(",")
+	var is_point := coordinates.size() == 2 and coordinates[0].is_valid_float()
+	if not markers.has(marker) and is_point and coordinates[1].is_valid_float():
+		return nearest_free(Vector3(coordinates[0].to_float(), 0.0, coordinates[1].to_float()))
 	var wanted: Vector3 = markers.get(marker, markers.get(DEFAULT_MARKER, Vector3.ZERO))
 	return nearest_free(wanted)
 
@@ -115,6 +126,18 @@ func nearest_free(position: Vector3) -> Vector3:
 		if best_distance < INF:
 			break
 	return best
+
+
+# L'entrée d'immeuble la plus proche du point, à moins de ENTRANCE_REACH mètres, ou {}.
+func _entrance_near(at: Vector3) -> Dictionary:
+	var found := {}
+	var best := ENTRANCE_REACH
+	for entrance: Dictionary in geometry.entrances:
+		var position: Vector3 = entrance["position"]
+		if position.distance_to(Vector3(at.x, 0.0, at.z)) < best:
+			best = position.distance_to(Vector3(at.x, 0.0, at.z))
+			found = entrance
+	return found
 
 
 func _make_geometry() -> ZoneGeometry:

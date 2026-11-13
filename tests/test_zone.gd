@@ -53,7 +53,9 @@ func test_unknown_zone_is_refused() -> void:
 func test_markers_place_named_points_on_free_ground() -> void:
 	var door := _zone.marker_position("tour_akan")
 	assert_false(_zone.geometry.nav_data.is_solid_at(door))
-	assert_lt(door.distance_to(Vector3(-124.0, 0.0, -147.0)), 6.0)
+	assert_lt(
+		door.distance_to(Vector3(-142.2, 0.0, -153.1)), 1.5, "devant l'entrée réelle de la tour"
+	)
 	assert_eq(_zone.territory_id, "grigny2")
 	assert_false(_zone.is_interior)
 
@@ -101,3 +103,16 @@ func test_every_door_of_the_game_leads_somewhere() -> void:
 			var marker := target.get_slice("@", 1) if target.contains("@") else "default"
 			var known: Array = place.get("markers", {}).values() + place.get("markers", {}).keys()
 			assert_has(known, marker, "%s → %s" % [place_id, target])
+
+
+func test_a_marker_can_be_written_in_metres() -> void:
+	assert_eq(_zone.marker_position("12.5,-30"), _zone.nearest_free(Vector3(12.5, 0.0, -30.0)))
+	assert_eq(_zone.marker_position("pas,un point"), _zone.marker_position())
+
+
+func test_leaving_a_building_shows_its_facade() -> void:
+	var outside := Zone.create("grigny2@tour_akan")
+	add_child_autofree(outside)
+	await wait_physics_frames(2)
+	var rig: CameraRig = outside.find_children("*", "CameraRig", true, false)[0]
+	assert_eq(rig.yaw_step, 2, "l'entrée de la tour regarde le nord-ouest")

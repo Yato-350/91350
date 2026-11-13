@@ -17,6 +17,17 @@ func test_initial_view_is_isometric() -> void:
 	assert_almost_eq(camera.rotation_degrees.x, -30.0, 0.01)
 
 
+func test_face_turns_at_once_to_look_at_a_facade() -> void:
+	var rig := _make_rig()
+	rig.face(Vector3(-0.7, 0.0, -0.71))
+	assert_eq(rig.yaw_step, 2, "la caméra se place du côté de la façade")
+	assert_almost_eq(wrapf(rig.rotation_degrees.y, 0.0, 360.0), 225.0, 0.01)
+	rig.face(Vector3(0.7, 0.0, 0.7))
+	assert_eq(rig.yaw_step, 0)
+	rig.face(Vector3(1.0, 0.0, -0.2))
+	assert_eq(rig.yaw_step, 1)
+
+
 func test_rotate_step_wraps_both_ways() -> void:
 	var rig := _make_rig()
 	for i: int in 4:

@@ -9,7 +9,7 @@ class_name InteriorBuilder
 ## Les murs sont fins, au milieu de leur case, et dessinés bas (coupés à hauteur de
 ## hanche) pour voir dans les pièces ; leur collision monte plus haut.
 
-const MATERIAL := preload("res://assets/materials/vertex_color.tres")
+const MATERIAL := preload("res://assets/materials/prop.tres")
 const WALL := "#"
 const VOID := " "
 const CELL := 1.0

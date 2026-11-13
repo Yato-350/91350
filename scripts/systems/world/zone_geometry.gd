@@ -11,3 +11,7 @@ extends Node3D
 @export var nav_data: ZoneNavData
 ## Repères posés par le plan d'un intérieur : nom → position (Vector3).
 @export var markers := {}
+## Lanternes des lampadaires (en mètres) : la nuit, les lumières y sont posées.
+@export var lamp_positions := PackedVector3Array()
+## Entrées des immeubles : {"position", "normal", "building", "kind"}.
+@export var entrances: Array[Dictionary] = []

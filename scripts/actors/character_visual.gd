@@ -96,7 +96,7 @@ func _load_model() -> void:
 	_rest_heights.clear()
 	if character_id.is_empty():
 		return
-	_model = VoxelModel.instantiate(MODEL_FOLDER + character_id)
+	_model = VoxelModel.instantiate(MODEL_FOLDER + character_id, VoxelModel.CHARACTER_MATERIAL)
 	if _model == null:
 		return
 	add_child(_model)

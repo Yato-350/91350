@@ -52,6 +52,26 @@ func rotate_step(direction: int) -> void:
 	_rotation_tween.tween_property(self, ^"_yaw_degrees", _goal_yaw_degrees, ROTATION_SECONDS)
 
 
+## Se place tout de suite du côté vers lequel pointe `direction` (la normale d'une façade,
+## par exemple) : la caméra regarde alors la façade de face.
+func face(direction: Vector3) -> void:
+	var best := 0
+	var best_dot := -INF
+	for step: int in STEP_COUNT:
+		var yaw := deg_to_rad(YAW_OFFSET_DEGREES + STEP_DEGREES * step)
+		var dot := Vector2(sin(yaw), cos(yaw)).dot(Vector2(direction.x, direction.z))
+		if dot > best_dot:
+			best_dot = dot
+			best = step
+	if _rotation_tween != null:
+		_rotation_tween.kill()
+	yaw_step = best
+	_goal_yaw_degrees = YAW_OFFSET_DEGREES + STEP_DEGREES * best
+	_yaw_degrees = _goal_yaw_degrees
+	if is_node_ready():
+		_place()
+
+
 func get_target_yaw_degrees() -> float:
 	return YAW_OFFSET_DEGREES + STEP_DEGREES * yaw_step
 

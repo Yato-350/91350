@@ -42,6 +42,44 @@ static func add_quad(
 		add_triangle(surface, unused, picked, normal, color, uvs, Vector2.ZERO)
 
 
+## Polygone plat (vu d'en haut) à la hauteur `y`.
+static func add_polygon(
+	surface: SurfaceTool, points: PackedVector2Array, y: float, color: Color
+) -> void:
+	var indices := Geometry2D.triangulate_polygon(points)
+	var unused := PackedVector3Array()
+	for index: int in range(0, indices.size(), 3):
+		var corners: Array[Vector3] = []
+		var uvs: Array[Vector2] = []
+		for offset: int in 3:
+			var point := points[indices[index + offset]]
+			corners.append(Vector3(point.x, y, point.y))
+			uvs.append(point)
+		add_triangle(surface, unused, corners, Vector3.UP, color, uvs, Vector2.ZERO)
+
+
+## Ruban plat le long d'une ligne brisée ; chaque tronçon déborde un peu pour couvrir les angles.
+static func add_ribbon(
+	surface: SurfaceTool, points: PackedVector2Array, width: float, y: float, color: Color
+) -> void:
+	var unused := PackedVector3Array()
+	for index: int in points.size() - 1:
+		var direction := (points[index + 1] - points[index]).normalized()
+		if direction == Vector2.ZERO:
+			continue
+		var side := Vector2(-direction.y, direction.x) * width / 2.0
+		var start := points[index] - direction * width / 4.0
+		var end := points[index + 1] + direction * width / 4.0
+		var quad: Array[Vector2] = [start - side, start + side, end + side, end - side]
+		for triangle: Array in [[0, 1, 2], [0, 2, 3]]:
+			var corners: Array[Vector3] = []
+			var uvs: Array[Vector2] = []
+			for corner: int in triangle:
+				corners.append(Vector3(quad[corner].x, y, quad[corner].y))
+				uvs.append(quad[corner])
+			add_triangle(surface, unused, corners, Vector3.UP, color, uvs, Vector2.ZERO)
+
+
 ## Termine le maillage et l'attache à `parent` sous le nom `name`.
 static func commit(
 	parent: Node, name: String, surface: SurfaceTool, material: Material

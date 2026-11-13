@@ -161,7 +161,11 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		return
 	for i: int in SCREENSHOT_FRAMES:
 		await get_tree().process_frame
-	var file_name := scene_path.get_file().get_basename().replace(":", "_")
+	# « zone:grigny2@-48.7,-34.7 » n'a pas d'extension : seul un fichier de scène en perd une.
+	var file_name := scene_path.get_file()
+	if not scene_path.begins_with(ZONE_PREFIX):
+		file_name = file_name.get_basename()
+	file_name = file_name.replace(":", "_")
 	var path := SCREENSHOT_DIR.path_join(file_name + ".png")
 	if save_screenshot(path) != OK:
 		printerr("Capture impossible : %s" % path)
