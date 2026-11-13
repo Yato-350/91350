@@ -82,6 +82,15 @@ func _ready() -> void:
 	_connect_events()
 
 
+## Coupe tous les sons et les lâche (avant de quitter : le serveur audio ne garde rien).
+func silence() -> void:
+	for player: AudioStreamPlayer in _pool + _music_players + [_ambience]:
+		player.stop()
+		player.stream = null
+	_music_track = &""
+	_ambience_track = &""
+
+
 ## Joue un bruitage ; un son inconnu est signalé et rien ne se passe.
 func play(sound: StringName) -> void:
 	var stream: AudioStream = _streams.get(sound)

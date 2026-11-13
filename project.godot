@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="91350"
-config/version="0.0.1"
+config/version="0.1.0"
 run/main_scene="res://scenes/main/game.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
@@ -201,6 +201,7 @@ common/physics_interpolation=true
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 
 [shader_globals]
 

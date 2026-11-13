@@ -53,6 +53,10 @@ Choix datés et justifiés. Une décision réversible se prend, se note ici, et 
 | 47 | 2026-11-13 | **Présence sous condition gérée par le lieu** (portes, décor, personnages, caméras, Vigiles), relue à chaque drapeau, quête, libération, et chaque seconde | Une seule règle pour « Paul est emmené », « le toit s'ouvre », « le régime quitte une zone libérée » | Oui |
 | 48 | 2026-11-13 | **Infiltration = contrebande** : un objet `contraband` dans le sac rend Akan suspect aux yeux des caméras ; repéré, il reste « grillé » 20 s | Plus simple qu'un mode « mission » : c'est ce qu'il transporte qui le trahit ; les guetteurs refusent un livreur grillé | Oui |
 | 49 | 2026-11-13 | **DEFEND par vagues** de Vigiles (taille de chaque vague dans l'étape), reprise à la vague en cours | La descente du hall se rejoue sans repartir de zéro après une arrestation | Oui |
+| 50 | 2026-11-13 | **Sons synthétisés** par `tools/build_sounds.py` (oscillateurs, enveloppes, graine fixe), boucles avec bloc `smpl` | Placeholders du brief (type sfxr), CC0, reproductibles ; Godot lit la boucle dans le fichier et compresse en QOA à l'import | Oui |
+| 51 | 2026-11-13 | Bus **Music → MusicDuck → Master**, SFX, Ambience, UI ; la musique **suit la couleur** (régime, maison, quartier libre) | Le réglage du joueur reste sur Music, le tassement sous les dialogues sur MusicDuck ; « la musique revient avec la couleur » (brief) | Oui |
+| 52 | 2026-11-13 | **Pile d'écrans** (titre, pause, confirmation, fin d'acte, sac, journal) | Un seul écran prend les entrées et le focus ; « annuler » rend la main à celui d'en dessous | Oui |
+| 53 | 2026-11-13 | Exports bureau avec le **pck intégré**, macOS **universel signé ad hoc** ; import **ETC2/ASTC** activé | Un seul fichier à lancer ; Apple Silicon exige ETC2/ASTC et une signature, même ad hoc | Oui |
 
 ## À surveiller
 

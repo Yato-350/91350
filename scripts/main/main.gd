@@ -12,6 +12,8 @@ const COLOR_FADE_SECONDS := 1.5
 const LIBERATION_SECONDS := 4.0
 ## D'un lieu à l'autre, les musiques se fondent l'une dans l'autre.
 const MUSIC_FADE_SECONDS := 1.5
+## Images laissées au serveur audio pour lâcher ses sons avant de quitter.
+const QUIT_FRAMES := 3
 ## Où Akan se réveille après une arrestation.
 const HOME := "zone:appartement_akan"
 ## La dernière quête de l'acte 1 : quand elle se termine, l'écran de fin d'acte s'ouvre.
@@ -80,6 +82,8 @@ static func parse_view(args: PackedStringArray) -> int:
 
 
 func _ready() -> void:
+	# La fermeture de la fenêtre passe par quit_game().
+	get_tree().auto_accept_quit = false
 	_pixel_view.scale_changed.connect(func(_scale: int) -> void: _layout_ui())
 	_pixel_view.resized.connect(_layout_ui)
 	_layout_ui()
@@ -146,7 +150,7 @@ func _on_title_chosen(choice: String) -> void:
 		"credits":
 			_screens.open("Credits")
 		"quit":
-			get_tree().quit()
+			quit_game()
 
 
 func _on_pause_chosen(choice: String) -> void:
@@ -161,7 +165,7 @@ func _on_pause_chosen(choice: String) -> void:
 		"title":
 			_screens.confirm("CONFIRM_TITLE", show_title_screen)
 		"quit":
-			_screens.confirm("CONFIRM_QUIT", get_tree().quit)
+			_screens.confirm("CONFIRM_QUIT", quit_game)
 
 
 func _on_act_end_chosen(choice: String) -> void:
@@ -179,6 +183,19 @@ func _on_quest_completed(quest_id: String) -> void:
 	while _traveling or get_tree().paused:
 		await get_tree().process_frame
 	_screens.open("ActEnd")
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		quit_game()
+
+
+## Quitte proprement : le son se tait d'abord, le temps que le serveur audio le lâche.
+func quit_game() -> void:
+	AudioManager.silence()
+	for frame: int in QUIT_FRAMES:
+		await get_tree().process_frame
+	get_tree().quit()
 
 
 func _input(event: InputEvent) -> void:
