@@ -105,6 +105,8 @@ func _ready() -> void:
 		EventBus.inventory_changed
 	]:
 		changed.connect(refresh_conditions.unbind(1))
+	# Après le personnage lui-même (qui se tait et compte la conversation).
+	EventBus.dialogue_ended.connect(func(_file: String) -> void: refresh_conditions.call_deferred())
 	player = PLAYER_SCENE.instantiate()
 	player.position = spawn_position(arrival)
 	add_child(player)
@@ -186,6 +188,10 @@ func _refresh_entry(entry: Dictionary) -> void:
 		add_child(made)
 		entry["node"] = made
 	elif not wanted and present:
+		# Quelqu'un qui doit partir finit d'abord la conversation (et elle compte).
+		var npc := node as Npc
+		if npc != null and npc.is_talking():
+			return
 		(node as Node).queue_free()
 		entry["node"] = null
 

@@ -115,6 +115,20 @@ func test_the_contact_can_be_paid_or_delivered_to_zed() -> void:
 	assert_eq(GameState.progression.reputation("familles"), -10)
 
 
+func test_bernard_can_be_denounced_or_driven_away() -> void:
+	var before := {"la_tour_se_leve": {"state": "active", "step": "bernard"}}
+	GameState.give("lettre_menaces")
+	for choice: int in [0, 2]:
+		GameState.quests.from_dict(before)
+		for flag: String in ["bernard_denonce", "bernard_parti"]:
+			GameState.set_flag(flag, false)
+		await _go("zone:palier_11")
+		await _talk("bernard", [choice])
+		assert_true(GameState.quests.is_step("la_tour_se_leve", "voisins"), "choix %d" % choice)
+		await wait_seconds(Zone.CONDITION_REFRESH_SECONDS + 0.2)
+		assert_null(_npc("bernard"), "Bernard est parti (choix %d)" % choice)
+
+
 # 4. Les yeux du quartier
 func _play_the_eyes_of_the_neighbourhood() -> void:
 	await _go("zone:palier_11")

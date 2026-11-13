@@ -63,6 +63,11 @@ func _on_interacted(player: Player) -> void:
 	EventBus.dialogue_requested.emit(dialogue, cue)
 
 
+## Vrai pendant qu'il parle avec Akan : s'il doit partir, il finit d'abord sa phrase.
+func is_talking() -> bool:
+	return visual.talking
+
+
 # Une conversation menée à son terme vaut « parler à » ce personnage.
 func _on_dialogue_ended(_dialogue: String) -> void:
 	visual.talking = false

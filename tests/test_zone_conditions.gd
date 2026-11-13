@@ -13,7 +13,14 @@ const PLAN := {
 	"doors": [{"at": "porte", "to": "hall_tour", "if": {"flags": ["porte_ouverte"]}}],
 	"npcs":
 	[
-		{"id": "gus", "character": "civil_1", "at": "coin", "if": {"flags": ["gus_la"]}},
+		{
+			"id": "gus",
+			"character": "civil_1",
+			"at": "coin",
+			"dialogue": "voisins_tour",
+			"cue": "foule",
+			"if": {"flags": ["gus_la"]},
+		},
 		{"id": "veilleur", "character": "civil_2", "at": "nuit", "if": {"hours": [21, 6]}},
 	],
 	"cameras": [{"id": "essai", "at": "coin", "if": {"not_liberated": ["grigny2"]}}],
@@ -100,3 +107,22 @@ func _props(zone: Zone, prefix: String) -> int:
 		):
 			count += 1
 	return count
+
+
+func test_someone_who_must_leave_finishes_the_conversation_first() -> void:
+	GameState.quests = QuestLog.new(
+		{"essai": {"id": "essai", "steps": [{"id": "parler", "type": "TALK", "target": "civil_1"}]}}
+	)
+	GameState.connect_quests()
+	GameState.quests.start("essai")
+	GameState.set_flag("gus_la")
+	var zone := await _make(PLAN)
+	var gus := zone.get_node("Gus") as Npc
+	gus.interact(null)
+	GameState.set_flag("gus_la", false)
+	await wait_process_frames(2)
+	assert_true(is_instance_valid(gus) and not gus.is_queued_for_deletion(), "il finit sa phrase")
+	EventBus.dialogue_ended.emit("essai")
+	await wait_process_frames(2)
+	assert_true(GameState.quests.is_done("essai"), "la conversation compte")
+	assert_false(is_instance_valid(gus) and not gus.is_queued_for_deletion(), "puis il s'en va")

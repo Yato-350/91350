@@ -15,7 +15,9 @@ const BUS_UI := &"UI"
 ## Bruitages qui peuvent se chevaucher.
 const POOL_SIZE := 10
 ## Son → bus, volume (dB), nombre de prises (nom_1, nom_2…), variation de hauteur
-## (± demi-tons) : un son répété ne sonne jamais deux fois pareil.
+## (± demi-tons) : un son répété ne sonne jamais deux fois pareil. La variation est faite
+## à la main (prise au hasard, hauteur, volume) : le web joue les sons en « Sample », sans
+## mélangeur, et n'y gagne qu'avec des flux simples.
 const SOUNDS := {
 	&"pas": {"bus": BUS_SFX, "volume": -16.0, "takes": 3, "pitch": 1.0},
 	&"coup": {"bus": BUS_SFX, "volume": -4.0, "pitch": 1.0},
@@ -48,8 +50,12 @@ const DUCK_SECONDS := 0.3
 const AMBIENCE_FADE_SECONDS := 1.0
 ## Une prise répétée change un peu de volume (± dB).
 const VOLUME_SPREAD_DB := 1.5
+const SEMITONES_PER_OCTAVE := 12.0
 
-var _streams := {}
+## Son → ses prises (AudioStream).
+var _takes := {}
+## Son → dernière prise jouée (pour ne pas la rejouer tout de suite).
+var _last_take := {}
 var _pool: Array[AudioStreamPlayer] = []
 var _next_player := 0
 var _music_players: Array[AudioStreamPlayer] = []
@@ -63,7 +69,7 @@ func _ready() -> void:
 	# Les menus mettent le jeu en pause : leurs sons doivent jouer quand même.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for sound: StringName in SOUNDS:
-		_streams[sound] = _make_stream(sound, SOUNDS[sound])
+		_takes[sound] = _load_takes(sound, SOUNDS[sound])
 	for index: int in POOL_SIZE:
 		var player := AudioStreamPlayer.new()
 		player.name = "Sfx%d" % index
@@ -93,15 +99,23 @@ func silence() -> void:
 
 ## Joue un bruitage ; un son inconnu est signalé et rien ne se passe.
 func play(sound: StringName) -> void:
-	var stream: AudioStream = _streams.get(sound)
-	if stream == null:
+	var takes: Array = _takes.get(sound, [])
+	if takes.is_empty():
 		push_error("Son inconnu : %s" % sound)
 		return
+	var spec: Dictionary = SOUNDS[sound]
+	var take := randi() % takes.size()
+	if takes.size() > 1 and take == _last_take.get(sound, -1):
+		take = (take + 1) % takes.size()
+	_last_take[sound] = take
+	var pitch: float = spec.get("pitch", 0.0)
+	var spread := VOLUME_SPREAD_DB if pitch > 0.0 or takes.size() > 1 else 0.0
 	var player := _pool[_next_player]
 	_next_player = (_next_player + 1) % POOL_SIZE
-	player.stream = stream
-	player.bus = SOUNDS[sound]["bus"]
-	player.volume_db = SOUNDS[sound].get("volume", 0.0)
+	player.stream = takes[take]
+	player.bus = spec["bus"]
+	player.volume_db = spec.get("volume", 0.0) + randf_range(-spread, spread)
+	player.pitch_scale = pow(2.0, randf_range(-pitch, pitch) / SEMITONES_PER_OCTAVE)
 	player.play()
 
 
@@ -161,18 +175,13 @@ func set_volume(bus: StringName, value: float) -> void:
 		AudioServer.set_bus_volume_linear(index, level * level)
 
 
-func _make_stream(sound: StringName, spec: Dictionary) -> AudioStream:
-	var takes: int = spec.get("takes", 1)
-	var pitch: float = spec.get("pitch", 0.0)
-	if takes == 1 and is_zero_approx(pitch):
-		return load(SOUND_PATH % sound)
-	var randomizer := AudioStreamRandomizer.new()
-	for take: int in takes:
-		var file := String(sound) if takes == 1 else "%s_%d" % [sound, take + 1]
-		randomizer.add_stream(-1, load(SOUND_PATH % file))
-	randomizer.random_pitch_semitones = pitch
-	randomizer.random_volume_offset_db = VOLUME_SPREAD_DB
-	return randomizer
+func _load_takes(sound: StringName, spec: Dictionary) -> Array[AudioStream]:
+	var count: int = spec.get("takes", 1)
+	var takes: Array[AudioStream] = []
+	for take: int in count:
+		var file := String(sound) if count == 1 else "%s_%d" % [sound, take + 1]
+		takes.append(load(SOUND_PATH % file))
+	return takes
 
 
 func _connect_events() -> void:
