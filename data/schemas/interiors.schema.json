@@ -195,6 +195,42 @@
 					}
 				}
 			}
+		},
+		"cameras": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"at"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère ou « x,z »."
+					},
+					"yaw": {
+						"type": "number",
+						"description": "Axe du regard, en degrés (0 : vers le nord)."
+					},
+					"sweep": {
+						"type": "number",
+						"description": "Balayage de part et d'autre de l'axe, en degrés."
+					},
+					"range": {
+						"type": "number",
+						"exclusiveMinimum": 0
+					},
+					"if": {
+						"type": "object"
+					}
+				}
+			}
 		}
 	}
 }

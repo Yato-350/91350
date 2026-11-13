@@ -144,6 +144,7 @@ static func _add_buildings(geometry: ZoneGeometry, buildings: Array, palette: Di
 		_add_building(surfaces[chunk], chunk_faces, points, building, palette)
 		faces[chunk] = chunk_faces
 		_block(geometry.nav_data, points, NAV_MARGIN)
+		_mark_opaque(geometry.nav_data, points)
 	for chunk: Vector2i in surfaces:
 		var instance := MeshKit.commit(
 			root, "Chunk_%d_%d" % [chunk.x, chunk.y], surfaces[chunk], BUILDING_MATERIAL
@@ -278,6 +279,23 @@ static func _signed_area(points: PackedVector2Array) -> float:
 		var next := points[(index + 1) % points.size()]
 		area += points[index].x * next.y - next.x * points[index].y
 	return area / 2.0
+
+
+## Un immeuble cache la vue sur son emprise exacte (la marge de passage ne compte pas).
+static func _mark_opaque(nav: ZoneNavData, points: PackedVector2Array) -> void:
+	var low := Vector2(INF, INF)
+	var high := Vector2(-INF, -INF)
+	for point: Vector2 in points:
+		low = low.min(point)
+		high = high.max(point)
+	var from := nav.cell_of(Vector3(low.x, 0.0, low.y))
+	var to := nav.cell_of(Vector3(high.x, 0.0, high.y))
+	for cell_y: int in range(from.y, to.y + 1):
+		for cell_x: int in range(from.x, to.x + 1):
+			var cell := Vector2i(cell_x, cell_y)
+			var center := nav.center_of(cell)
+			if Geometry2D.is_point_in_polygon(Vector2(center.x, center.z), points):
+				nav.set_opaque(cell)
 
 
 ## Marque comme pleines les cases dont le centre tombe dans le polygone (élargi de `margin`).

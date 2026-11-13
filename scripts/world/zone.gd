@@ -76,6 +76,7 @@ func _ready() -> void:
 	_add_props()
 	_add_pickups()
 	_add_npcs()
+	_add_cameras()
 	EventBus.item_dropped.connect(_on_item_dropped)
 	player = PLAYER_SCENE.instantiate()
 	player.position = spawn_position(arrival)
@@ -255,6 +256,16 @@ func _add_npcs() -> void:
 		var node := Npc.create(npc)
 		node.position = marker_position(npc["at"])
 		add_child(node)
+
+
+func _add_cameras() -> void:
+	for camera_data: Dictionary in definition.get("cameras", []):
+		if not Conditions.check(camera_data.get("if", {})):
+			continue
+		var camera := SecurityCamera.create(camera_data)
+		camera.nav = geometry.nav_data
+		camera.position = marker_position(camera_data["at"])
+		add_child(camera)
 
 
 # Ce qui ne tient pas dans le sac tombe aux pieds d'Akan.

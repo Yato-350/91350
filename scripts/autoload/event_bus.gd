@@ -43,3 +43,5 @@ signal dialogue_requested(dialogue: String, cue: String)
 signal dialogue_ended(dialogue: String)
 ## Le couvre-feu commence (true) ou se lève (false).
 signal curfew_changed(active: bool)
+## Un guetteur (caméra, Vigile) a repéré Akan à cet endroit.
+signal player_spotted(position: Vector3, source: String)

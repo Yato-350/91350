@@ -6,6 +6,9 @@ extends Resource
 @export var size := Vector2i.ZERO
 @export var cell_size := 1.0
 @export var solid := PackedByteArray()
+## Cases qui cachent la vue (murs, immeubles, haies), à part : une voiture, un tronc ou une
+## grille arrêtent le pas, pas le regard.
+@export var opaque := PackedByteArray()
 
 
 static func create(zone_size: Vector2, cell: float = 1.0) -> ZoneNavData:
@@ -13,6 +16,7 @@ static func create(zone_size: Vector2, cell: float = 1.0) -> ZoneNavData:
 	data.cell_size = cell
 	data.size = Vector2i(ceili(zone_size.x / cell), ceili(zone_size.y / cell))
 	data.solid.resize(data.size.x * data.size.y)
+	data.opaque.resize(data.size.x * data.size.y)
 	return data
 
 
@@ -64,3 +68,47 @@ func reachable_from(start: Vector2i) -> PackedByteArray:
 			reached[next.y * size.x + next.x] = 1
 			pending.append(next)
 	return reached
+
+
+## Hors de la zone, rien ne se voit.
+func is_opaque(cell: Vector2i) -> bool:
+	if not contains(cell):
+		return true
+	if opaque.size() != solid.size():
+		return is_solid(cell)
+	return opaque[cell.y * size.x + cell.x] != 0
+
+
+func set_opaque(cell: Vector2i, value: bool = true) -> void:
+	if contains(cell) and opaque.size() == solid.size():
+		opaque[cell.y * size.x + cell.x] = 1 if value else 0
+
+
+## Vrai si rien d'opaque ne se trouve entre `from` et `to`, en suivant les cases que le
+## segment traverse (sans compter la case de départ ni celle d'arrivée).
+func line_of_sight(from: Vector3, to: Vector3) -> bool:
+	var start := Vector2(from.x, from.z) / cell_size + Vector2(size) / 2.0
+	var end := Vector2(to.x, to.z) / cell_size + Vector2(size) / 2.0
+	var cell := Vector2i(floori(start.x), floori(start.y))
+	var last := Vector2i(floori(end.x), floori(end.y))
+	var direction := end - start
+	var step := Vector2i(signi(int(signf(direction.x))), signi(int(signf(direction.y))))
+	var t_max := Vector2(INF, INF)
+	var t_delta := Vector2(INF, INF)
+	for axis: int in 2:
+		if direction[axis] != 0.0:
+			var boundary := float(cell[axis] + (1 if step[axis] > 0 else 0))
+			t_max[axis] = (boundary - start[axis]) / direction[axis]
+			t_delta[axis] = absf(1.0 / direction[axis])
+	while cell != last:
+		if t_max.x < t_max.y:
+			cell.x += step.x
+			t_max.x += t_delta.x
+		else:
+			cell.y += step.y
+			t_max.y += t_delta.y
+		if t_max.x > 1.0 and t_max.y > 1.0 and cell != last:
+			break
+		if cell != last and is_opaque(cell):
+			return false
+	return true

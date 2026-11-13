@@ -425,7 +425,7 @@ static func _add_barriers(
 				placer.obstacle(
 					Vector3(middle.x, collision.y / 2.0, middle.y), collision, yaw, false
 				)
-				_block_line(placer.geometry.nav_data, a, b)
+				_block_line(placer.geometry.nav_data, a, b, not barrier["kind"] in SEE_THROUGH)
 				var color: Color = palette[style["color"]]
 				if barrier["kind"] in SEE_THROUGH:
 					_add_panel(see_through, a, b, height, color)
@@ -462,8 +462,9 @@ static func _open_at_gates(
 	return pieces
 
 
-# Bouche les cases dont le centre est près du segment, sans déborder de ses extrémités.
-static func _block_line(nav: ZoneNavData, a: Vector2, b: Vector2) -> void:
+# Bouche les cases dont le centre est près du segment, sans déborder de ses extrémités ;
+# une haie ou un mur cachent aussi la vue (`opaque`), pas une grille.
+static func _block_line(nav: ZoneNavData, a: Vector2, b: Vector2, opaque: bool) -> void:
 	var low := nav.cell_of(Vector3(minf(a.x, b.x) - 1.0, 0.0, minf(a.y, b.y) - 1.0))
 	var high := nav.cell_of(Vector3(maxf(a.x, b.x) + 1.0, 0.0, maxf(a.y, b.y) + 1.0))
 	var direction := (b - a).normalized()
@@ -476,6 +477,8 @@ static func _block_line(nav: ZoneNavData, a: Vector2, b: Vector2) -> void:
 			var across := absf(offset.cross(direction))
 			if along >= 0.0 and along <= length and across <= BARRIER_NAV_REACH:
 				nav.set_solid(Vector2i(x, y))
+				if opaque:
+					nav.set_opaque(Vector2i(x, y))
 
 
 # Un pan de grille, vu des deux côtés : UV = (distance le long, hauteur), UV2.y = hauteur.

@@ -11,6 +11,9 @@ const MARKER_SEPARATOR := "@"
 const CURFEW_WARNING_MINUTES := 10.0
 ## À partir de cette Vigilance, le régime avance le couvre-feu d'une heure.
 const CURFEW_ADVANCE_VIGILANCE := 3
+## Après un acte interdit (tag, sabotage, coup), Akan reste suspect ce temps-là (s).
+const OFFENCE_MEMORY_SECONDS := 6.0
+const MSEC_PER_SECOND := 1000.0
 ## La quête qui ouvre une nouvelle partie.
 const FIRST_QUEST := "ascenseur_en_panne"
 ## Objectifs « USE » génériques : ce qu'un objet fait, quel qu'il soit.
@@ -39,6 +42,7 @@ var territory_id := ""
 var playing := false
 
 var _curfew := false
+var _offence_until := -1.0
 
 
 func _ready() -> void:
@@ -65,6 +69,27 @@ func advance_time(seconds: float) -> void:
 		EventBus.notified.emit("CURFEW_START" if now else "CURFEW_END")
 
 
+## Akan vient de faire quelque chose d'interdit : les guetteurs qui le voient s'en
+## inquiètent pendant OFFENCE_MEMORY_SECONDS.
+func commit_offence(seconds: float = OFFENCE_MEMORY_SECONDS) -> void:
+	_offence_until = Time.get_ticks_msec() + seconds * MSEC_PER_SECOND
+
+
+## Vrai si un guetteur qui voit Akan a de quoi s'inquiéter : un acte interdit récent,
+## dehors pendant le couvre-feu, ou un statut d'ennemi public.
+func is_offending() -> bool:
+	if Time.get_ticks_msec() < _offence_until:
+		return true
+	if surveillance.status == Surveillance.Status.ENNEMI_PUBLIC:
+		return true
+	return is_curfew() and is_outdoors()
+
+
+## Vrai dehors (dans une zone), faux dans un intérieur.
+func is_outdoors() -> bool:
+	return not DataRegistry.entry("zones", place_id()).is_empty()
+
+
 ## Vrai pendant le couvre-feu (avancé d'une heure quand la Vigilance est haute).
 func is_curfew() -> bool:
 	return clock.is_curfew(_curfew_advance())
@@ -89,6 +114,7 @@ func new_game() -> void:
 	saved_position = []
 	territory_id = ""
 	_curfew = is_curfew()
+	_offence_until = -1.0
 	EventBus.game_state_reset.emit()
 
 

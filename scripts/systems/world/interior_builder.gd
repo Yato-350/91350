@@ -58,8 +58,10 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 			var center := _center_of(rows, cell)
 			if kind == VOID:
 				geometry.nav_data.set_solid(cell)
+				geometry.nav_data.set_opaque(cell)
 			elif _is_wall(kind):
 				geometry.nav_data.set_solid(cell)
+				geometry.nav_data.set_opaque(cell)
 				var colors: Array[Color] = []
 				for side: Vector2i in SIDES:
 					var outside := (

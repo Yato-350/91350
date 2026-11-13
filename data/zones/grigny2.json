@@ -54,11 +54,6 @@
 			"yaw": 90
 		},
 		{
-			"model": "camera",
-			"at": "-73.5,-147.5",
-			"yaw": 135
-		},
-		{
 			"model": "haut_parleur",
 			"at": "-63.5,-148",
 			"yaw": 225
@@ -121,6 +116,20 @@
 			"at": "epicerie",
 			"dialogue": "tonton",
 			"yaw": 0
+		}
+	],
+	"cameras": [
+		{
+			"id": "ration",
+			"at": "-73.5,-147.5",
+			"yaw": 218,
+			"sweep": 35
+		},
+		{
+			"id": "parvis_tour",
+			"at": "-156,-160",
+			"yaw": 243,
+			"sweep": 30
 		}
 	]
 }
