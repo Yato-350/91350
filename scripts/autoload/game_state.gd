@@ -53,6 +53,7 @@ var _offence_until := -1.0
 
 func _ready() -> void:
 	add_to_group(SaveManager.SAVEABLE_GROUP)
+	EventBus.player_spotted.connect(_on_player_spotted)
 	new_game()
 
 
@@ -95,13 +96,20 @@ func commit_offence(seconds: float = OFFENCE_MEMORY_SECONDS) -> void:
 
 
 ## Vrai si un guetteur qui voit Akan a de quoi s'inquiéter : un acte interdit récent,
-## dehors pendant le couvre-feu, ou un statut d'ennemi public.
+## du matériel interdit dans le sac, dehors pendant le couvre-feu, ou un statut d'ennemi
+## public.
 func is_offending() -> bool:
 	if Time.get_ticks_msec() < _offence_until:
 		return true
 	if surveillance.status == Surveillance.Status.ENNEMI_PUBLIC:
 		return true
+	if inventory.carries_contraband():
+		return true
 	return is_curfew() and is_outdoors()
+
+
+func _on_player_spotted(_position: Vector3, _source: String) -> void:
+	surveillance.note_spotted(Time.get_ticks_msec() / MSEC_PER_SECOND)
 
 
 ## Vrai dehors (dans une zone), faux dans un intérieur.

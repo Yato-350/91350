@@ -50,6 +50,9 @@ Choix datés et justifiés. Une décision réversible se prend, se note ici, et 
 | 44 | 2026-11-13 | Un **logement garde ses couleurs** (`"home": true`) | Chez soi, le régime n'entre pas : le contraste avec le palier gris enseigne « couleur = liberté » sans un mot | Oui |
 | 45 | 2026-11-13 | **Points d'action** (`spots`) en données : un geste = un dialogue | Lit, mur à taguer, boîtier à saboter : la même brique, et c'est le dialogue qui décide (choix, effets, objectifs) | Oui |
 | 46 | 2026-11-13 | Vocabulaire des dialogues en **deux objets** : `Story` (récit) et `Neighbourhood` (quartier) | Un seul objet dépassait vingt fonctions publiques ; Dialogue Manager cherche dans les deux sans que l'auteur ait à le savoir | Oui |
+| 47 | 2026-11-13 | **Présence sous condition gérée par le lieu** (portes, décor, personnages, caméras, Vigiles), relue à chaque drapeau, quête, libération, et chaque seconde | Une seule règle pour « Paul est emmené », « le toit s'ouvre », « le régime quitte une zone libérée » | Oui |
+| 48 | 2026-11-13 | **Infiltration = contrebande** : un objet `contraband` dans le sac rend Akan suspect aux yeux des caméras ; repéré, il reste « grillé » 20 s | Plus simple qu'un mode « mission » : c'est ce qu'il transporte qui le trahit ; les guetteurs refusent un livreur grillé | Oui |
+| 49 | 2026-11-13 | **DEFEND par vagues** de Vigiles (taille de chaque vague dans l'étape), reprise à la vague en cours | La descente du hall se rejoue sans repartir de zéro après une arrestation | Oui |
 
 ## À surveiller
 

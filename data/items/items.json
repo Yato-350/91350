@@ -206,7 +206,8 @@
 			"description": "ITEM_PROVISIONS_GUET_DESC",
 			"category": "quete",
 			"stack": 3,
-			"value": 0
+			"value": 0,
+			"contraband": true
 		},
 		{
 			"id": "colis_zed",

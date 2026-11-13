@@ -50,3 +50,11 @@ func test_every_key_must_hold() -> void:
 	assert_false(Conditions.check({"flags": ["radio"], "items": {"piles": 1}}))
 	GameState.give("piles", 1)
 	assert_true(Conditions.check({"flags": ["radio"], "items": {"piles": 1}}))
+
+
+func test_a_zone_can_be_required_free_or_still_held() -> void:
+	assert_true(Conditions.check({"not_liberated": ["grigny2"]}))
+	assert_false(Conditions.check({"liberated": ["grigny2"]}))
+	GameState.territory.liberate("grigny2")
+	assert_true(Conditions.check({"liberated": ["grigny2"]}))
+	assert_false(Conditions.check({"not_liberated": ["grigny2"]}))

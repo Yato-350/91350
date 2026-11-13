@@ -83,3 +83,11 @@ func test_reputation_is_clamped_per_group_and_round_trips() -> void:
 	var copy := Progression.new()
 	copy.from_dict(progression.to_dict())
 	assert_eq(copy.reputation("familles"), 15)
+
+
+func test_a_spotted_akan_stays_hot_for_a_while() -> void:
+	var surveillance := Surveillance.new()
+	assert_false(surveillance.is_hot(100.0))
+	surveillance.note_spotted(100.0)
+	assert_true(surveillance.is_hot(100.0 + Surveillance.HOT_SECONDS - 1.0))
+	assert_false(surveillance.is_hot(100.0 + Surveillance.HOT_SECONDS + 1.0))

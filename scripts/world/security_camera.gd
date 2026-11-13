@@ -69,6 +69,7 @@ func _ready() -> void:
 	add_child(_indicator)
 	if GameState.has_flag(OFF_FLAG % id):
 		disable()
+	EventBus.flag_changed.connect(_on_flag_changed)
 	_show_state()
 
 
@@ -107,6 +108,12 @@ func disable() -> void:
 	if _head != null:
 		_head.rotation.x = -DROOP
 	_show_state()
+
+
+# Un sabotage (dans un dialogue) pose le drapeau : l'image tombe aussitôt.
+func _on_flag_changed(flag: String) -> void:
+	if flag == OFF_FLAG % id and GameState.has_flag(flag) and not disabled:
+		disable()
 
 
 func _perceive(delta: float) -> void:

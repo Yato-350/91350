@@ -28,6 +28,10 @@
 			"type": "boolean",
 			"description": "Un logement : il garde ses couleurs même sous le régime."
 		},
+		"open_air": {
+			"type": "boolean",
+			"description": "À l'air libre (un toit) : la lumière suit le jour et la nuit."
+		},
 		"plan": {
 			"type": "array",
 			"minItems": 3,
@@ -97,6 +101,10 @@
 						"minItems": 2,
 						"maxItems": 2,
 						"description": "[fichier, entrée] : on frappe, et le dialogue décide si l'on entre."
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
 					}
 				}
 			}
@@ -126,6 +134,10 @@
 					"solid": {
 						"type": "boolean",
 						"description": "Faux : on passe à travers (chaise, tapis)."
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
 					}
 				}
 			}

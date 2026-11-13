@@ -82,7 +82,8 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 				if names.has(kind):
 					geometry.markers[names[kind]] = center
 				var prop: Dictionary = props.get(kind, {})
-				if not prop.is_empty() and prop.get("solid", true):
+				# Un meuble qui va et vient (« if ») ne bouche pas la grille des chemins.
+				if not prop.is_empty() and prop.get("solid", true) and not prop.has("if"):
 					geometry.nav_data.set_solid(cell)
 	MeshKit.commit(geometry, "Floor", floor_surface, MATERIAL)
 	MeshKit.commit(geometry, "Walls", wall_surface, MATERIAL)
@@ -90,8 +91,8 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 	return geometry
 
 
-## Les meubles du plan : [{"model", "yaw", "solid", "position"}], un par groupe de cases
-## voisines portant le même caractère.
+## Les meubles du plan : [{"model", "yaw", "solid", "position", "if"}], un par groupe de
+## cases voisines portant le même caractère.
 static func prop_placements(definition: Dictionary) -> Array[Dictionary]:
 	var placements: Array[Dictionary] = []
 	var rows := _rows(definition)
@@ -126,6 +127,7 @@ static func prop_placements(definition: Dictionary) -> Array[Dictionary]:
 						"yaw": float(prop.get("yaw", 0.0)),
 						"solid": prop.get("solid", true),
 						"position": middle,
+						"if": prop.get("if", {}),
 					}
 				)
 			)

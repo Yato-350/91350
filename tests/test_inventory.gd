@@ -95,3 +95,15 @@ func test_a_heavy_item_is_noticed() -> void:
 	assert_false(_inventory.carries_heavy())
 	_inventory.add("bidon")
 	assert_true(_inventory.carries_heavy())
+
+
+func test_contraband_in_the_bag_is_noticed() -> void:
+	var inventory := Inventory.new(
+		{"tract": {"id": "tract", "stack": 5, "contraband": true}, "eau": {"id": "eau"}}
+	)
+	inventory.add("eau")
+	assert_false(inventory.carries_contraband())
+	inventory.add("tract", 2)
+	assert_true(inventory.carries_contraband())
+	inventory.remove("tract", 2)
+	assert_false(inventory.carries_contraband())

@@ -110,6 +110,10 @@
 					"heavy": {
 						"type": "boolean",
 						"description": "Objet lourd : porté à deux mains, on ne court plus."
+					},
+					"contraband": {
+						"type": "boolean",
+						"description": "Objet interdit : tant qu'il est dans le sac, qui voit Akan s'inquiète."
 					}
 				}
 			}

@@ -49,9 +49,19 @@ func count(item_id: String) -> int:
 
 ## Vrai si le sac contient un objet lourd (bidon plein…) : on ne court plus.
 func carries_heavy() -> bool:
+	return _carries("heavy")
+
+
+## Vrai si le sac contient un objet interdit (du matériel de guet) : qui le voit s'inquiète.
+func carries_contraband() -> bool:
+	return _carries("contraband")
+
+
+# Vrai si un objet du sac porte la marque `key` (« heavy », « contraband »).
+func _carries(key: String) -> bool:
 	for slot: Dictionary in slots:
 		var item: Dictionary = _items.get(slot.get("id", ""), {})
-		if item.get("heavy", false):
+		if item.get(key, false):
 			return true
 	return false
 

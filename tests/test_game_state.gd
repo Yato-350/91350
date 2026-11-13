@@ -168,3 +168,15 @@ func test_entering_a_place_is_announced() -> void:
 	assert_eq(GameState.place_id(), "grigny2")
 	GameState.enter("res://scenes/zones/test_zone.tscn", "")
 	assert_eq(GameState.place_id(), "")
+
+
+func test_lookout_supplies_make_akan_suspect_and_being_spotted_makes_him_hot() -> void:
+	GameState.enter("zone:grigny2", "grigny2")
+	GameState.clock.minutes = 12 * 60.0
+	assert_false(GameState.is_offending())
+	GameState.give("provisions_guet")
+	assert_true(GameState.is_offending(), "du matériel de guet dans le sac")
+	var street := Neighbourhood.new()
+	assert_false(street.hot())
+	EventBus.player_spotted.emit(Vector3.ZERO, "camera")
+	assert_true(street.hot(), "repéré : les guetteurs ne veulent pas de lui tout de suite")

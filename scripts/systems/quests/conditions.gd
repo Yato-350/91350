@@ -10,6 +10,7 @@ class_name Conditions
 ##   hours                             [de, à[ en heures, minuit compris (« [21, 6] »)
 ##   status_max                        statut citoyen au plus égal à cette valeur
 ##   reputation                        {groupe: minimum}
+##   liberated, not_liberated          zones libérées / encore tenues par le régime
 
 const STEP_SEPARATOR := ":"
 
@@ -50,6 +51,12 @@ static func check(condition: Dictionary) -> bool:
 	var reputation: Dictionary = condition.get("reputation", {})
 	for group: String in reputation:
 		if GameState.progression.reputation(group) < int(reputation[group]):
+			return false
+	for zone: String in condition.get("liberated", []):
+		if not GameState.territory.is_liberated(zone):
+			return false
+	for zone: String in condition.get("not_liberated", []):
+		if GameState.territory.is_liberated(zone):
 			return false
 	return true
 

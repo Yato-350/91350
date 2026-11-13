@@ -10,6 +10,8 @@ enum Status { CONFORME, SURVEILLE, FICHE, ENNEMI_PUBLIC }
 const MAX_LEVEL := 5
 ## Secondes passées caché pour que la Vigilance redescende d'un cran.
 const DECAY_SECONDS := 45.0
+## Repéré, Akan reste « grillé » ce temps-là (s) : les guetteurs préfèrent l'éviter.
+const HOT_SECONDS := 20.0
 ## Vigilance à partir de laquelle le statut citoyen se dégrade.
 const STATUS_LEVELS := {
 	3: Status.SURVEILLE,
@@ -23,6 +25,8 @@ var status := Status.CONFORME
 var _heat := {}
 ## zone → secondes passées caché depuis la dernière baisse.
 var _hidden_seconds := {}
+## Dernière fois qu'Akan a été repéré (secondes, horloge réelle) ; rien n'est sauvegardé.
+var _spotted_at := -INF
 
 
 func level(zone_id: String) -> int:
@@ -71,6 +75,16 @@ func lower_status() -> void:
 		return
 	status = (status - 1) as Status
 	status_changed.emit(status)
+
+
+## Akan vient d'être repéré, à l'instant `now` (secondes).
+func note_spotted(now: float) -> void:
+	_spotted_at = now
+
+
+## Vrai si Akan a été repéré il y a moins de HOT_SECONDS.
+func is_hot(now: float) -> bool:
+	return now - _spotted_at < HOT_SECONDS
 
 
 func to_dict() -> Dictionary:

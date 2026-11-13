@@ -82,3 +82,19 @@ func test_places_install_their_cameras_with_the_zone_grid() -> void:
 	var camera: SecurityCamera = hall.get_node("CameraHall")
 	assert_not_null(camera)
 	assert_eq(camera.nav, hall.geometry.nav_data)
+
+
+func test_a_sabotage_switches_the_camera_off_at_once() -> void:
+	assert_false(_camera.disabled)
+	GameState.set_flag(SecurityCamera.OFF_FLAG % "essai")
+	assert_true(_camera.disabled, "le câble est coupé : l'image tombe")
+
+
+func test_an_alarm_raised_in_a_dialogue_brings_the_area_down_on_akan() -> void:
+	_player.global_position = Vector3(3.0, 0.0, 4.0)
+	watch_signals(EventBus)
+	Neighbourhood.new().alarm()
+	assert_signal_emitted(EventBus, "player_spotted")
+	var params: Array = get_signal_parameters(EventBus, "player_spotted")
+	assert_almost_eq(params[0], _player.global_position, Vector3.ONE * 0.01)
+	assert_true(Neighbourhood.new().hot())

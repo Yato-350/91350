@@ -73,6 +73,10 @@
 					},
 					"solid": {
 						"type": "boolean"
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
 					}
 				}
 			}
@@ -299,6 +303,10 @@
 					"minItems": 2,
 					"maxItems": 2,
 					"description": "[fichier, entrée] : on frappe, et le dialogue décide si l'on entre."
+				},
+				"if": {
+					"type": "object",
+					"description": "Condition de présence (voir scripts/systems/quests/conditions.gd)."
 				}
 			}
 		}
