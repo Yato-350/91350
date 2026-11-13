@@ -188,6 +188,7 @@ func _watch(player: Player, seen: bool, delta: float) -> void:
 	awareness.update(delta, suspicious, distance, _sight_range(), crouched)
 	if awareness.is_alerted():
 		GameState.surveillance.report(GameState.territory_id, 1.0)
+		EventBus.sound_requested.emit(&"vigile_alerte")
 		EventBus.player_spotted.emit(_target, id)
 		alert(_target)
 	elif awareness.is_suspicious() and state != State.SUSPICIOUS:

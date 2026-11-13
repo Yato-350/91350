@@ -133,6 +133,7 @@ func _perceive(delta: float) -> void:
 		awareness.value = 0.0
 		_cooldown = REPORT_COOLDOWN
 		GameState.surveillance.report(GameState.territory_id, 1.0)
+		EventBus.sound_requested.emit(&"camera_repere")
 		EventBus.player_spotted.emit(target, id)
 
 

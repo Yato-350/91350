@@ -47,3 +47,9 @@ signal curfew_changed(active: bool)
 signal player_spotted(position: Vector3, source: String)
 ## Un ennemi est hors d'état (à terre).
 signal enemy_knocked_out(enemy_id: String)
+## Un bruitage à jouer (voir AudioManager.SOUNDS) : &"pas", &"coup", &"bombe"…
+signal sound_requested(sound: StringName)
+## La musique du lieu change (&"" : silence), en fondu de `seconds` secondes.
+signal music_requested(track: StringName, seconds: float)
+## L'ambiance du lieu change (&"" : aucune).
+signal ambience_requested(track: StringName)

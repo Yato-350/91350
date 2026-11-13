@@ -113,6 +113,7 @@ func _next(key: String) -> void:
 
 
 func _show_line() -> void:
+	EventBus.sound_requested.emit(&"bulle")
 	var key := SPEAKER_KEY % _line.character.to_upper()
 	_speaker.text = tr(key) if tr(key) != key else _line.character
 	_text.text = _line.text

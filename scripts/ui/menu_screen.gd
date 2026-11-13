@@ -93,5 +93,7 @@ func add_button(id: String, key: String, enabled: bool = true) -> Button:
 	button.disabled = not enabled
 	button.focus_mode = Control.FOCUS_ALL
 	button.pressed.connect(chosen.emit.bind(id))
+	button.pressed.connect(EventBus.sound_requested.emit.bind(&"ui_valide"))
+	button.focus_entered.connect(EventBus.sound_requested.emit.bind(&"ui_survol"))
 	_buttons.add_child(button)
 	return button

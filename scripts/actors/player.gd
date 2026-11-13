@@ -15,6 +15,9 @@ const SHADER_POSITION := &"player_position"
 const GROUP := &"player"
 ## Actions des raccourcis du sac : quick_1 à quick_4.
 const QUICK_ACTION := "quick_%d"
+## Un pas s'entend tous les tant de mètres ; en courant, les foulées s'allongent.
+const STEP_DISTANCE := 0.8
+const RUN_STRIDE_FACTOR := 1.6
 
 ## Accroupi : lent, silencieux, et jamais en course.
 var crouched := false
@@ -23,6 +26,8 @@ var focus: Interactable
 
 var _spawn_position := Vector3.ZERO
 var _attack_cooldown := 0.0
+## Mètres parcourus depuis le dernier pas entendu.
+var _stride := 0.0
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var _visual: CharacterVisual = $Visual
@@ -63,6 +68,9 @@ func _physics_process(delta: float) -> void:
 	horizontal = horizontal.move_toward(direction * speed, ACCELERATION * delta)
 	velocity = Vector3(horizontal.x, velocity.y - _gravity * delta, horizontal.z)
 	move_and_slide()
+	if is_on_floor():
+		var stride := STEP_DISTANCE * (RUN_STRIDE_FACTOR if running else 1.0)
+		walk_steps(Vector2(horizontal.x, horizontal.z).length() * delta, stride)
 	_visual.crouched = crouched
 	_visual.animate(horizontal, delta)
 	_update_focus()
@@ -103,11 +111,21 @@ func attack() -> void:
 		return
 	var target := targets[0] as Vigile
 	GameState.commit_offence()
+	EventBus.sound_requested.emit(&"coup")
 	var close := target.global_position.distance_to(global_position) <= Combat.TAKEDOWN_REACH
 	if close and target.can_be_taken_down(global_position):
 		target.knock_out()
 	else:
 		target.take_hit(Combat.PUNCH_DAMAGE, global_position)
+
+
+## Compte les pas sur `distance` mètres : un bruit de pas à chaque foulée, sauf accroupi.
+func walk_steps(distance: float, stride: float = STEP_DISTANCE) -> void:
+	_stride += distance
+	while _stride >= stride:
+		_stride -= stride
+		if not crouched:
+			EventBus.sound_requested.emit(&"pas")
 
 
 func teleport(to: Vector3) -> void:

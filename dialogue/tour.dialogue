@@ -1,6 +1,7 @@
 ~ boitier
 akan: Le boîtier de la caméra. Des câbles partout. Un rouge, un bleu... et un gros noir.
 - Couper le gros câble noir.
+	$> sound("coupe")
 	$> set_flag("camera_off:hall")
 	$> objective("SABOTAGE", "camera_hall")
 	akan: Clac. Le petit voyant s'éteint. Bonne nuit, l'œil.

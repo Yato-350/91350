@@ -43,6 +43,7 @@ func _input(event: InputEvent) -> void:
 	if top != null:
 		var cancel := event.is_action_pressed(&"ui_cancel") and _cancellable(top)
 		if cancel or (event.is_action_pressed(&"pause") and top.name == PAUSE):
+			EventBus.sound_requested.emit(&"ui_retour")
 			close()
 			get_viewport().set_input_as_handled()
 			return

@@ -33,6 +33,7 @@ akan: Un mur gris. Trois mètres de gris. Allez.
 - Leur caméra, en lunettes noires, qui fait une bulle de chewing-gum. [#ton=malin]
 	$> set_flag("tag_humour")
 	akan: Souris, t'es filmée.
+$> sound("bombe")
 $> take("bombe_peinture")
 $> objective("PUBLISH", "mur_tour")
 $> alarm()

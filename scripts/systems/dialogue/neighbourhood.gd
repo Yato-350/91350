@@ -54,7 +54,13 @@ func alarm() -> void:
 	if player == null:
 		return
 	GameState.commit_offence()
+	EventBus.sound_requested.emit(&"alarme")
 	EventBus.player_spotted.emit(player.global_position, ALARM_SOURCE)
+
+
+## Un bruitage au fil de la scène : sound("bombe"), sound("coupe").
+func sound(sound_name: String) -> void:
+	EventBus.sound_requested.emit(StringName(sound_name))
 
 
 ## Emmène Akan ailleurs à la fin de la réplique : travel("hall_tour@escalier").

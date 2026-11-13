@@ -128,6 +128,24 @@ func test_a_family_home_keeps_its_colours_but_the_landing_is_grey() -> void:
 	assert_almost_eq(view.saturation, Territory.REGIME_SATURATION, 0.01, "les communs")
 
 
+func test_the_music_follows_the_place_and_its_freedom() -> void:
+	var main := await _make_main()
+	main.travel_to("zone:grigny2")
+	await wait_process_frames(2)
+	assert_eq(AudioManager.music(), &"regime")
+	assert_eq(AudioManager.ambience(), &"ville")
+	main.travel_to("zone:appartement_akan")
+	await wait_process_frames(2)
+	assert_eq(AudioManager.music(), &"maison", "chez soi")
+	assert_eq(AudioManager.ambience(), &"", "dedans, la rue se tait")
+	main.travel_to("zone:grigny2")
+	GameState.territory.liberate("grigny2")
+	await wait_process_frames(2)
+	assert_eq(AudioManager.music(), &"libre", "la musique revient avec la couleur")
+	AudioManager.play_music(&"", 0.0)
+	AudioManager.play_ambience(&"")
+
+
 func test_the_view_comes_closer_indoors() -> void:
 	var main := await _make_main()
 	var view: PixelView = main.get_node("PixelView")

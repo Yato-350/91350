@@ -128,6 +128,18 @@ func get_zoom() -> int:
 	return INTERIOR_ZOOM if is_interior else 1
 
 
+## La musique du lieu : celle de la maison chez soi, ailleurs celle de sa couleur.
+func music() -> StringName:
+	if definition.get("home", false):
+		return &"maison"
+	return &"libre" if saturation() >= Territory.FREE_SATURATION else &"regime"
+
+
+## L'ambiance du lieu : la rumeur de la ville dehors (et sur un toit), rien dedans.
+func ambience() -> StringName:
+	return &"ville" if not is_interior or definition.get("open_air", false) else &""
+
+
 ## Saturation du rendu ici : gris dans le territoire du régime, couleur une fois libre ;
 ## un logement (« home ») garde toujours ses couleurs : chez soi, le régime n'entre pas.
 func saturation() -> float:

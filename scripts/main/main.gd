@@ -10,6 +10,8 @@ const DEFAULT_ZONE := "res://scenes/zones/test_zone.tscn"
 const COLOR_FADE_SECONDS := 1.5
 ## Au moment où une zone se libère, ses couleurs reviennent lentement.
 const LIBERATION_SECONDS := 4.0
+## D'un lieu à l'autre, les musiques se fondent l'une dans l'autre.
+const MUSIC_FADE_SECONDS := 1.5
 ## Où Akan se réveille après une arrestation.
 const HOME := "zone:appartement_akan"
 ## La dernière quête de l'acte 1 : quand elle se termine, l'écran de fin d'acte s'ouvre.
@@ -206,6 +208,9 @@ func _on_zone_liberated(zone_id: String) -> void:
 	if zone_id == GameState.territory_id:
 		_colour_enabled = true
 		EventBus.saturation_change_requested.emit(_zone_saturation(), LIBERATION_SECONDS)
+		var zone := _pixel_view.get_zone() as Zone
+		if zone != null:
+			EventBus.music_requested.emit(zone.music(), LIBERATION_SECONDS)
 
 
 ## Charge un lieu et y place Akan. `ref` est un chemin de scène ou « zone:<id>[@repère] » ;
@@ -217,9 +222,12 @@ func travel_to(ref: String, position: Array = []) -> bool:
 	var zone := _pixel_view.get_zone() as Zone
 	GameState.enter(ref, zone.territory_id if zone != null else "")
 	_pixel_view.zoom = zone.get_zoom() if zone != null else 1
-	# Derrière le fondu au noir, la couleur du lieu s'installe d'un coup.
+	# Derrière le fondu au noir, la couleur du lieu s'installe d'un coup ; sa musique et
+	# son ambiance aussi, en fondu.
 	_colour_enabled = true
 	EventBus.saturation_change_requested.emit(_zone_saturation(), 0.0)
+	EventBus.music_requested.emit(zone.music() if zone != null else &"", MUSIC_FADE_SECONDS)
+	EventBus.ambience_requested.emit(zone.ambience() if zone != null else &"")
 	# Une planque garde la partie : on y sauvegarde en arrivant.
 	var hideout: Dictionary = zone.definition.get("hideout", {}) if zone != null else {}
 	if not hideout.is_empty() and GameState.playing and Conditions.check(hideout):

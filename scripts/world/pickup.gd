@@ -47,6 +47,7 @@ func _on_interacted(_player: Player) -> void:
 		EventBus.notified.emit("HUD_BAG_FULL")
 		return
 	amount = left
+	EventBus.sound_requested.emit(&"ramassage")
 	if left > 0:
 		return
 	if not pickup_id.is_empty():
