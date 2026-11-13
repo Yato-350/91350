@@ -3,45 +3,114 @@
 	"title": "Objets",
 	"description": "Fiches des objets : des statistiques de jeu, jamais de recette. « use » : ce que l'objet rend quand on le consomme. « weapon » : dégâts, portée (m), délai entre deux coups (s).",
 	"type": "object",
-	"required": ["items"],
+	"required": [
+		"items"
+	],
 	"additionalProperties": false,
 	"properties": {
 		"items": {
 			"type": "array",
 			"items": {
 				"type": "object",
-				"required": ["id", "name", "description", "category", "stack", "value"],
+				"required": [
+					"id",
+					"name",
+					"description",
+					"category",
+					"stack",
+					"value"
+				],
 				"additionalProperties": false,
 				"properties": {
-					"id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-					"name": { "type": "string", "pattern": "^ITEM_[A-Z0-9_]+$" },
-					"description": { "type": "string", "pattern": "^ITEM_[A-Z0-9_]+_DESC$" },
-					"category": { "enum": ["melee", "distance", "gadget", "equipement", "ressource", "monnaie", "quete"] },
-					"stack": { "type": "integer", "minimum": 1, "maximum": 99 },
-					"value": { "type": "integer", "minimum": 0 },
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"name": {
+						"type": "string",
+						"pattern": "^ITEM_[A-Z0-9_]+$"
+					},
+					"description": {
+						"type": "string",
+						"pattern": "^ITEM_[A-Z0-9_]+_DESC$"
+					},
+					"category": {
+						"enum": [
+							"melee",
+							"distance",
+							"gadget",
+							"equipement",
+							"ressource",
+							"monnaie",
+							"quete"
+						]
+					},
+					"stack": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 99
+					},
+					"value": {
+						"type": "integer",
+						"minimum": 0
+					},
 					"use": {
 						"type": "object",
 						"minProperties": 1,
 						"additionalProperties": false,
 						"properties": {
-							"thirst": { "type": "number" },
-							"hunger": { "type": "number" },
-							"health": { "type": "number" }
+							"thirst": {
+								"type": "number"
+							},
+							"hunger": {
+								"type": "number"
+							},
+							"health": {
+								"type": "number"
+							}
 						}
 					},
 					"weapon": {
 						"type": "object",
-						"required": ["damage", "cooldown"],
+						"required": [
+							"damage",
+							"cooldown"
+						],
 						"additionalProperties": false,
 						"properties": {
-							"damage": { "type": "number", "minimum": 0 },
-							"cooldown": { "type": "number", "exclusiveMinimum": 0 },
-							"reach": { "type": "number", "exclusiveMinimum": 0 },
-							"range": { "type": "number", "exclusiveMinimum": 0 },
-							"stun": { "type": "number", "minimum": 0 }
+							"damage": {
+								"type": "number",
+								"minimum": 0
+							},
+							"cooldown": {
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"reach": {
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"range": {
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"stun": {
+								"type": "number",
+								"minimum": 0
+							}
 						}
 					},
-					"bag": { "enum": ["sac_petit", "sac_moyen", "sac_grand"] }
+					"bag": {
+						"enum": [
+							"sac_petit",
+							"sac_moyen",
+							"sac_grand"
+						]
+					},
+					"heavy": {
+						"type": "boolean",
+						"description": "Objet lourd : porté à deux mains, on ne court plus."
+					}
 				}
 			}
 		}

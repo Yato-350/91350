@@ -25,7 +25,8 @@
 			"description": "ITEM_BIDON_PLEIN_DESC",
 			"category": "quete",
 			"stack": 1,
-			"value": 0
+			"value": 0,
+			"heavy": true
 		},
 		{
 			"id": "baguette",

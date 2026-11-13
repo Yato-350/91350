@@ -88,6 +88,14 @@ func give(item_id: String, amount: int = 1) -> void:
 		EventBus.item_dropped.emit(item_id, left)
 
 
+## Vrai si Akan porte un objet lourd (bidon plein…) : il ne peut plus courir.
+func carries_heavy_load() -> bool:
+	for slot: Dictionary in inventory.slots:
+		if DataRegistry.entry("items", slot.get("id", "")).get("heavy", false):
+			return true
+	return false
+
+
 ## Consomme ou enfile un objet du sac. Rend false s'il n'y en a pas ou s'il ne sert à rien.
 func use_item(item_id: String) -> bool:
 	var item := DataRegistry.entry("items", item_id)

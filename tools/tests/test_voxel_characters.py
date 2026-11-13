@@ -98,3 +98,73 @@ def test_unknown_colour_or_style_is_an_error():
         except ValueError:
             continue
         raise AssertionError(f"{bad} aurait dû être refusé")
+
+
+def _front(part):
+    front = min(z for (_, _, z) in part.voxels)
+    return {(x, y): color for (x, y, z), color in part.voxels.items() if z == front}
+
+
+def test_face_has_eyebrows_and_a_mouth():
+    head = _front(build_character(AKAN, PALETTE).parts["Head"])
+    assert head[(1, 4)] == PALETTE["noir"] and head[(4, 4)] == PALETTE["noir"], "sourcils"
+    assert head[(2, 1)] == PALETTE["brun_2"] and head[(3, 1)] == PALETTE["brun_2"], "bouche"
+    assert head[(2, 2)] == PALETTE["peau_1"], "les joues restent de la couleur de la peau"
+
+
+def test_facial_hair_covers_the_lower_face():
+    beard = build_character({**AKAN, "facial_hair": "barbe"}, PALETTE).parts["Head"]
+    front = _front(beard)
+    assert front[(0, 0)] == PALETTE["noir"] and front[(5, 1)] == PALETTE["noir"]
+    assert front[(2, 1)] == PALETTE["brun_2"], "la bouche reste visible dans la barbe"
+    moustache = _front(build_character({**AKAN, "facial_hair": "moustache"}, PALETTE).parts["Head"])
+    assert [moustache[(x, 2)] for x in range(1, 5)] == [PALETTE["noir"]] * 4
+    assert moustache[(0, 0)] == PALETTE["peau_1"]
+    goatee = _front(build_character({**AKAN, "facial_hair": "bouc"}, PALETTE).parts["Head"])
+    assert goatee[(2, 0)] == PALETTE["noir"] and goatee[(0, 0)] == PALETTE["peau_1"]
+
+
+def test_jogging_has_side_stripes_and_jeans_a_belt():
+    spec = {**AKAN, "bottom_style": "jogging", "detail": "blanc"}
+    model = build_character(spec, PALETTE)
+    left = model.parts["LegLeft"]
+    outer = {left.voxels[(0, y, 1)] for y in range(3, 11)}
+    assert outer == {PALETTE["blanc"]}, "bande sur le côté extérieur"
+    jean = build_character({**AKAN, "bottom_style": "jean"}, PALETTE)
+    belt = {color for (x, y, z), color in jean.parts["Torso"].voxels.items() if y == 0}
+    assert PALETTE["brun_1"] in belt
+
+
+def test_a_skirt_hangs_from_the_torso_over_bare_legs():
+    model = build_character({**AKAN, "bottom_style": "jupe", "bottom": "violet_tag"}, PALETTE)
+    skirt = [key for key, color in model.parts["Torso"].voxels.items()
+             if key[1] < 0 and color == PALETTE["violet_tag"]]
+    assert skirt, "la jupe fait partie du buste : elle ne suit pas les jambes"
+    leg = model.parts["LegLeft"]
+    assert leg.voxels[(1, 5, 1)] == PALETTE["peau_1"], "jambes nues sous la jupe"
+
+
+def test_shorts_show_the_knees_and_sneakers_have_a_sole():
+    model = build_character({**AKAN, "bottom_style": "short", "shoes": "rouge_sombre"}, PALETTE)
+    leg = model.parts["LegLeft"]
+    assert leg.voxels[(1, 11, 1)] == PALETTE["bleu_acier"]
+    assert leg.voxels[(1, 4, 1)] == PALETTE["peau_1"]
+    assert leg.voxels[(1, 0, 1)] == PALETTE["blanc"], "semelle"
+    assert leg.voxels[(1, 1, 1)] == PALETTE["rouge_sombre"]
+
+
+def test_a_hoodie_has_its_hood_on_the_back():
+    torso = build_character(AKAN, PALETTE).parts["Torso"]
+    back = max(z for (_, _, z) in torso.voxels)
+    assert back == torso.depth, "la capuche dépasse dans le dos"
+
+
+def test_every_bottom_and_facial_hair_style_builds():
+    from voxel_characters import BOTTOM_STYLES, FACIAL_HAIR
+
+    for bottom_style in BOTTOM_STYLES:
+        for facial_hair in FACIAL_HAIR:
+            for build in ("adulte", "enfant", "fort"):
+                spec = {**AKAN, "bottom_style": bottom_style, "facial_hair": facial_hair, "build": build}
+                model = build_character(spec, PALETTE)
+                assert all(part.voxels for part in model.parts.values())

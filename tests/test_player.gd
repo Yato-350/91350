@@ -116,6 +116,18 @@ func test_running_drains_stamina_and_exhaustion_forces_a_walk() -> void:
 	assert_lt(runner.position.x, 2.0, "essoufflé : il marche")
 
 
+func test_a_heavy_load_slows_akan_and_forbids_running() -> void:
+	var player := _make_player_on_floor()
+	GameState.give("bidon_plein", 1)
+	Input.action_press("move_right")
+	Input.action_press("run")
+	await wait_physics_frames(60)
+	var speed := player.position.x / (60.0 / Engine.physics_ticks_per_second)
+	assert_lt(speed, Player.WALK_SPEED, "on ne court pas avec vingt litres d'eau")
+	assert_true(player.get_node("Visual").carrying)
+	assert_eq(GameState.vitals.stamina, Vitals.MAX_STAMINA)
+
+
 func test_crouching_toggles_and_is_slow_and_never_runs() -> void:
 	var player := _make_player_on_floor()
 	_send_action("crouch")

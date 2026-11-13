@@ -19,7 +19,19 @@ HAIR_STYLES = [
 ]
 TOP_STYLES = ["tshirt", "hoodie", "veste", "uniforme", "blouse", "tablier"]
 ACCESSORIES = ["", "sac", "gilet", "lunettes", "brassard", "ecouteurs", "matraque"]
+BOTTOM_STYLES = ["jean", "pantalon", "jogging", "jupe", "short"]
+FACIAL_HAIR = ["", "barbe", "moustache", "bouc"]
 EYE_COLOR = "noir"
+BELT_COLOR = "brun_1"
+# Semelle des chaussures : blanche, sauf sur des chaussures déjà blanches.
+SOLE_COLOR = "blanc"
+SOLE_ON_WHITE = "beton_4"
+# La bouche est d'un ton plus sombre que la peau.
+DARKER_SKIN = {"peau_3": "peau_2", "peau_2": "peau_1", "peau_1": "brun_2", "brun_2": "brun_1",
+               "brun_1": "noir"}
+# Longueurs, en voxels depuis la hanche : une jupe tombe au genou, un short au-dessus.
+SKIRT_LENGTH = 5
+SHORT_LENGTH = 5
 HEAD = 6  # la tête est un cube de 6 voxels, quelle que soit la carrure
 
 # Carrure → (largeur, hauteur, profondeur) des jambes, du torse et des bras, en voxels.
@@ -39,10 +51,13 @@ def build_character(spec: dict, palette: dict[str, tuple[int, int, int]]) -> Mod
 
     hair_style = spec.get("hair_style", "court")
     top_style = spec.get("top_style", "tshirt")
+    bottom_style = spec.get("bottom_style", "pantalon")
+    facial_hair = spec.get("facial_hair", "")
     accessory = spec.get("accessory", "")
     build = spec.get("build", "adulte")
     for value, allowed, label in (
         (hair_style, HAIR_STYLES, "coiffure"), (top_style, TOP_STYLES, "haut"),
+        (bottom_style, BOTTOM_STYLES, "bas"), (facial_hair, FACIAL_HAIR, "pilosité"),
         (accessory, ACCESSORIES, "accessoire"), (build, list(BUILDS), "carrure"),
     ):
         if value not in allowed:
@@ -52,6 +67,8 @@ def build_character(spec: dict, palette: dict[str, tuple[int, int, int]]) -> Mod
     top, bottom, shoes = color("top", "beton_4"), color("bottom", "bleu_acier"), color("shoes", "noir")
     extra, detail = color("accessory_color", "beton_2"), color("detail", "blanc")
     eye = palette[EYE_COLOR]
+    mouth = palette[DARKER_SKIN.get(spec.get("skin", "peau_2"), EYE_COLOR)]
+    sole = palette[SOLE_ON_WHITE if spec.get("shoes", "noir") == "blanc" else SOLE_COLOR]
     (leg_w, leg_h, leg_d), (torso_w, torso_h, torso_d), (arm_w, arm_h, arm_d) = (
         BUILDS[build]["leg"], BUILDS[build]["torso"], BUILDS[build]["arm"],
     )
@@ -71,12 +88,20 @@ def build_character(spec: dict, palette: dict[str, tuple[int, int, int]]) -> Mod
                 for z in zs:
                     target.voxels[(x, y, z)] = rgb
 
-    # Jambes : pantalon, chaussures sur les deux couches du bas.
+    # Jambes : le bas (jambes nues sous une jupe ou un short), chaussures et semelle.
     for name, side in (("LegLeft", -1), ("LegRight", 1)):
         center = side * leg_w / 2
         leg = part(name, (leg_w, leg_h, leg_d), (center, 0, 0), (center, leg_h, 0))
-        fill(leg, range(leg_w), range(leg_h), range(leg_d), bottom)
+        if bottom_style in ("jupe", "short"):
+            fill(leg, range(leg_w), range(leg_h), range(leg_d), skin)
+        if bottom_style != "jupe":
+            covered = range(leg_h - SHORT_LENGTH, leg_h) if bottom_style == "short" else range(leg_h)
+            fill(leg, range(leg_w), covered, range(leg_d), bottom)
+        if bottom_style == "jogging":
+            outer = 0 if side < 0 else leg_w - 1
+            fill(leg, range(outer, outer + 1), range(2, leg_h - 1), range(leg_d), detail)
         fill(leg, range(leg_w), range(2), range(leg_d), shoes)
+        fill(leg, range(leg_w), range(1), range(leg_d), sole)
         if top_style == "blouse":
             fill(leg, range(leg_w), range(leg_h - 4, leg_h), range(leg_d), top)
         if accessory == "matraque" and side == 1:
@@ -94,6 +119,14 @@ def build_character(spec: dict, palette: dict[str, tuple[int, int, int]]) -> Mod
         fill(torso, range(1, torso_w - 1), range(torso_h - 2), range(1), detail)
     elif top_style == "hoodie":
         fill(torso, middle, range(2, 4), range(1), detail)
+        # La capuche, rabattue dans le dos.
+        fill(torso, range(1, torso_w - 1), range(torso_h - 2, torso_h), range(torso_d, torso_d + 1), top)
+    if bottom_style == "jean":
+        fill(torso, range(torso_w), range(1), range(torso_d), palette[BELT_COLOR])
+    elif bottom_style == "jupe":
+        # La jupe tient au buste : elle ne suit pas le balancement des jambes.
+        length = min(SKIRT_LENGTH, leg_h // 2 + 1)
+        fill(torso, range(-1, torso_w + 1), range(-length, 0), range(-1, torso_d + 1), bottom)
     if accessory == "sac":
         fill(torso, range(1, torso_w - 1), range(2, torso_h - 1), range(torso_d, torso_d + 2), extra)
     elif accessory == "gilet":
@@ -115,6 +148,19 @@ def build_character(spec: dict, palette: dict[str, tuple[int, int, int]]) -> Mod
     fill(head, whole, whole, whole, skin)
     fill(head, range(1, 2), range(3, 4), range(1), eye)
     fill(head, range(4, 5), range(3, 4), range(1), eye)
+    # Sourcils au-dessus des yeux, bouche d'un ton plus sombre que la peau.
+    fill(head, range(1, 2), range(4, 5), range(1), hair)
+    fill(head, range(4, 5), range(4, 5), range(1), hair)
+    fill(head, range(2, 4), range(1, 2), range(1), mouth)
+    if facial_hair == "barbe":
+        fill(head, whole, range(2), range(1), hair)
+        fill(head, range(2, 4), range(1, 2), range(1), mouth)
+        for x in (0, HEAD - 1):
+            fill(head, range(x, x + 1), range(3), range(4), hair)
+    elif facial_hair == "moustache":
+        fill(head, range(1, HEAD - 1), range(2, 3), range(1), hair)
+    elif facial_hair == "bouc":
+        fill(head, range(2, 4), range(1), range(1), hair)
     if accessory == "lunettes":
         fill(head, whole, range(3, 4), range(1), eye)
     elif accessory == "ecouteurs":

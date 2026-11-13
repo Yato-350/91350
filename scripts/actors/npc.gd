@@ -5,6 +5,10 @@ extends Interactable
 
 const BODY_RADIUS := 0.3
 const BODY_HEIGHT := 1.7
+## En deçà de cette distance, l'habitant tourne la tête vers Akan.
+const LOOK_DISTANCE := 4.0
+## Hauteur des yeux d'Akan, que l'on regarde.
+const EYE_HEIGHT := 1.5
 
 var character_id := ""
 ## Nom du fichier de dialogue/ et entrée à y jouer.
@@ -36,8 +40,26 @@ static func create(definition: Dictionary) -> Npc:
 	return npc
 
 
+func _process(_delta: float) -> void:
+	var player := get_tree().get_first_node_in_group(Player.GROUP) as Player
+	if player != null and player.global_position.distance_to(global_position) < LOOK_DISTANCE:
+		visual.look_at_point(player.global_position + Vector3.UP * EYE_HEIGHT)
+	else:
+		visual.stop_looking()
+
+
 func _on_interacted(player: Player) -> void:
 	if player != null:
 		var towards := player.global_position - global_position
 		visual.rotation.y = atan2(-towards.x, -towards.z)
+	# Le jeu est en pause pendant un dialogue : celui qui parle continue de bouger.
+	visual.talking = true
+	visual.process_mode = Node.PROCESS_MODE_ALWAYS
+	if not EventBus.dialogue_ended.is_connected(_on_dialogue_ended):
+		EventBus.dialogue_ended.connect(_on_dialogue_ended, CONNECT_ONE_SHOT)
 	EventBus.dialogue_requested.emit(dialogue, cue)
+
+
+func _on_dialogue_ended(_dialogue: String) -> void:
+	visual.talking = false
+	visual.process_mode = Node.PROCESS_MODE_INHERIT

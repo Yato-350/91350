@@ -5,7 +5,7 @@
 	"plan": [
 		"#############",
 		"#b.w#B.w#fkc#",
-		"#b.l#B..#,e,#",
+		"#b.l#B..#de,#",
 		"#...#..m#,,i#",
 		"##.###.###.##",
 		"#s........v.#",
@@ -19,7 +19,8 @@
 		"a": "sejour",
 		"p": "porte",
 		"i": "cuisine",
-		"e": "evier"
+		"e": "evier",
+		"d": "daronne"
 	},
 	"floors": {
 		",": "beton_5"
@@ -81,7 +82,7 @@
 		{
 			"id": "daronne",
 			"character": "daronne",
-			"at": "cuisine",
+			"at": "daronne",
 			"dialogue": "daronne",
 			"yaw": 90
 		}
