@@ -1,0 +1,8 @@
+# Buisson, voxels de 1/8 m.
+palette:
+  v: vert_sombre
+  V: vert_feuille
+scale: 2
+box: v 0 0 1 10 5 8
+box: v 1 0 0 8 5 10
+box: V 1 5 1 8 2 8

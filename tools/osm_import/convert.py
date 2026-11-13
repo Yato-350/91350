@@ -47,6 +47,8 @@ GREEN_NATURAL = {"wood", "scrub", "grassland"}
 NAMED_POI_KINDS = {"station", "bus_stop"}
 FOOT_KINDS = {"footway", "path", "steps", "cycleway", "pedestrian", "track"}
 BARRIER_KINDS = {"fence", "hedge", "wall", "guard_rail", "retaining_wall"}
+# Passages dans les clôtures : le jeu y laisse une ouverture.
+GATE_KINDS = {"gate", "entrance", "swing_gate", "lift_gate", "turnstile", "kissing_gate"}
 HIDDEN_PARKINGS = {"underground", "multi-storey", "rooftop"}
 # Mobilier OSM → modèle de décor du jeu. Les panneaux publicitaires deviennent les écrans
 # du régime ; les caméras de surveillance, ses caméras.
@@ -104,7 +106,7 @@ def convert(xml_text: str, zone_id: str, bbox: tuple[float, float, float, float]
         "size": [round(half[0] * 2, 2), round(half[1] * 2, 2)],
         "buildings": [], "roads": [], "rails": [], "water": [], "green": [], "pois": [],
         "trees": [], "entrances": [], "parkings": [], "barriers": [], "crossings": [],
-        "furniture": [], "power_lines": [],
+        "furniture": [], "power_lines": [], "gates": [],
     }
     furniture: list[tuple[str, tuple[float, float]]] = []
 
@@ -175,6 +177,8 @@ def convert(xml_text: str, zone_id: str, bbox: tuple[float, float, float, float]
             continue
         if tags.get("natural") == "tree":
             zone["trees"].append([round(at[0], 2), round(at[1], 2)])
+        if tags.get("barrier") in GATE_KINDS:
+            zone["gates"].append([round(at[0], 2), round(at[1], 2)])
         if "entrance" in tags:
             _add_entrance(zone, tags["entrance"], at)
         if tags.get("highway") == "crossing" and node_id in car_roads:

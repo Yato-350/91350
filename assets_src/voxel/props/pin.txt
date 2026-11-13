@@ -1,0 +1,12 @@
+# Pin : étages de branches de plus en plus étroits, voxels de 1/4 m.
+palette:
+  b: brun_1
+  v: vert_sombre
+  V: vert_feuille
+scale: 4
+box: b 5 0 5 2 5 2
+box: v 1 4 1 10 3 10
+box: v 2 7 2 8 3 8
+box: v 3 10 3 6 3 6
+box: v 4 13 4 4 3 4
+box: V 5 16 5 2 2 2

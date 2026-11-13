@@ -1,0 +1,14 @@
+# Arbre feuillu (tilleul, érable) : tronc et houppier arrondi, voxels de 1/4 m.
+palette:
+  b: brun_1
+  v: vert_sombre
+  V: vert_feuille
+  g: vert_tag
+scale: 4
+box: b 7 0 7 2 9 2
+box: v 2 7 2 12 3 12
+box: V 1 9 3 14 5 10
+box: V 3 9 1 10 5 14
+box: V 2 10 2 12 5 12
+box: V 4 14 4 8 3 8
+box: g 5 16 5 5 1 5

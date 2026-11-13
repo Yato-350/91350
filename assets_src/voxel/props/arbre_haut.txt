@@ -1,0 +1,13 @@
+# Arbre élancé (peuplier) : houppier haut et étroit, voxels de 1/4 m.
+palette:
+  b: brun_1
+  v: vert_sombre
+  V: vert_feuille
+  g: vert_tag
+scale: 4
+box: b 3 0 3 2 11 2
+box: v 1 8 1 6 3 6
+box: V 0 10 1 8 8 6
+box: V 1 10 0 6 8 8
+box: V 1 18 1 6 3 6
+box: g 2 20 2 3 1 3

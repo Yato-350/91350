@@ -17,6 +17,8 @@ Source : assets_src/voxel/<nom>.txt. Un voxel mesure 1/16 m. Format :
       rrrr                       (première ligne = avant du modèle, côté -Z)
     box: r 0 0 0 4 1 2           (un bloc plein : lettre, x y z du coin, puis largeur,
                                   hauteur et profondeur ; il recouvre ce qui était là)
+    scale: 4                     (facultatif, avant pivot et offset : la partie est faite
+                                  de voxels 4 fois plus grands, pour les grands objets)
 
 Les couches s'empilent du bas vers le haut. « . » ou espace = vide.
 """
@@ -62,6 +64,7 @@ class Part:
     width: int = 0
     depth: int = 0
     height: int = 0
+    scale: int = 1
 
 
 @dataclass
@@ -121,8 +124,13 @@ def parse_model(text: str, palette: dict[str, tuple[int, int, int]]) -> Model:
                 section = "palette"
             elif keyword == "part":
                 part = model.parts.setdefault(value, Part(value))
+            elif keyword == "scale":
+                if not value.isdigit() or int(value) < 1:
+                    raise ValueError(f"échelle invalide : {value}")
+                current_part().scale = int(value)
             elif keyword == "pivot":
-                current_part().pivot = tuple(float(v) * VOXEL for v in value.split())
+                size = VOXEL * current_part().scale
+                current_part().pivot = tuple(float(v) * size for v in value.split())
             elif keyword == "offset":
                 current_part().offset = tuple(float(v) for v in value.split())
             elif keyword == "box":
@@ -166,10 +174,11 @@ def _fill_box(part: Part, value: str, letters: dict[str, tuple[int, int, int]]) 
 def _corner(part: Part, x: int, y: int, z: int) -> tuple[float, float, float]:
     """Position d'un coin de voxel, en mètres, par rapport au pivot de la partie."""
     ox, oy, oz = part.offset
+    size = VOXEL * part.scale
     return (
-        (x + ox - part.width / 2) * VOXEL - part.pivot[0],
-        (y + oy) * VOXEL - part.pivot[1],
-        (z + oz - part.depth / 2) * VOXEL - part.pivot[2],
+        (x + ox - part.width / 2) * size - part.pivot[0],
+        (y + oy) * size - part.pivot[1],
+        (z + oz - part.depth / 2) * size - part.pivot[2],
     )
 
 
@@ -290,13 +299,19 @@ def build_icon(model: Model) -> Image.Image:
     front: dict[tuple[int, int], tuple[int, tuple[int, int, int]]] = {}
     for part in model.parts.values():
         ox, oy, oz = part.offset
+        k = part.scale
         for (x, y, z), color in part.voxels.items():
             # Partie entière, et non arrondi : un modèle de largeur impaire tombe à
             # cheval sur deux colonnes, et l'arrondi « au pair » y laisserait des trous.
-            column = (math.floor(x + ox - part.width / 2), math.floor(y + oy))
-            depth = z + oz - part.depth / 2
-            if column not in front or depth < front[column][0]:
-                front[column] = (depth, color)
+            # Un gros voxel couvre k × k colonnes de petits voxels.
+            left = math.floor((x + ox - part.width / 2) * k)
+            bottom = math.floor((y + oy) * k)
+            depth = (z + oz - part.depth / 2) * k
+            for dx in range(k):
+                for dy in range(k):
+                    column = (left + dx, bottom + dy)
+                    if column not in front or depth < front[column][0]:
+                        front[column] = (depth, color)
     icon = Image.new("RGBA", (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
     if not front:
         return icon

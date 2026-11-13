@@ -1,0 +1,21 @@
+# Abribus : toit, vitres, banc, et une affiche du régime sur le côté. Voxels de 1/8 m.
+palette:
+  1: beton_1
+  2: beton_2
+  s: bleu_ciel
+  r: rouge_propagande
+  w: blanc
+  b: brun_1
+scale: 2
+box: 1 0 0 0 1 20 1
+box: 1 31 0 0 1 20 1
+box: 1 0 0 11 1 20 1
+box: 1 31 0 11 1 20 1
+box: 2 0 20 0 32 2 12
+box: s 1 1 11 30 18 1
+box: s 0 1 1 1 18 10
+box: r 31 1 1 1 18 10
+box: w 31 12 3 1 3 6
+box: b 4 3 8 24 1 3
+box: 1 5 0 9 1 3 1
+box: 1 26 0 9 1 3 1

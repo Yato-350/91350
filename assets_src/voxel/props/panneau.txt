@@ -1,0 +1,14 @@
+# Panneau d'avis du régime : deux pieds, un tableau, un bandeau rouge. Voxels de 1/8 m.
+palette:
+  1: beton_1
+  w: blanc
+  r: rouge_propagande
+  4: beton_4
+scale: 2
+box: 1 1 0 1 1 10 1
+box: 1 10 0 1 1 10 1
+box: 1 0 9 0 12 9 2
+box: w 1 10 0 10 7 1
+box: r 1 16 0 10 1 1
+box: 4 2 13 0 7 1 1
+box: 4 2 11 0 5 1 1

@@ -146,6 +146,7 @@ DETAILS = """<?xml version="1.0" encoding="UTF-8"?>
   <node id="60" lat="48.0090" lon="2.0090"><tag k="power" v="tower"/></node>
   <node id="61" lat="48.0020" lon="2.0080"><tag k="amenity" v="recycling"/></node>
   <node id="62" lat="48.0022" lon="2.0082"><tag k="barrier" v="block"/></node>
+  <node id="63" lat="48.0010" lon="2.0015"><tag k="barrier" v="gate"/></node>
   <way id="200">
     <nd ref="41"/><nd ref="45"/><nd ref="42"/><nd ref="43"/><nd ref="44"/><nd ref="41"/>
     <tag k="building" v="apartments"/><tag k="building:levels" v="10"/>
@@ -159,7 +160,7 @@ DETAILS = """<?xml version="1.0" encoding="UTF-8"?>
     <nd ref="47"/><nd ref="48"/><nd ref="49"/><nd ref="50"/><nd ref="47"/>
     <tag k="amenity" v="parking"/><tag k="parking" v="underground"/>
   </way>
-  <way id="212"><nd ref="47"/><nd ref="48"/><tag k="barrier" v="fence"/></way>
+  <way id="212"><nd ref="47"/><nd ref="63"/><nd ref="48"/><tag k="barrier" v="fence"/></way>
   <way id="213"><nd ref="49"/><nd ref="50"/><tag k="barrier" v="hedge"/></way>
   <way id="214">
     <nd ref="51"/><nd ref="52"/><nd ref="53"/>
@@ -232,3 +233,10 @@ def test_building_colours_are_kept_in_lower_case():
     building = zone["buildings"][0]
     assert building["colour"] == "white"
     assert building["roof_colour"] == "beige"
+
+
+def test_gates_open_the_barriers():
+    zone = _details()
+    gate = project(2.0015, 48.0010, (2.005, 48.005))
+    assert len(zone["gates"]) == 1
+    assert math.dist(zone["gates"][0], gate) < 0.01

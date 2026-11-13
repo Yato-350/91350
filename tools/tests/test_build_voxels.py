@@ -156,3 +156,39 @@ def test_icon_of_an_odd_width_model_has_no_gap():
     assert xs == list(range(xs[0], xs[-1] + 1))
     assert len(red) == len(xs) * len(ys), "un rectangle plein"
     assert len(xs) * 3 == len(ys) * 5, "aux proportions du modèle"
+
+
+SCALED = """
+palette:
+  r: rouge_propagande
+scale: 4
+pivot: 0 1 0
+box: r 0 0 0 2 2 1
+"""
+
+
+def test_scale_makes_bigger_voxels_and_scales_the_pivot():
+    model = parse_model(SCALED, PALETTE)
+    part = model.parts["main"]
+    assert part.scale == 4
+    assert part.pivot == (0.0, 0.25, 0.0), "le pivot est compté en gros voxels"
+    positions, _, _, _ = mesh_part(part)
+    xs = [p[0] for p in positions]
+    ys = [p[1] for p in positions]
+    assert min(xs) == -0.25 and max(xs) == 0.25, "deux voxels de 1/4 m"
+    assert min(ys) == -0.25 and max(ys) == 0.25
+
+
+def test_icon_of_a_scaled_model_keeps_its_proportions():
+    icon = build_icon(parse_model(SCALED, PALETTE))
+    red = [(x, y) for x in range(32) for y in range(32)
+           if icon.getpixel((x, y))[:3] == PALETTE["rouge_propagande"]]
+    xs = sorted({x for x, _ in red})
+    ys = sorted({y for _, y in red})
+    assert len(xs) == len(ys), "un carré reste un carré"
+    assert len(red) == len(xs) * len(ys)
+
+
+def test_scale_must_be_a_positive_integer():
+    with pytest.raises(ValueError):
+        parse_model("palette:\n  r: noir\nscale: 0\nbox: r 0 0 0 1 1 1\n", PALETTE)
