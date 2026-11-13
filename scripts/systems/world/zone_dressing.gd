@@ -47,7 +47,10 @@ const CAR_MODELS: Array[String] = [
 ]
 
 ## Essences tirées au hasard (le feuillu deux fois plus souvent).
-const TREE_MODELS: Array[String] = ["arbre_feuillu", "arbre_feuillu", "arbre_haut", "pin"]
+## Une part des feuillus porte les couleurs de l'automne (novembre, comme sur le terrain).
+const TREE_MODELS: Array[String] = [
+	"arbre_feuillu", "arbre_automne", "arbre_feuillu", "arbre_haut", "pin"
+]
 const BUSH_MODEL := "buisson"
 ## Arbres semés dans les espaces verts : type → [pas de la grille (m), probabilité].
 const TREE_SCATTER := {
@@ -73,12 +76,21 @@ const BUSH_SIZE := Vector3(1.2, 0.9, 1.2)
 ## Demi-diagonale d'une case : la distance d'un point au centre de sa case.
 const CELL_REACH := 0.71
 
+## Les potelets vert sombre à boule blanche qui gardent les passages piétons : deux à
+## chaque bout, un peu à côté des bandes.
+const BOLLARD_MODEL := "potelet"
+const BOLLARD_SPREAD := 0.5
 const LAMP_MODEL := "lampadaire"
 const LAMP_SPACING := 30.0
 const LAMP_SIDE_OFFSET := 1.0
 const LAMP_MIN_GAP := 12.0
 ## La lanterne et le mât, dans le repère du lampadaire (la crosse pointe vers -Z).
 const LAMP_HEAD := Vector3(0.06, 5.3, -0.25)
+## Où est la lampe de chaque modèle de lampadaire, pour l'allumer la nuit.
+const LAMP_HEADS := {
+	"lampadaire": LAMP_HEAD,
+	"lampadaire_soucoupe": Vector3(0.0, 4.15, 0.0),
+}
 const LAMP_POLE := Vector3(0.06, 2.9, 0.19)
 const POLE_SIZE := Vector3(0.2, 5.8, 0.2)
 
@@ -136,6 +148,7 @@ static func dress(geometry: ZoneGeometry, zone: Dictionary, palette: Dictionary)
 	_add_entrances(geometry, placer, zone.get("entrances", []))
 	_add_barriers(root, placer, zone.get("barriers", []), zone.get("gates", []), palette)
 	_add_furniture(placer, zone.get("furniture", []), zone.get("power_lines", []))
+	_add_bollards(placer, roads, zone.get("crossings", []))
 	_add_trees(placer, zone, road_mask, parkings, rng)
 	_add_lamps(geometry, placer, roads)
 	placer.commit(root)
@@ -550,6 +563,23 @@ static func _add_furniture(placer: Placer, furniture: Array, power_lines: Array)
 			size.y = PYLON_COLLISION_HEIGHT
 			center.y = size.y / 2.0
 		placer.obstacle(center, size, yaw)
+
+
+static func _add_bollards(placer: Placer, roads: Array, crossings: Array) -> void:
+	for crossing: Dictionary in crossings:
+		var at := Vector2(crossing["x"], crossing["z"])
+		var angle: float = crossing["angle"]
+		var direction := Vector2(cos(angle), sin(angle))
+		var across := Vector2(-direction.y, direction.x)
+		var reach := _road_width_at(roads, at) / 2.0 + SIDEWALK_WIDTH / 2.0
+		for side: float in [-1.0, 1.0]:
+			for end: float in [-1.0, 1.0]:
+				var spot := (
+					at
+					+ across * side * reach
+					+ direction * end * (ZEBRA_LENGTH / 2.0 + BOLLARD_SPREAD)
+				)
+				placer.place(BOLLARD_MODEL, Vector3(spot.x, 0.0, spot.y), 0.0)
 
 
 static func _line_angle(at: Vector2, lines: Array) -> float:

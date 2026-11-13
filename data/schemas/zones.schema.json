@@ -266,6 +266,47 @@
 					}
 				}
 			}
+		},
+		"signs": {
+			"type": "array",
+			"description": "Enseignes : un texte sur une façade (le nom du régime, puis le vrai nom).",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"at",
+					"text"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère, ou « x,z » en mètres."
+					},
+					"exact": {
+						"type": "boolean"
+					},
+					"yaw": {
+						"type": "number",
+						"description": "Le côté lisible regarde vers ce cap (degrés)."
+					},
+					"height": {
+						"type": "number",
+						"description": "Hauteur des lettres au-dessus du sol (m)."
+					},
+					"text": {
+						"type": "string",
+						"description": "Clé de traduction du texte."
+					},
+					"if": {
+						"type": "object"
+					}
+				}
+			}
 		}
 	},
 	"$defs": {

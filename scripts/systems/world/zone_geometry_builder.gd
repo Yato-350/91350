@@ -31,6 +31,9 @@ const GREEN_COLORS := {"pitch": "vert_feuille", "playground": "orange_sombre"}
 const GREEN_DEFAULT_COLOR := "vert_sombre"
 ## Grigny 2 : des tours claires, béton gris, blanc cassé et beige.
 const BUILDING_COLORS: Array[String] = ["beton_5", "creme", "beton_5", "beton_4"]
+## L'alpha de la couleur des murs dit leur style au shader des façades : 1 pour un
+## immeuble, STATION_STYLE pour la gare (verrière et bardage) ; 0 sur les toits.
+const STATION_STYLE := 0.75
 ## Couleurs notées dans OpenStreetMap → couleurs de la palette.
 const OSM_COLORS := {
 	"white": "blanc",
@@ -172,7 +175,7 @@ static func _add_building(
 		color = palette[OSM_COLORS[building["colour"]]]
 	# UV2 : (graine propre au bâtiment, hauteur) pour le shader des façades.
 	var extra := Vector2(fposmod(id * 0.6180339887, 1.0), height)
-	var wall_color := Color(color, 1.0)
+	var wall_color := Color(color, STATION_STYLE if building.get("kind", "") == "station" else 1.0)
 	var along := 0.0
 	for index: int in points.size():
 		var start := points[index]

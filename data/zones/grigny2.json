@@ -10,8 +10,8 @@
 			-154.5
 		],
 		"gare": [
-			100,
-			10
+			61.76,
+			82.18
 		],
 		"derriere_la_tour": [
 			-150,
@@ -233,6 +233,66 @@
 			"model": "barriere",
 			"at": "-256,-127",
 			"yaw": 0
+		},
+		{
+			"model": "lampadaire_soucoupe",
+			"at": "58,78",
+			"yaw": 0,
+			"solid": false
+		},
+		{
+			"model": "lampadaire_soucoupe",
+			"at": "54,88",
+			"yaw": 0,
+			"solid": false
+		},
+		{
+			"model": "lampadaire_soucoupe",
+			"at": "50,98",
+			"yaw": 0,
+			"solid": false
+		},
+		{
+			"model": "lampadaire_soucoupe",
+			"at": "57,106",
+			"yaw": 0,
+			"solid": false
+		},
+		{
+			"model": "lampadaire_soucoupe",
+			"at": "66,111",
+			"yaw": 0,
+			"solid": false
+		},
+		{
+			"model": "lampadaire_soucoupe",
+			"at": "62,121",
+			"yaw": 0,
+			"solid": false
+		},
+		{
+			"model": "borne_incendie",
+			"at": "-146.5,-149.5",
+			"yaw": 45,
+			"solid": false
+		},
+		{
+			"model": "borne_incendie",
+			"at": "63.5,74.5",
+			"yaw": 45,
+			"solid": false
+		},
+		{
+			"model": "borne_incendie",
+			"at": "-154.5,-213",
+			"yaw": 45,
+			"solid": false
+		},
+		{
+			"model": "borne_incendie",
+			"at": "-133.5,-236.5",
+			"yaw": 45,
+			"solid": false
 		}
 	],
 	"npcs": [
@@ -487,6 +547,34 @@
 				"hours": [
 					21,
 					6
+				]
+			}
+		}
+	],
+	"signs": [
+		{
+			"id": "gare_regime",
+			"at": "67.83,84.90",
+			"exact": true,
+			"yaw": -114.1,
+			"height": 6.6,
+			"text": "SIGN_GARE_REGIME",
+			"if": {
+				"not_liberated": [
+					"grigny2"
+				]
+			}
+		},
+		{
+			"id": "gare_libre",
+			"at": "67.83,84.90",
+			"exact": true,
+			"yaw": -114.1,
+			"height": 6.6,
+			"text": "SIGN_GARE_REAL",
+			"if": {
+				"liberated": [
+					"grigny2"
 				]
 			}
 		}

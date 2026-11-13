@@ -1,0 +1,7 @@
+# Potelet de trottoir : un mât vert sombre coiffé d'une boule blanche, voxels de 1/16 m.
+palette:
+  v: vert_sombre
+  w: blanc
+box: v 1 0 1 2 13 2
+box: w 0 13 0 4 3 4
+box: w 1 16 1 2 1 2

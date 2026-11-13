@@ -79,7 +79,7 @@ func test_sidewalks_and_markings_are_drawn() -> void:
 
 
 func test_trees_come_from_the_map_and_from_the_park_but_never_on_a_road_or_a_building() -> void:
-	var trees := _positions(["arbre_feuillu", "arbre_haut", "pin"])
+	var trees := _positions(ZoneDressing.TREE_MODELS)
 	assert_gt(trees.size(), 3, "l'arbre de la carte et ceux du parc")
 	assert_true(
 		trees.any(func(at: Vector3) -> bool: return at.distance_to(Vector3(-30, 0, 10)) < 0.1)
@@ -177,3 +177,18 @@ func test_reachable_from_floods_the_free_cells_only() -> void:
 	assert_eq(reached[2], 0, "mur")
 	assert_eq(reached[4], 0, "de l'autre côté du mur")
 	assert_eq(nav.reachable_from(Vector2i(2, 0)).count(1), 0, "départ dans un mur")
+
+
+func test_crossings_are_guarded_by_bollards_on_both_kerbs() -> void:
+	var bollards := _positions([ZoneDressing.BOLLARD_MODEL])
+	assert_eq(bollards.size(), 4, "deux potelets à chaque bout du passage")
+	var sides := {}
+	for at: Vector3 in bollards:
+		sides[signf(at.z - ROAD_Z)] = true
+		assert_gt(absf(at.z - ROAD_Z), 3.0, "sur le trottoir, pas sur la chaussée")
+		assert_gt(absf(at.x), ZoneDressing.ZEBRA_LENGTH / 2.0, "à côté des bandes, pas dessus")
+	assert_eq(sides.size(), 2, "des deux côtés de la rue")
+
+
+func test_some_trees_wear_their_autumn_colours() -> void:
+	assert_has(ZoneDressing.TREE_MODELS, "arbre_automne")

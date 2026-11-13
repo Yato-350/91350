@@ -23,6 +23,11 @@ const TARGET_SEPARATOR := ":"
 const ENTRANCE_LIGHT_OFFSET := Vector2(0.6, 2.6)
 ## Distance à laquelle on considère qu'Akan arrive par l'entrée d'un immeuble.
 const ENTRANCE_REACH := 3.0
+## Une enseigne : lettres de la police de l'interface, à la taille d'une vraie enseigne.
+const SIGN_FONT := preload("res://assets/fonts/Tiny5-Regular.ttf")
+const SIGN_FONT_SIZE := 16
+const SIGN_PIXEL_SIZE := 1.0 / 16.0
+const SIGN_OUTLINE := 4
 ## Rayon maximal (en cases) de la recherche d'une case libre.
 const FREE_SEARCH_RADIUS := 40
 ## Ce qui n'est là que sous condition est relu à ce rythme (s), pour les horaires.
@@ -97,6 +102,8 @@ func _ready() -> void:
 		_place(camera.get("if", {}), _make_camera.bind(camera))
 	for vigile: Dictionary in definition.get("vigiles", []):
 		_place(vigile.get("if", {}), _make_vigile.bind(vigile, _patrol_of(vigile)))
+	for sign: Dictionary in definition.get("signs", []):
+		_place(sign.get("if", {}), _make_sign.bind(sign))
 	EventBus.item_dropped.connect(_on_item_dropped)
 	for changed: Signal in [
 		EventBus.flag_changed,
@@ -349,9 +356,10 @@ func _add_props() -> void:
 	for placement: Dictionary in placements:
 		var condition: Dictionary = placement.get("if", {})
 		_place(condition, _make_prop.bind(placement))
-		if placement["model"] == ZoneDressing.LAMP_MODEL and condition.is_empty():
+		var head: Variant = ZoneDressing.LAMP_HEADS.get(placement["model"])
+		if head != null and condition.is_empty():
 			var basis := Basis.from_euler(Vector3(0.0, deg_to_rad(placement["yaw"]), 0.0))
-			_extra_lamps.append(placement["position"] + basis * ZoneDressing.LAMP_HEAD)
+			_extra_lamps.append(placement["position"] + basis * (head as Vector3))
 
 
 # Un décor « exact » se pose au centimètre près (une fresque plaquée sur un mur) ; les
@@ -423,6 +431,25 @@ func _patrol_of(vigile: Dictionary) -> Array[Vector3]:
 	for marker: String in vigile["patrol"]:
 		patrol.append(marker_position(marker))
 	return patrol
+
+
+# Une enseigne sur une façade : le nom du régime, ou le vrai nom une fois la zone libre
+# (deux enseignes, chacune sous sa condition).
+func _make_sign(sign: Dictionary) -> Label3D:
+	var label := Label3D.new()
+	label.name = "Sign%s" % String(sign["id"]).to_pascal_case()
+	label.text = tr(sign["text"])
+	label.font = SIGN_FONT
+	label.font_size = SIGN_FONT_SIZE
+	label.pixel_size = SIGN_PIXEL_SIZE
+	label.outline_size = SIGN_OUTLINE
+	label.alpha_cut = Label3D.ALPHA_CUT_DISCARD
+	label.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	label.shaded = false
+	label.double_sided = false
+	label.position = _prop_position(sign) + Vector3.UP * float(sign.get("height", 3.0))
+	label.rotation_degrees.y = float(sign.get("yaw", 0.0))
+	return label
 
 
 func _make_camera(camera_data: Dictionary) -> SecurityCamera:
