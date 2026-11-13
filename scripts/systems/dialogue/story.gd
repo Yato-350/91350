@@ -25,6 +25,11 @@ func give(item: String, amount: int = 1) -> void:
 	GameState.give(item, amount)
 
 
+## Range un objet du sac dans un raccourci (0 à 3), pour le tutoriel.
+func shortcut(index: int, item: String) -> void:
+	GameState.inventory.assign_quick_slot(index, item)
+
+
 ## Retire des objets du sac ; rend false (sans rien retirer) s'il en manque.
 func take(item: String, amount: int = 1) -> bool:
 	return GameState.inventory.remove(item, amount)

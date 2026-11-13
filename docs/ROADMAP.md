@@ -21,12 +21,18 @@ Les jalons viennent du brief (§17). Une case est cochée quand le critère est 
 
 ## M1 — Tranche verticale (acte 1, ~45 min)
 
-- [ ] Pipeline d'assets : `build_voxels.py` (modèles + icônes), `build_pixels.py`
-- [ ] Import OpenStreetMap de Grigny 2 → zone jouable (bâtiments, routes, collisions)
-- [ ] La tour d'Akan : hall, cage d'escalier, appartement
-- [ ] Besoins (faim, soif), endurance, accroupi, interactions
-- [ ] Inventaire en grille, objets, raccourcis
-- [ ] Dialogues (Dialogue Manager 4.2) et PNJ
+- [x] Pipeline voxel : `build_voxels.py` (modèles, blocs, échelle, icônes) et personnages
+      générés depuis leur fiche (visages, coiffures, pilosité, bas, accessoires)
+- [ ] `build_pixels.py` (affiches, tags) — quand la propagande en aura besoin
+- [x] Import OpenStreetMap de Grigny 2 → zone jouable (bâtiments, routes, collisions)
+- [x] Réalisme de Grigny 2 : trottoirs et marquages, parkings et voitures, 264 arbres réels
+      et parcs plantés, lampadaires, clôtures et haies, entrées réelles des immeubles,
+      mobilier, pylônes ; façades détaillées (loggias, linge, paraboles, tags)
+- [x] La tour d'Akan : appartement, palier du 11e, hall (intérieurs en plans de texte)
+- [x] Besoins (faim, soif), endurance, accroupi, charge lourde, interactions
+- [x] Inventaire en grille, objets, raccourcis, écran du sac
+- [x] Dialogues (Dialogue Manager 4.2) et PNJ (regard, gestes)
+- [x] Vérifications de niveau : lieux atteignables, aucun piège, repères accessibles
 - [ ] Quêtes pilotées par les données ; quêtes 1 à 8 de l'acte 1
 - [ ] Surveillance : caméras, cônes de vision, Vigilance 0–5, statut citoyen
 - [ ] IA des Vigiles (patrouille → suspicion → alerte → recherche → retour)

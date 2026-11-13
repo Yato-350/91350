@@ -1,0 +1,44 @@
+{
+	"id": "palier_7",
+	"name": "PLACE_PALIER_7",
+	"territory": "grigny2",
+	"plan": [
+		"###D###L###",
+		"#..c...l..#",
+		"Ea.......bS",
+		"E........hS",
+		"#..e......#",
+		"###D###D###"
+	],
+	"markers": {
+		"c": "default",
+		"l": "porte_lucien",
+		"a": "ascenseur",
+		"b": "escalier_haut",
+		"h": "escalier_bas",
+		"e": "voisin_1"
+	},
+	"floor_color": "beton_4",
+	"wall_color": "beton_5",
+	"doors": [
+		{
+			"at": "escalier_haut",
+			"to": "palier_11@escalier",
+			"prompt": "PROMPT_MONTER"
+		},
+		{
+			"at": "escalier_bas",
+			"to": "hall_tour@escalier",
+			"prompt": "PROMPT_DESCENDRE"
+		},
+		{
+			"at": "porte_lucien",
+			"to": "appartement_lucien",
+			"prompt": "PROMPT_FRAPPER",
+			"dialogue": [
+				"lucien",
+				"porte"
+			]
+		}
+	]
+}

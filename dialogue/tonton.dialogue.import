@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://c5q76wldh47f4"
+path="res://.godot/imported/tonton.dialogue-828a41f2940866424910e88e4409368b.tres"
+
+[deps]
+
+source_file="res://dialogue/tonton.dialogue"
+dest_files=["res://.godot/imported/tonton.dialogue-828a41f2940866424910e88e4409368b.tres"]
+
+[params]
+
+defaults=true

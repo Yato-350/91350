@@ -1,0 +1,58 @@
+{
+	"id": "appartement_lucien",
+	"name": "PLACE_APPARTEMENT_LUCIEN",
+	"territory": "grigny2",
+	"plan": [
+		"###########",
+		"#ss...ee..#",
+		"#........r#",
+		"#..l...tt.#",
+		"#......hh.#",
+		"#p........#",
+		"#D#########"
+	],
+	"markers": {
+		"p": "default",
+		"l": "lucien"
+	},
+	"floor_color": "brun_2",
+	"wall_color": "creme",
+	"props": {
+		"s": {
+			"model": "canape",
+			"yaw": 180
+		},
+		"e": {
+			"model": "etagere",
+			"yaw": 180
+		},
+		"r": {
+			"model": "radio",
+			"solid": false,
+			"yaw": 90
+		},
+		"t": {
+			"model": "table"
+		},
+		"h": {
+			"model": "chaise",
+			"solid": false
+		}
+	},
+	"doors": [
+		{
+			"at": "default",
+			"to": "palier_7@porte_lucien",
+			"prompt": "PROMPT_SORTIR"
+		}
+	],
+	"npcs": [
+		{
+			"id": "lucien",
+			"character": "lucien",
+			"at": "lucien",
+			"dialogue": "lucien",
+			"yaw": 180
+		}
+	]
+}

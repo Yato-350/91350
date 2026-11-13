@@ -32,8 +32,8 @@
 		},
 		{
 			"at": "escalier",
-			"to": "palier_11@escalier",
-			"prompt": "PROMPT_ESCALIER"
+			"to": "palier_7@escalier_bas",
+			"prompt": "PROMPT_MONTER"
 		}
 	],
 	"props": {

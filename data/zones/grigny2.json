@@ -20,6 +20,14 @@
 		"tour_akan": [
 			-142.2,
 			-153.1
+		],
+		"point_ration": [
+			-68.5,
+			-142.5
+		],
+		"epicerie": [
+			-148.0,
+			-212.0
 		]
 	},
 	"doors": [
@@ -27,6 +35,80 @@
 			"at": "tour_akan",
 			"to": "hall_tour",
 			"prompt": "PROMPT_ENTRER"
+		}
+	],
+	"props": [
+		{
+			"model": "table_ration",
+			"at": "-68.5,-145",
+			"yaw": 180
+		},
+		{
+			"model": "barriere",
+			"at": "-72.5,-143.5",
+			"yaw": 90
+		},
+		{
+			"model": "barriere",
+			"at": "-64.5,-143.5",
+			"yaw": 90
+		},
+		{
+			"model": "camera",
+			"at": "-73.5,-147.5",
+			"yaw": 135
+		},
+		{
+			"model": "haut_parleur",
+			"at": "-63.5,-148",
+			"yaw": 225
+		},
+		{
+			"model": "ecran_propagande",
+			"at": "-68.5,-149",
+			"yaw": 0
+		}
+	],
+	"npcs": [
+		{
+			"id": "vigile_ration",
+			"character": "vigile",
+			"at": "-68.5,-143.5",
+			"dialogue": "file",
+			"cue": "controle"
+		},
+		{
+			"id": "monsieur_paul",
+			"character": "monsieur_paul",
+			"at": "-68.5,-141",
+			"dialogue": "voisins",
+			"cue": "paul",
+			"if": {
+				"not_flags": [
+					"paul_embarque"
+				]
+			}
+		},
+		{
+			"id": "voisine_file",
+			"character": "civil_2",
+			"at": "-68.5,-139.5",
+			"dialogue": "voisins",
+			"cue": "file"
+		},
+		{
+			"id": "voisin_file",
+			"character": "civil_3",
+			"at": "-68.5,-138",
+			"dialogue": "voisins",
+			"cue": "file_2"
+		},
+		{
+			"id": "tonton",
+			"character": "tonton",
+			"at": "epicerie",
+			"dialogue": "tonton",
+			"yaw": 0
 		}
 	]
 }

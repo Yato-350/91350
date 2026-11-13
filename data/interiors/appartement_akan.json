@@ -10,7 +10,7 @@
 		"##.###.###.##",
 		"#s........v.#",
 		"#s..tt.....pD",
-		"#a..hh......#",
+		"#a..hh.y....#",
 		"#############"
 	],
 	"markers": {
@@ -20,7 +20,8 @@
 		"p": "porte",
 		"i": "cuisine",
 		"e": "evier",
-		"d": "daronne"
+		"d": "daronne",
+		"y": "maya"
 	},
 	"floors": {
 		",": "beton_5"
@@ -85,6 +86,13 @@
 			"at": "daronne",
 			"dialogue": "daronne",
 			"yaw": 90
+		},
+		{
+			"id": "maya",
+			"character": "maya",
+			"at": "maya",
+			"dialogue": "maya",
+			"yaw": 180
 		}
 	]
 }

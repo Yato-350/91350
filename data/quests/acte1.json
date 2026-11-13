@@ -1,0 +1,168 @@
+{
+	"quests": [
+		{
+			"id": "ascenseur_en_panne",
+			"name": "QUEST_ASCENSEUR",
+			"summary": "QUEST_ASCENSEUR_SUMMARY",
+			"giver": "daronne",
+			"zone": "grigny2",
+			"beat": {
+				"type": "teach",
+				"intensity": 0.1
+			},
+			"steps": [
+				{
+					"id": "parler",
+					"type": "TALK",
+					"target": "daronne",
+					"text": "OBJ_ASCENSEUR_PARLER",
+					"where": "appartement_akan:daronne"
+				},
+				{
+					"id": "boire",
+					"type": "USE",
+					"target": "boire",
+					"text": "OBJ_ASCENSEUR_BOIRE"
+				},
+				{
+					"id": "manger",
+					"type": "USE",
+					"target": "manger",
+					"text": "OBJ_ASCENSEUR_MANGER"
+				},
+				{
+					"id": "bidon",
+					"type": "COLLECT",
+					"target": "bidon_vide",
+					"text": "OBJ_ASCENSEUR_BIDON",
+					"where": "appartement_akan:evier"
+				},
+				{
+					"id": "ascenseur",
+					"type": "GOTO",
+					"target": "palier_11:ascenseur",
+					"text": "OBJ_ASCENSEUR_ASCENSEUR",
+					"dialogue": [
+						"akan",
+						"ascenseur"
+					]
+				},
+				{
+					"id": "hall",
+					"type": "GOTO",
+					"target": "hall_tour",
+					"text": "OBJ_ASCENSEUR_HALL"
+				}
+			],
+			"rewards": {
+				"xp": 50,
+				"start": [
+					"la_file"
+				]
+			}
+		},
+		{
+			"id": "la_file",
+			"name": "QUEST_FILE",
+			"summary": "QUEST_FILE_SUMMARY",
+			"giver": "daronne",
+			"zone": "grigny2",
+			"beat": {
+				"type": "tension",
+				"intensity": 0.5
+			},
+			"steps": [
+				{
+					"id": "aller",
+					"type": "GOTO",
+					"target": "grigny2:point_ration",
+					"text": "OBJ_FILE_ALLER"
+				},
+				{
+					"id": "controle",
+					"type": "TALK",
+					"target": "vigile",
+					"text": "OBJ_FILE_CONTROLE",
+					"where": "grigny2:point_ration"
+				},
+				{
+					"id": "eau",
+					"type": "COLLECT",
+					"target": "bidon_plein",
+					"text": "OBJ_FILE_EAU",
+					"where": "grigny2:point_ration"
+				},
+				{
+					"id": "rapporter",
+					"type": "DELIVER",
+					"target": "daronne",
+					"text": "OBJ_FILE_RAPPORTER",
+					"where": "appartement_akan:daronne"
+				}
+			],
+			"rewards": {
+				"xp": 75,
+				"start": [
+					"le_vieux_du_7e"
+				]
+			}
+		},
+		{
+			"id": "le_vieux_du_7e",
+			"name": "QUEST_VIEUX",
+			"summary": "QUEST_VIEUX_SUMMARY",
+			"giver": "daronne",
+			"zone": "grigny2",
+			"beat": {
+				"type": "explore",
+				"intensity": 0.3
+			},
+			"steps": [
+				{
+					"id": "bernard",
+					"type": "TALK",
+					"target": "bernard",
+					"text": "OBJ_VIEUX_BERNARD",
+					"where": "palier_11:voisin_1"
+				},
+				{
+					"id": "tonton",
+					"type": "TALK",
+					"target": "tonton",
+					"text": "OBJ_VIEUX_TONTON",
+					"where": "grigny2:epicerie"
+				},
+				{
+					"id": "piles",
+					"type": "COLLECT",
+					"target": "piles",
+					"count": 4,
+					"text": "OBJ_VIEUX_PILES",
+					"where": "grigny2:epicerie"
+				},
+				{
+					"id": "frapper",
+					"type": "GOTO",
+					"target": "palier_7:porte_lucien",
+					"text": "OBJ_VIEUX_FRAPPER"
+				},
+				{
+					"id": "livrer",
+					"type": "DELIVER",
+					"target": "lucien",
+					"text": "OBJ_VIEUX_LIVRER",
+					"where": "appartement_lucien:lucien"
+				}
+			],
+			"rewards": {
+				"xp": 100,
+				"reputation": {
+					"anciens": 10
+				},
+				"flags": [
+					"radio"
+				]
+			}
+		}
+	]
+}

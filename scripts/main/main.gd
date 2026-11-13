@@ -17,6 +17,12 @@ const SCREENSHOT_FRAMES := 30
 ## « zone:<identifiant> » désigne un lieu des données plutôt qu'un fichier de scène.
 const ZONE_PREFIX := GameState.ZONE_PREFIX
 
+## Là où commence le jeu : la zone d'essai (main.tscn, pour les tests), ou l'appartement
+## d'Akan pour une vraie partie (game.tscn).
+@export var start_place := DEFAULT_ZONE
+## Vrai : une nouvelle partie commence (première quête, horloge qui tourne).
+@export var new_game := false
+
 var _colour_enabled := true
 var _traveling := false
 
@@ -45,7 +51,11 @@ func _ready() -> void:
 	if not screenshot_scene.is_empty():
 		_run_screenshot_mode(screenshot_scene)
 		return
-	travel_to(DEFAULT_ZONE)
+	if new_game:
+		GameState.new_game()
+		GameState.quests.start(GameState.FIRST_QUEST)
+		GameState.playing = true
+	travel_to(start_place)
 	await get_tree().process_frame
 	print(READY_MARKER)
 

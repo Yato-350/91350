@@ -16,6 +16,9 @@ const INTERIOR_BACKGROUND := "noir"
 const INTERIOR_ZOOM := 2
 ## Hauteur d'apparition au-dessus du sol : le joueur se pose tout seul.
 const SPAWN_HEIGHT := 0.1
+## Un objectif « aller à un repère » est atteint à cette distance (m).
+const GOTO_RADIUS := 2.0
+const TARGET_SEPARATOR := ":"
 ## Distance à laquelle on considère qu'Akan arrive par l'entrée d'un immeuble.
 const ENTRANCE_REACH := 3.0
 ## Rayon maximal (en cases) de la recherche d'une case libre.
@@ -76,6 +79,10 @@ func _ready() -> void:
 	var rig: CameraRig = CAMERA_RIG_SCENE.instantiate()
 	rig.target = player
 	add_child(rig)
+	var guide := QuestGuide.new()
+	guide.name = "QuestGuide"
+	guide.zone = self
+	add_child(guide)
 	# En sortant d'un immeuble, on voit sa façade plutôt que son dos.
 	var entrance := _entrance_near(player.position)
 	if not entrance.is_empty():
@@ -84,6 +91,25 @@ func _ready() -> void:
 
 func get_zoom() -> int:
 	return INTERIOR_ZOOM if is_interior else 1
+
+
+func _physics_process(_delta: float) -> void:
+	_check_goto_markers()
+
+
+# Les quêtes en cours qui attendent Akan à un repère de ce lieu : est-il arrivé ?
+func _check_goto_markers() -> void:
+	if player == null:
+		return
+	for quest_id: String in GameState.quests.active_ids():
+		var step := GameState.quests.current_step(quest_id)
+		var target: String = step.get("target", "")
+		if step.get("type") != "GOTO" or not target.begins_with(zone_id + TARGET_SEPARATOR):
+			continue
+		var at := marker_position(target.get_slice(TARGET_SEPARATOR, 1))
+		var offset := Vector2(at.x - player.global_position.x, at.z - player.global_position.z)
+		if offset.length() <= GOTO_RADIUS:
+			GameState.objective("GOTO", target)
 
 
 ## Position d'un repère (ou du repère par défaut), toujours sur une case libre.
@@ -223,5 +249,6 @@ func _add_door(door: Dictionary) -> void:
 	node.name = "Door_%s" % door["at"]
 	node.target = door["to"]
 	node.prompt = door.get("prompt", "")
+	node.knock = door.get("dialogue", [])
 	node.position = marker_position(door["at"])
 	add_child(node)

@@ -22,7 +22,8 @@ const NAMED_KEYS := {
 	KEY_TAB: "KEY_TAB",
 	KEY_CTRL: "KEY_CTRL",
 }
-const HEADLESS := "headless"
+## Serveurs d'affichage qui savent traduire une touche physique selon la disposition.
+const LAYOUT_AWARE_DISPLAYS: Array[String] = ["Windows", "macOS", "X11", "Wayland"]
 ## En dessous, un stick ne fait que dériver : ce n'est pas un geste du joueur.
 const STICK_THRESHOLD := 0.5
 
@@ -58,8 +59,9 @@ static func label(action: StringName) -> String:
 static func _key_name(physical_keycode: Key) -> String:
 	if NAMED_KEYS.has(physical_keycode):
 		return TranslationServer.translate(NAMED_KEYS[physical_keycode])
-	# Sans affichage (tests, serveur), il n'y a pas de disposition de clavier à consulter.
+	# Seuls les bureaux savent lire la disposition du clavier ; ailleurs (navigateur,
+	# tests sans affichage), on nomme la touche d'après sa position sur un QWERTY.
 	var keycode := physical_keycode
-	if DisplayServer.get_name() != HEADLESS:
+	if DisplayServer.get_name() in LAYOUT_AWARE_DISPLAYS:
 		keycode = DisplayServer.keyboard_get_keycode_from_physical(physical_keycode)
 	return OS.get_keycode_string(keycode)

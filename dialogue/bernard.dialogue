@@ -1,0 +1,8 @@
+~ start
+if step("le_vieux_du_7e", "bernard")
+	bernard: Pardon, Akan. Lucien ? Je ne sais rien, moi. Pardon.
+	akan: Tu connais tout le palier, Bernard. Tout le monde le sait.
+	bernard: Pardon... Demande à Tonton. Il voit tout, en bas. Pardon.
+else
+	bernard: Pardon, je n'ai pas le temps. Vraiment. Pardon.
+=> END

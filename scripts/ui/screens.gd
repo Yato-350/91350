@@ -4,7 +4,7 @@ extends Control
 ## l'un d'eux est ouvert, l'arbre de scène est en pause et le monde s'arrête.
 
 ## Action d'entrée → nom de l'écran qu'elle ouvre et referme.
-const ACTIONS := {&"inventory": "Inventory"}
+const ACTIONS := {&"inventory": "Inventory", &"journal": "Journal"}
 
 var _current: Control
 
@@ -16,6 +16,9 @@ func _ready() -> void:
 	var inventory := InventoryScreen.new()
 	inventory.name = "Inventory"
 	add_child(inventory)
+	var journal := JournalScreen.new()
+	journal.name = "Journal"
+	add_child(journal)
 
 
 # Avant l'interface : Tab et Échap y servent aussi à déplacer le focus.

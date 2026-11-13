@@ -5,6 +5,8 @@ extends Interactable
 
 const BODY_RADIUS := 0.3
 const BODY_HEIGHT := 1.7
+## Entrée jouée par défaut dans son fichier de dialogue.
+const DEFAULT_CUE := "start"
 ## En deçà de cette distance, l'habitant tourne la tête vers Akan.
 const LOOK_DISTANCE := 4.0
 ## Hauteur des yeux d'Akan, que l'on regarde.
@@ -15,17 +17,20 @@ var character_id := ""
 var dialogue := ""
 var cue := ""
 var visual := CharacterVisual.new()
+## Condition de présence : quand elle devient fausse, le personnage part.
+var presence := {}
 
 
 ## Crée le personnage décrit par une entrée « npcs » d'un lieu :
-## {"id", "character", "dialogue", "cue", "yaw"}.
+## {"id", "character", "dialogue", "cue", "yaw", "if"}. Si sa condition « if » cesse
+## d'être vraie (un drapeau posé pendant un dialogue), il s'en va.
 static func create(definition: Dictionary) -> Npc:
 	var npc := Npc.new()
 	var id: String = definition.get("id", definition.get("character", ""))
 	npc.name = id.to_pascal_case()
 	npc.character_id = definition.get("character", "")
 	npc.dialogue = definition.get("dialogue", "")
-	npc.cue = definition.get("cue", "")
+	npc.cue = definition.get("cue", DEFAULT_CUE)
 	npc.prompt = "PROMPT_PARLER"
 	npc.enabled = not npc.dialogue.is_empty()
 	npc.visual.name = "Visual"
@@ -37,7 +42,18 @@ static func create(definition: Dictionary) -> Npc:
 	capsule.height = BODY_HEIGHT
 	MeshKit.add_body(npc, "Body", capsule, Vector3.UP * BODY_HEIGHT / 2.0)
 	npc.interacted.connect(npc._on_interacted)
+	npc.presence = definition.get("if", {})
 	return npc
+
+
+func _ready() -> void:
+	if not presence.is_empty():
+		EventBus.flag_changed.connect(func(_flag: String) -> void: _check_presence())
+
+
+func _check_presence() -> void:
+	if not Conditions.check(presence):
+		queue_free()
 
 
 func _process(_delta: float) -> void:
@@ -60,6 +76,8 @@ func _on_interacted(player: Player) -> void:
 	EventBus.dialogue_requested.emit(dialogue, cue)
 
 
+# Une conversation menée à son terme vaut « parler à » ce personnage.
 func _on_dialogue_ended(_dialogue: String) -> void:
 	visual.talking = false
 	visual.process_mode = Node.PROCESS_MODE_INHERIT
+	GameState.objective("TALK", character_id)

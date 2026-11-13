@@ -16,6 +16,8 @@ const BOTTOM_MARGIN := 8
 const ADVANCE_ACTIONS: Array[StringName] = [&"ui_accept", &"interact"]
 
 var _source := ""
+## Dialogues demandés pendant qu'un autre se déroulait : [dialogue, entrée].
+var _waiting_list: Array[Array] = []
 var _resource: DialogueResource
 var _line: DialogueLine
 var _story := Story.new()
@@ -74,9 +76,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## Lance le dialogue `dialogue` (un nom de dialogue/, ou un chemin res://) à l'entrée
-## `cue`. Sans effet si un dialogue est déjà en cours.
+## `cue`. Si un dialogue est déjà en cours, celui-ci attend son tour.
 func start(dialogue: String, cue: String = "") -> void:
 	if _resource != null:
+		_waiting_list.append([dialogue, cue])
 		return
 	var path := dialogue if dialogue.begins_with("res://") else DIALOGUE_PATH % dialogue
 	if not ResourceLoader.exists(path):
@@ -149,3 +152,6 @@ func _finish() -> void:
 	hide()
 	get_tree().paused = false
 	EventBus.dialogue_ended.emit(ended)
+	if not _waiting_list.is_empty():
+		var next: Array = _waiting_list.pop_front()
+		start(next[0], next[1])

@@ -178,6 +178,15 @@
 				"prompt": {
 					"type": "string",
 					"pattern": "^[A-Z][A-Z0-9_]*$"
+				},
+				"dialogue": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 2,
+					"maxItems": 2,
+					"description": "[fichier, entrée] : on frappe, et le dialogue décide si l'on entre."
 				}
 			}
 		}

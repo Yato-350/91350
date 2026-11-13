@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://gs06c46d2ilr"
+path="res://.godot/imported/lucien.dialogue-64670739afdf6aa1b22c8dac29f5065a.tres"
+
+[deps]
+
+source_file="res://dialogue/lucien.dialogue"
+dest_files=["res://.godot/imported/lucien.dialogue-64670739afdf6aa1b22c8dac29f5065a.tres"]
+
+[params]
+
+defaults=true

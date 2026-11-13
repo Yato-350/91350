@@ -28,8 +28,17 @@
 		},
 		{
 			"at": "escalier",
-			"to": "hall_tour@escalier",
-			"prompt": "PROMPT_ESCALIER"
+			"to": "palier_7@escalier_haut",
+			"prompt": "PROMPT_DESCENDRE"
+		}
+	],
+	"npcs": [
+		{
+			"id": "bernard",
+			"character": "bernard",
+			"at": "voisin_1",
+			"dialogue": "bernard",
+			"yaw": 180
 		}
 	]
 }

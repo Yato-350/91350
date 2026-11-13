@@ -1,0 +1,34 @@
+~ porte
+if quest_done("le_vieux_du_7e")
+	lucien: C'est ouvert, petit.
+	$> travel("appartement_lucien")
+elif quest_active("le_vieux_du_7e") and not step("le_vieux_du_7e", "bernard") and not step("le_vieux_du_7e", "tonton")
+	akan: Comment il a dit, Tonton, déjà ?
+	- Trois coups, un silence, deux coups.
+		if flag("code_lucien")
+			lucien: Entre, petit. Vite. Les couloirs ont des oreilles.
+			$> travel("appartement_lucien")
+		else
+			lucien: Je n'attends personne.
+	- Cinq coups, bien fort.
+		lucien: Il n'y a personne ici. Plus personne.
+	- Appeler : « Monsieur Lucien ! »
+		lucien: Il n'y a pas de Lucien ici.
+else
+	akan: Personne ne répond. Ou personne ne veut répondre.
+=> END
+
+~ start
+if step("le_vieux_du_7e", "livrer") and has("piles", 4)
+	lucien: Des piles. Tu es le fils d'Adjoua, toi.
+	$> take("piles", 4)
+	$> objective("DELIVER", "lucien")
+	lucien: Petit, quand l'écran te donne ton prénom, c'est qu'il te l'a déjà pris.
+	lucien: Quarante-deux noms. Tous partis au Centre de Rééducation.
+	$> give("liste_disparus")
+	lucien: Paul sera le quarante-troisième. Si personne ne fait rien.
+	akan: Quarante-trois...
+	lucien: La radio dit ce que l'écran ne dit pas. Reviens l'écouter.
+else
+	lucien: Une radio qui se tait, petit, c'est une ville qui s'endort.
+=> END

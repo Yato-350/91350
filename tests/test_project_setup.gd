@@ -27,4 +27,16 @@ func test_jitter_fix_is_off_with_physics_interpolation() -> void:
 
 func test_main_scene_is_set() -> void:
 	var main_scene: String = ProjectSettings.get_setting("application/run/main_scene", "")
-	assert_eq(main_scene, "res://scenes/main/main.tscn")
+	assert_eq(main_scene, "res://scenes/main/game.tscn")
+
+
+func test_the_game_starts_a_new_game_in_akans_room() -> void:
+	GameState.new_game()
+	var game: Main = load("res://scenes/main/game.tscn").instantiate()
+	add_child_autofree(game)
+	await wait_process_frames(3)
+	assert_eq(GameState.place_id(), "appartement_akan")
+	assert_true(GameState.quests.is_active(GameState.FIRST_QUEST))
+	assert_true(GameState.playing)
+	GameState.playing = false
+	GameState.new_game()

@@ -35,6 +35,7 @@ var _message_tween: Tween
 @onready var _prompt: Label = _add_prompt()
 @onready var _info: VBoxContainer = _add_info()
 @onready var _quick_slots: HBoxContainer = _add_quick_slots()
+@onready var _objective: Label = _add_objective()
 
 
 func _ready() -> void:
@@ -53,6 +54,7 @@ func _ready() -> void:
 	)
 	EventBus.dialogue_ended.connect(func(_dialogue: String) -> void: _set_talking(false))
 	EventBus.inventory_changed.connect(func(_item: String) -> void: _refresh_quick_slots())
+	EventBus.quest_progressed.connect(func(_quest: String) -> void: _refresh_objective())
 	EventBus.game_state_reset.connect(_refresh_all)
 	EventBus.location_changed.connect(_refresh_place)
 	EventBus.zone_liberated.connect(func(_zone: String) -> void: _refresh_place())
@@ -114,6 +116,12 @@ func _set_talking(talking: bool) -> void:
 func _refresh_all() -> void:
 	_refresh_place()
 	_refresh_quick_slots()
+	_refresh_objective()
+
+
+func _refresh_objective() -> void:
+	var key := GameState.tracked_objective()
+	_objective.text = tr(key) if not key.is_empty() else ""
 
 
 # Nom du lieu, Vigilance et statut : relus quand l'un d'eux change.
@@ -201,6 +209,18 @@ func _add_info() -> VBoxContainer:
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		info.add_child(label)
 	return info
+
+
+# L'objectif en cours, en haut au milieu de l'écran.
+func _add_objective() -> Label:
+	var objective := Label.new()
+	objective.name = "Objective"
+	objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	objective.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	objective.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	objective.position.y += MARGIN
+	add_child(objective)
+	return objective
 
 
 func _add_prompt() -> Label:

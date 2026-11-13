@@ -85,6 +85,15 @@ func test_a_dialogue_takes_the_bottom_of_the_screen() -> void:
 	assert_true(slots.visible)
 
 
+func test_the_current_objective_is_written() -> void:
+	var objective: Label = _hud.get_node("Objective")
+	assert_eq(objective.text, "")
+	GameState.quests.start(GameState.FIRST_QUEST)
+	assert_eq(objective.text, tr("OBJ_ASCENSEUR_PARLER"))
+	GameState.quests.notify("TALK", "daronne")
+	assert_eq(objective.text, tr("OBJ_ASCENSEUR_BOIRE"))
+
+
 func test_notifications_show_a_short_message() -> void:
 	var message: Label = _hud.get_node("Message")
 	assert_false(message.visible)

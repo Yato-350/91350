@@ -73,8 +73,8 @@ func test_the_bus_starts_a_dialogue_and_hears_its_end() -> void:
 	assert_eq(_text("Text"), "Je te connais, toi ?", "un seul dialogue à la fois")
 	_send_action("ui_accept")
 	await wait_process_frames(SETTLE_FRAMES)
-	assert_false(_balloon.visible)
 	assert_signal_emitted_with_parameters(EventBus, "dialogue_ended", [FILE])
+	assert_eq(_text("Text"), "Tu cherches Lucien ?", "le second dialogue attendait son tour")
 
 
 func test_an_unknown_dialogue_is_refused() -> void:

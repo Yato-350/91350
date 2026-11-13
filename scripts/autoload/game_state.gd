@@ -7,6 +7,11 @@ extends Node
 ## Un lieu décrit par les données s'écrit « zone:<identifiant>[@repère] ».
 const ZONE_PREFIX := "zone:"
 const MARKER_SEPARATOR := "@"
+## La quête qui ouvre une nouvelle partie.
+const FIRST_QUEST := "ascenseur_en_panne"
+## Objectifs « USE » génériques : ce qu'un objet fait, quel qu'il soit.
+const USE_DRINK := "boire"
+const USE_EAT := "manger"
 
 var save_id: StringName = &"game"
 
@@ -49,11 +54,25 @@ func new_game() -> void:
 	EventBus.game_state_reset.emit()
 
 
+## La quête dont on suit l'objectif : la dernière lancée parmi celles en cours.
+func tracked_quest() -> String:
+	var active := quests.active_ids()
+	return active[active.size() - 1] if not active.is_empty() else ""
+
+
+## Le texte (clé de traduction) de l'objectif en cours de la quête suivie, ou "".
+func tracked_objective() -> String:
+	var quest := tracked_quest()
+	return quests.current_step(quest).get("text", "") if not quest.is_empty() else ""
+
+
 ## Akan entre dans un lieu ; `territory` est la zone de territoire qui l'abrite.
 func enter(new_location: String, territory: String) -> void:
 	location = new_location
 	territory_id = territory
 	EventBus.location_changed.emit()
+	if not place_id().is_empty():
+		objective("GOTO", place_id())
 
 
 ## Identifiant du lieu courant (« hall_tour », « grigny2 »), ou "" pour une scène d'essai.
@@ -110,6 +129,11 @@ func use_item(item_id: String) -> bool:
 	needs.eat(effects.get("hunger", 0.0))
 	vitals.heal(effects.get("health", 0.0))
 	EventBus.item_used.emit(item_id)
+	if effects.get("thirst", 0.0) > 0.0:
+		objective("USE", USE_DRINK)
+	if effects.get("hunger", 0.0) > 0.0:
+		objective("USE", USE_EAT)
+	objective("USE", item_id)
 	return true
 
 
@@ -191,10 +215,8 @@ func _create_systems() -> void:
 		territory.register(zone_id, int(zone.get("control", 0)), int(zone.get("support", 0)))
 	vitals.downed.connect(EventBus.player_downed.emit)
 	inventory.changed.connect(EventBus.inventory_changed.emit)
-	quests.quest_started.connect(EventBus.quest_started.emit)
-	quests.progressed.connect(EventBus.quest_progressed.emit)
-	quests.step_completed.connect(_on_step_completed)
-	quests.quest_completed.connect(_on_quest_completed)
+	inventory.changed.connect(func(_item: String) -> void: _check_collect())
+	connect_quests()
 	territory.changed.connect(EventBus.territory_changed.emit)
 	territory.liberated.connect(EventBus.zone_liberated.emit)
 	surveillance.vigilance_changed.connect(EventBus.vigilance_changed.emit)
@@ -202,16 +224,48 @@ func _create_systems() -> void:
 	progression.leveled_up.connect(EventBus.leveled_up.emit)
 
 
+## Relie le journal de quêtes au reste du jeu (à refaire si on le remplace).
+func connect_quests() -> void:
+	quests.quest_started.connect(EventBus.quest_started.emit)
+	quests.progressed.connect(EventBus.quest_progressed.emit)
+	quests.progressed.connect(func(_quest: String) -> void: _check_collect())
+	quests.step_completed.connect(_on_step_completed)
+	quests.quest_completed.connect(_on_quest_completed)
+
+
+# Un objectif « COLLECT » est atteint dès que le sac contient ce qu'il faut, même si
+# l'objet y était déjà avant l'étape.
+func _check_collect() -> void:
+	for quest_id: String in quests.active_ids():
+		var step := quests.current_step(quest_id)
+		if step.get("type") != "COLLECT":
+			continue
+		var target: String = step.get("target", "")
+		var missing := int(step.get("count", 1)) - quests.progress(quest_id)
+		if missing > 0 and inventory.count(target) >= int(step.get("count", 1)):
+			quests.notify("COLLECT", target, missing)
+
+
 func _on_step_completed(quest_id: String, step_id: String) -> void:
-	var quest := DataRegistry.entry("quests", quest_id)
+	var quest := _quest_definition(quest_id)
 	for step: Dictionary in quest.get("steps", []):
-		if step.get("id") == step_id:
-			apply_effects(step.get("effects", {}), quest.get("zone", territory_id))
+		if step.get("id") != step_id:
+			continue
+		apply_effects(step.get("effects", {}), quest.get("zone", territory_id))
+		var scene: Array = step.get("dialogue", [])
+		if scene.size() == 2:
+			EventBus.dialogue_requested.emit(scene[0], scene[1])
 	EventBus.quest_step_completed.emit(quest_id, step_id)
 
 
-func _on_quest_completed(quest_id: String) -> void:
+# La fiche d'une quête : celle des données, ou celle qu'utilise le journal (tests).
+func _quest_definition(quest_id: String) -> Dictionary:
 	var quest := DataRegistry.entry("quests", quest_id)
+	return quest if not quest.is_empty() else quests.definition(quest_id)
+
+
+func _on_quest_completed(quest_id: String) -> void:
+	var quest := _quest_definition(quest_id)
 	apply_effects(quest.get("rewards", {}), quest.get("zone", territory_id))
 	EventBus.quest_completed.emit(quest_id)
 

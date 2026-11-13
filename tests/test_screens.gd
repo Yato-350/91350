@@ -59,3 +59,27 @@ func _send_action(action: String) -> void:
 		event.action = action
 		event.pressed = pressed
 		Input.parse_input_event(event)
+
+
+func test_the_journal_lists_quests_and_their_objectives() -> void:
+	var main := await _make_main()
+	GameState.quests.start(GameState.FIRST_QUEST)
+	var screens: Screens = main.get_node("UI/Screens")
+	_send_action("journal")
+	await wait_process_frames(2)
+	assert_true(screens.is_open())
+	var journal: Control = screens.get_node("Journal")
+	assert_true(journal.visible)
+	var text := _all_text(journal)
+	assert_string_contains(text, tr("QUEST_ASCENSEUR"))
+	assert_string_contains(text, tr("OBJ_ASCENSEUR_PARLER"))
+	_send_action("journal")
+	await wait_process_frames(2)
+	assert_false(screens.is_open())
+
+
+func _all_text(node: Node) -> String:
+	var text := ""
+	for child: Node in node.find_children("*", "Label", true, false):
+		text += (child as Label).text + "\n"
+	return text

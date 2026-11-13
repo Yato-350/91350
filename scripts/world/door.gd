@@ -9,6 +9,9 @@ const MAT_COLOR := "orange_sombre"
 
 ## Le lieu où mène la porte : « hall_tour », « grigny2@tour_akan ».
 var target := ""
+## [fichier, entrée] d'un dialogue joué à la place du passage : on frappe, et c'est
+## lui qui décide d'ouvrir (il appelle travel()).
+var knock: Array = []
 
 
 func _ready() -> void:
@@ -23,4 +26,11 @@ func _ready() -> void:
 	mat.mesh = plane
 	mat.position = Vector3.UP * MAT_HEIGHT
 	add_child(mat)
-	interacted.connect(func(_player: Player) -> void: EventBus.travel_requested.emit(target))
+	interacted.connect(_on_interacted)
+
+
+func _on_interacted(_player: Player) -> void:
+	if knock.size() == 2:
+		EventBus.dialogue_requested.emit(knock[0], knock[1])
+	else:
+		EventBus.travel_requested.emit(target)

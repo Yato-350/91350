@@ -33,6 +33,11 @@ func start(quest_id: String) -> bool:
 	return true
 
 
+## La fiche de la quête, telle que le journal l'a reçue.
+func definition(quest_id: String) -> Dictionary:
+	return _definitions.get(quest_id, {})
+
+
 func is_active(quest_id: String) -> bool:
 	return _state(quest_id).get("state") == ACTIVE
 

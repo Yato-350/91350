@@ -42,3 +42,26 @@ static func reachable(start: String) -> Array[String]:
 			if not target in reached:
 				pending.append(target)
 	return reached
+
+
+## Le lieu voisin par lequel passer pour aller de `from` à `to` au plus court ; `from`
+## s'il y est déjà, "" si `to` est hors d'atteinte.
+static func next_place(from: String, to: String) -> String:
+	if from == to:
+		return from
+	var graph := exits()
+	var came_from := {from: ""}
+	var queue: Array[String] = [from]
+	while not queue.is_empty():
+		var place: String = queue.pop_front()
+		for target: String in graph.get(place, []):
+			if came_from.has(target):
+				continue
+			came_from[target] = place
+			if target == to:
+				var step := target
+				while came_from[step] != from:
+					step = came_from[step]
+				return step
+			queue.append(target)
+	return ""
