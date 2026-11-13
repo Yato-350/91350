@@ -22,7 +22,6 @@ var _traveling := false
 
 @onready var _pixel_view: PixelView = $PixelView
 @onready var _ui: CanvasLayer = $UI
-@onready var _hud: Control = $UI/Hud
 @onready var _fade: ColorRect = $Overlay/Fade
 
 
@@ -176,8 +175,11 @@ func _run_screenshot_mode(scene_path: String) -> void:
 func _layout_ui() -> void:
 	var pixel_scale := maxi(1, _pixel_view.get_pixel_scale())
 	_ui.scale = Vector2.ONE * pixel_scale
-	_hud.position = Vector2.ZERO
-	_hud.size = (_pixel_view.size / pixel_scale).ceil()
+	for child: Node in _ui.get_children():
+		var layer := child as Control
+		if layer != null:
+			layer.position = Vector2.ZERO
+			layer.size = (_pixel_view.size / pixel_scale).ceil()
 
 
 func _toggle_fullscreen() -> void:

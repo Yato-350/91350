@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/main/pixel_view.tscn" id="2_view"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/ui/screens.gd" id="4_screens"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -17,6 +18,13 @@ grow_vertical = 2
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Hud" parent="UI" instance=ExtResource("3_hud")]
+
+[node name="Screens" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+offset_bottom = 360.0
+script = ExtResource("4_screens")
 
 [node name="Overlay" type="CanvasLayer" parent="."]
 layer = 10

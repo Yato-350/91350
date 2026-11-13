@@ -19,7 +19,6 @@ const BARS := {
 	"Thirst": ["HUD_THIRST", "eau_claire"],
 }
 const QUICK_SLOT_SIZE := 34
-const ICON_PATH := "res://assets/icons/items/%s.png"
 const ZONE_PREFIX := "zone:"
 
 var _palette := Palette.load_colors()
@@ -140,9 +139,7 @@ func _refresh_quick_slots() -> void:
 		var icon: TextureRect = slot.get_node("Icon")
 		var count: Label = slot.get_node("Count")
 		var item_id := inventory.quick_slots[index]
-		var path := ICON_PATH % item_id
-		var has_icon := not item_id.is_empty() and ResourceLoader.exists(path)
-		icon.texture = load(path) if has_icon else null
+		icon.texture = ItemIcon.of(item_id)
 		count.text = str(inventory.count(item_id)) if not item_id.is_empty() else ""
 
 
