@@ -123,3 +123,13 @@ func test_state_round_trips_and_ignores_what_it_does_not_know() -> void:
 	assert_false(copy.is_active("disparue"))
 	copy.from_dict({"eau": {"state": "active", "step": "inconnue"}})
 	assert_true(copy.is_step("eau", "parler"), "étape inconnue : on reprend au début")
+
+
+func test_the_last_started_quest_is_the_tracked_one() -> void:
+	assert_eq(_log.tracked_id(), "")
+	_log.start("eau")
+	_log.start("file")
+	assert_eq(_log.tracked_id(), "file")
+	_log.notify("TALK", "vigile")
+	_log.notify("COLLECT", "eau")
+	assert_eq(_log.tracked_id(), "eau", "file est finie")

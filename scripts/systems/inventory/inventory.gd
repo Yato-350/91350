@@ -47,6 +47,15 @@ func count(item_id: String) -> int:
 	return total
 
 
+## Vrai si le sac contient un objet lourd (bidon plein…) : on ne court plus.
+func carries_heavy() -> bool:
+	for slot: Dictionary in slots:
+		var item: Dictionary = _items.get(slot.get("id", ""), {})
+		if item.get("heavy", false):
+			return true
+	return false
+
+
 func has(item_id: String, amount: int = 1) -> bool:
 	return count(item_id) >= amount
 

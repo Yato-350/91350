@@ -58,6 +58,18 @@ func active_ids() -> Array[String]:
 	return ids
 
 
+## La quête dont on suit l'objectif : la dernière lancée parmi celles en cours, ou "".
+func tracked_id() -> String:
+	var active := active_ids()
+	return active[active.size() - 1] if not active.is_empty() else ""
+
+
+## Le texte (clé de traduction) de l'objectif en cours de la quête suivie, ou "".
+func tracked_text() -> String:
+	var quest := tracked_id()
+	return current_step(quest).get("text", "") if not quest.is_empty() else ""
+
+
 ## La fiche de l'étape en cours, ou {} si la quête n'est pas active.
 func current_step(quest_id: String) -> Dictionary:
 	if not is_active(quest_id):

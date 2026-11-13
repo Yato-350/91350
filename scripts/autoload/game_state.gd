@@ -118,18 +118,6 @@ func new_game() -> void:
 	EventBus.game_state_reset.emit()
 
 
-## La quête dont on suit l'objectif : la dernière lancée parmi celles en cours.
-func tracked_quest() -> String:
-	var active := quests.active_ids()
-	return active[active.size() - 1] if not active.is_empty() else ""
-
-
-## Le texte (clé de traduction) de l'objectif en cours de la quête suivie, ou "".
-func tracked_objective() -> String:
-	var quest := tracked_quest()
-	return quests.current_step(quest).get("text", "") if not quest.is_empty() else ""
-
-
 ## Akan entre dans un lieu ; `territory` est la zone de territoire qui l'abrite.
 func enter(new_location: String, territory: String) -> void:
 	location = new_location
@@ -169,14 +157,6 @@ func give(item_id: String, amount: int = 1) -> void:
 	var left := inventory.add(item_id, amount)
 	if left > 0:
 		EventBus.item_dropped.emit(item_id, left)
-
-
-## Vrai si Akan porte un objet lourd (bidon plein…) : il ne peut plus courir.
-func carries_heavy_load() -> bool:
-	for slot: Dictionary in inventory.slots:
-		if DataRegistry.entry("items", slot.get("id", "")).get("heavy", false):
-			return true
-	return false
 
 
 ## Consomme ou enfile un objet du sac. Rend false s'il n'y en a pas ou s'il ne sert à rien.

@@ -1,6 +1,7 @@
 extends GutTest
 
 const ITEMS := {
+	"bidon": {"id": "bidon", "stack": 1, "heavy": true},
 	"eau": {"id": "eau", "stack": 5},
 	"batte": {"id": "batte", "stack": 1},
 	"tickets": {"id": "tickets", "stack": 99},
@@ -88,3 +89,9 @@ func test_changes_are_signalled_and_state_round_trips() -> void:
 	assert_eq(copy.count("tickets"), 30)
 	copy.from_dict({"slots": "x"})
 	assert_eq(copy.count("tickets"), 30)
+
+
+func test_a_heavy_item_is_noticed() -> void:
+	assert_false(_inventory.carries_heavy())
+	_inventory.add("bidon")
+	assert_true(_inventory.carries_heavy())

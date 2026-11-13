@@ -122,7 +122,7 @@ func _refresh_all() -> void:
 
 
 func _refresh_objective() -> void:
-	var key := GameState.tracked_objective()
+	var key := GameState.quests.tracked_text()
 	_objective.text = tr(key) if not key.is_empty() else ""
 
 

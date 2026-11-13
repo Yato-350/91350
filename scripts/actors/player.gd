@@ -49,7 +49,7 @@ func _physics_process(delta: float) -> void:
 		return
 	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	var direction := move_direction(input, _camera_yaw())
-	var heavy := GameState.carries_heavy_load()
+	var heavy := GameState.inventory.carries_heavy()
 	var wants_run := Input.is_action_pressed(&"run") and not direction.is_zero_approx()
 	var running := wants_run and not crouched and not heavy and GameState.vitals.can_run()
 	GameState.tick_body(delta, running)

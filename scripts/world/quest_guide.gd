@@ -58,7 +58,7 @@ func _refresh() -> void:
 
 ## Position (au sol) de la cible de la quête suivie, dans ce lieu ; Vector3.INF si aucune.
 func target_position() -> Vector3:
-	var quest := GameState.tracked_quest()
+	var quest := GameState.quests.tracked_id()
 	if quest.is_empty() or zone == null:
 		return Vector3.INF
 	var step := GameState.quests.current_step(quest)
