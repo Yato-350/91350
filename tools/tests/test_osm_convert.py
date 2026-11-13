@@ -120,3 +120,115 @@ def test_output_carries_license_and_is_deterministic():
     assert first["license"] == "ODbL 1.0"
     assert "OpenStreetMap" in first["attribution"]
     assert first["water"] and first["green"]
+
+
+DETAILS = """<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+  <node id="41" lat="48.0060" lon="2.0060"/>
+  <node id="42" lat="48.0060" lon="2.0070"/>
+  <node id="43" lat="48.0070" lon="2.0070"/>
+  <node id="44" lat="48.0070" lon="2.0060"/>
+  <node id="45" lat="48.0060" lon="2.0065"><tag k="entrance" v="staircase"/></node>
+  <node id="46" lat="48.0030" lon="2.0030"><tag k="natural" v="tree"/></node>
+  <node id="47" lat="48.0010" lon="2.0010"/>
+  <node id="48" lat="48.0010" lon="2.0020"/>
+  <node id="49" lat="48.0015" lon="2.0020"/>
+  <node id="50" lat="48.0015" lon="2.0010"/>
+  <node id="51" lat="48.0030" lon="2.0010"/>
+  <node id="52" lat="48.0030" lon="2.0030"><tag k="highway" v="crossing"/></node>
+  <node id="53" lat="48.0030" lon="2.0050"/>
+  <node id="54" lat="48.0031" lon="2.0020"><tag k="amenity" v="bench"/></node>
+  <node id="55" lat="48.0032" lon="2.0040"><tag k="amenity" v="waste_basket"/></node>
+  <node id="56" lat="48.0029" lon="2.0045"><tag k="highway" v="bus_stop"/></node>
+  <node id="57" lat="48.0033" lon="2.0035"><tag k="advertising" v="billboard"/></node>
+  <node id="58" lat="48.0034" lon="2.0012"><tag k="man_made" v="surveillance"/></node>
+  <node id="59" lat="48.0090" lon="2.0010"><tag k="power" v="tower"/></node>
+  <node id="60" lat="48.0090" lon="2.0090"><tag k="power" v="tower"/></node>
+  <node id="61" lat="48.0020" lon="2.0080"><tag k="amenity" v="recycling"/></node>
+  <node id="62" lat="48.0022" lon="2.0082"><tag k="barrier" v="block"/></node>
+  <way id="200">
+    <nd ref="41"/><nd ref="45"/><nd ref="42"/><nd ref="43"/><nd ref="44"/><nd ref="41"/>
+    <tag k="building" v="apartments"/><tag k="building:levels" v="10"/>
+    <tag k="colour" v="White"/><tag k="roof:colour" v="beige"/>
+  </way>
+  <way id="210">
+    <nd ref="47"/><nd ref="48"/><nd ref="49"/><nd ref="50"/><nd ref="47"/>
+    <tag k="amenity" v="parking"/><tag k="parking" v="surface"/>
+  </way>
+  <way id="211">
+    <nd ref="47"/><nd ref="48"/><nd ref="49"/><nd ref="50"/><nd ref="47"/>
+    <tag k="amenity" v="parking"/><tag k="parking" v="underground"/>
+  </way>
+  <way id="212"><nd ref="47"/><nd ref="48"/><tag k="barrier" v="fence"/></way>
+  <way id="213"><nd ref="49"/><nd ref="50"/><tag k="barrier" v="hedge"/></way>
+  <way id="214">
+    <nd ref="51"/><nd ref="52"/><nd ref="53"/>
+    <tag k="highway" v="residential"/>
+  </way>
+  <way id="215"><nd ref="59"/><nd ref="60"/><tag k="power" v="line"/></way>
+</osm>
+"""
+
+
+def _details():
+    return convert(DETAILS, "essai", BBOX)
+
+
+def test_trees_are_kept_as_points():
+    zone = _details()
+    origin = (2.005, 48.005)
+    expected = project(2.003, 48.003, origin)
+    assert len(zone["trees"]) == 1
+    assert math.dist(zone["trees"][0], expected) < 0.01
+
+
+def test_entrances_are_attached_to_their_building_with_an_outward_normal():
+    zone = _details()
+    assert len(zone["entrances"]) == 1
+    entrance = zone["entrances"][0]
+    assert entrance["building"] == 200
+    assert entrance["kind"] == "staircase"
+    assert math.isclose(entrance["normal"][0], 0.0, abs_tol=0.01)
+    assert math.isclose(entrance["normal"][1], 1.0, abs_tol=0.01), "porte au sud : normale vers +z"
+    south = project(2.0065, 48.0060, (2.005, 48.005))
+    assert math.dist((entrance["x"], entrance["z"]), south) < 0.05
+
+
+def test_only_surface_parkings_are_kept():
+    zone = _details()
+    assert [parking["id"] for parking in zone["parkings"]] == [210]
+
+
+def test_barriers_keep_their_kind():
+    zone = _details()
+    kinds = {barrier["id"]: barrier["kind"] for barrier in zone["barriers"]}
+    assert kinds == {212: "fence", 213: "hedge"}
+
+
+def test_crossings_follow_the_direction_of_their_road():
+    zone = _details()
+    assert len(zone["crossings"]) == 1
+    crossing = zone["crossings"][0]
+    assert math.isclose(math.cos(crossing["angle"]), 1.0, abs_tol=0.01), "rue d'ouest en est"
+
+
+def test_street_furniture_becomes_game_props_aligned_with_the_street():
+    zone = _details()
+    kinds = sorted(item["kind"] for item in zone["furniture"])
+    assert kinds == ["abribus", "banc", "camera", "conteneurs", "ecran", "plot", "poubelle",
+                     "pylone", "pylone"]
+    bench = next(item for item in zone["furniture"] if item["kind"] == "banc")
+    assert math.isclose(abs(math.cos(bench["angle"])), 1.0, abs_tol=0.01)
+
+
+def test_power_lines_are_kept():
+    zone = _details()
+    assert [line["id"] for line in zone["power_lines"]] == [215]
+    assert len(zone["power_lines"][0]["points"]) == 2
+
+
+def test_building_colours_are_kept_in_lower_case():
+    zone = _details()
+    building = zone["buildings"][0]
+    assert building["colour"] == "white"
+    assert building["roof_colour"] == "beige"

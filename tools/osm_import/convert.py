@@ -45,6 +45,27 @@ GREEN_LEISURE = {"park", "garden", "pitch", "playground", "nature_reserve"}
 GREEN_LANDUSE = {"grass", "forest", "meadow", "recreation_ground", "village_green", "cemetery"}
 GREEN_NATURAL = {"wood", "scrub", "grassland"}
 NAMED_POI_KINDS = {"station", "bus_stop"}
+FOOT_KINDS = {"footway", "path", "steps", "cycleway", "pedestrian", "track"}
+BARRIER_KINDS = {"fence", "hedge", "wall", "guard_rail", "retaining_wall"}
+HIDDEN_PARKINGS = {"underground", "multi-storey", "rooftop"}
+# Mobilier OSM → modèle de décor du jeu. Les panneaux publicitaires deviennent les écrans
+# du régime ; les caméras de surveillance, ses caméras.
+FURNITURE = [
+    ("amenity", "bench", "banc"),
+    ("amenity", "waste_basket", "poubelle"),
+    ("highway", "bus_stop", "abribus"),
+    ("advertising", "billboard", "ecran"),
+    ("advertising", "board", "ecran"),
+    ("man_made", "surveillance", "camera"),
+    ("power", "tower", "pylone"),
+    ("amenity", "recycling", "conteneurs"),
+    ("barrier", "block", "plot"),
+    ("barrier", "bollard", "plot"),
+]
+# Une entrée est rattachée au mur le plus proche, s'il est à moins de cette distance (m).
+ENTRANCE_SNAP = 1.5
+# Le mobilier s'aligne sur la rue la plus proche dans ce rayon (m).
+FURNITURE_ROAD_SEARCH = 25.0
 
 
 def project(lon: float, lat: float, origin: tuple[float, float]) -> tuple[float, float]:
@@ -82,7 +103,10 @@ def convert(xml_text: str, zone_id: str, bbox: tuple[float, float, float, float]
         "origin": {"lon": round(origin[0], 7), "lat": round(origin[1], 7)},
         "size": [round(half[0] * 2, 2), round(half[1] * 2, 2)],
         "buildings": [], "roads": [], "rails": [], "water": [], "green": [], "pois": [],
+        "trees": [], "entrances": [], "parkings": [], "barriers": [], "crossings": [],
+        "furniture": [], "power_lines": [],
     }
+    furniture: list[tuple[str, tuple[float, float]]] = []
 
     # Surfaces : chemins fermés, puis relations multipolygones (anneaux extérieurs seulement).
     areas: list[tuple[int, list[tuple[float, float]], dict[str, str]]] = []
@@ -109,7 +133,11 @@ def convert(xml_text: str, zone_id: str, bbox: tuple[float, float, float, float]
             _add_area(zone["water"], area_id, points, tags, half, "water")
         elif _green_kind(tags):
             _add_area(zone["green"], area_id, points, tags, half, _green_kind(tags))
+        if tags.get("amenity") == "parking" and tags.get("parking") not in HIDDEN_PARKINGS:
+            # Pas de nom : ce sont souvent ceux d'enseignes.
+            _add_area(zone["parkings"], area_id, points, {}, half, "surface")
         _add_poi(zone, tags, _centroid(points), half)
+        _note_furniture(furniture, tags, _centroid(points))
 
     for way_id, (refs, tags) in sorted(ways.items()):
         line = [nodes[ref] for ref in refs]
@@ -129,10 +157,104 @@ def convert(xml_text: str, zone_id: str, bbox: tuple[float, float, float, float]
                     "id": way_id, "kind": "stream", "name": tags.get("name", ""),
                     "points": _rounded(_simplify(piece)),
                 })
+        if tags.get("barrier") in BARRIER_KINDS:
+            for piece in _clip_line(line, half):
+                zone["barriers"].append({
+                    "id": way_id, "kind": tags["barrier"], "points": _rounded(_simplify(piece)),
+                })
+        if tags.get("power") == "line":
+            for piece in _clip_line(line, half):
+                zone["power_lines"].append({"id": way_id, "points": _rounded(piece)})
 
+    car_roads = _car_road_index(ways)
     for node_id in sorted(node_tags):
-        _add_poi(zone, node_tags[node_id], nodes[node_id], half)
+        tags, at = node_tags[node_id], nodes[node_id]
+        _add_poi(zone, tags, at, half)
+        _note_furniture(furniture, tags, at)
+        if not _inside(at, half):
+            continue
+        if tags.get("natural") == "tree":
+            zone["trees"].append([round(at[0], 2), round(at[1], 2)])
+        if "entrance" in tags:
+            _add_entrance(zone, tags["entrance"], at)
+        if tags.get("highway") == "crossing" and node_id in car_roads:
+            refs, index = car_roads[node_id]
+            before = nodes[refs[max(index - 1, 0)]]
+            after = nodes[refs[min(index + 1, len(refs) - 1)]]
+            angle = math.atan2(after[1] - before[1], after[0] - before[0])
+            zone["crossings"].append({"x": round(at[0], 2), "z": round(at[1], 2),
+                                      "angle": round(angle, 3)})
+    for kind, at in furniture:
+        if _inside(at, half):
+            zone["furniture"].append({
+                "kind": kind, "x": round(at[0], 2), "z": round(at[1], 2),
+                "angle": round(_street_angle(at, zone["roads"]), 3),
+            })
     return zone
+
+
+def _note_furniture(found: list, tags: dict, at: tuple[float, float]) -> None:
+    for key, value, kind in FURNITURE:
+        if tags.get(key) == value:
+            found.append((kind, at))
+            return
+
+
+def _car_road_index(ways: dict) -> dict[int, tuple[list[int], int]]:
+    """Nœud → (nœuds de la rue carrossable qui le contient, sa place dans la rue)."""
+    index: dict[int, tuple[list[int], int]] = {}
+    for _way_id, (refs, tags) in sorted(ways.items()):
+        kind = tags.get("highway")
+        if kind in ROAD_WIDTHS and kind not in FOOT_KINDS:
+            for position, ref in enumerate(refs):
+                index.setdefault(ref, (refs, position))
+    return index
+
+
+def _add_entrance(zone: dict, kind: str, at: tuple[float, float]) -> None:
+    """Rattache une entrée au mur le plus proche : point sur le mur, normale vers dehors."""
+    best = None
+    for building in zone["buildings"]:
+        points = building["points"]
+        for index, start in enumerate(points):
+            end = points[(index + 1) % len(points)]
+            foot, distance = _project_on_segment(at, start, end)
+            if distance <= ENTRANCE_SNAP and (best is None or distance < best[0]):
+                best = (distance, building["id"], foot, start, end)
+    if best is None:
+        return
+    _distance, building_id, foot, start, end = best
+    length = math.dist(start, end)
+    # Polygones dans le sens direct (aire positive) : la normale extérieure est à droite.
+    normal = ((end[1] - start[1]) / length, -(end[0] - start[0]) / length)
+    zone["entrances"].append({
+        "x": round(foot[0], 2), "z": round(foot[1], 2), "kind": kind, "building": building_id,
+        "normal": [round(normal[0], 3), round(normal[1], 3)],
+    })
+
+
+def _project_on_segment(point, start, end) -> tuple[tuple[float, float], float]:
+    dx, dz = end[0] - start[0], end[1] - start[1]
+    length_squared = dx * dx + dz * dz
+    t = 0.0
+    if length_squared > 0:
+        t = ((point[0] - start[0]) * dx + (point[1] - start[1]) * dz) / length_squared
+        t = min(1.0, max(0.0, t))
+    foot = (start[0] + t * dx, start[1] + t * dz)
+    return foot, math.dist(point, foot)
+
+
+def _street_angle(at: tuple[float, float], roads: list) -> float:
+    """Direction de la portion de rue la plus proche (0 si aucune à proximité)."""
+    best_distance, angle = FURNITURE_ROAD_SEARCH, 0.0
+    for road in roads:
+        points = road["points"]
+        for start, end in zip(points, points[1:]):
+            _foot, distance = _project_on_segment(at, start, end)
+            if distance < best_distance:
+                best_distance = distance
+                angle = math.atan2(end[1] - start[1], end[0] - start[0])
+    return angle
 
 
 def _tags(element: ET.Element) -> dict[str, str]:
@@ -150,11 +272,17 @@ def _add_building(zone: dict, area_id: int, points: list, tags: dict, half: tupl
     if levels is None:
         levels = max(1, round(height / LEVEL_HEIGHT))
     neutral = kind_tag in NEUTRAL_BUILDINGS or tags.get("amenity") in NEUTRAL_AMENITIES
-    zone["buildings"].append({
+    building = {
         "id": area_id, "kind": BUILDING_KINDS.get(kind_tag, "neutral" if neutral else "generic"),
         "neutral": neutral, "levels": int(levels), "height": round(height, 2),
         "points": _rounded(_ccw(_simplify(points, closed=True))),
-    })
+    }
+    colour = tags.get("building:colour", tags.get("colour"))
+    if colour:
+        building["colour"] = colour.lower()
+    if tags.get("roof:colour"):
+        building["roof_colour"] = tags["roof:colour"].lower()
+    zone["buildings"].append(building)
 
 
 def _add_area(target: list, area_id: int, points: list, tags: dict, half: tuple, kind: str) -> None:

@@ -47,7 +47,7 @@ def import_zone(zone_id: str, definition: dict) -> Path:
     output.parent.mkdir(exist_ok=True)
     output.write_text(json.dumps(zone, ensure_ascii=False, separators=(",", ":")) + "\n",
                       encoding="utf-8")
-    counts = {key: len(zone[key]) for key in ("buildings", "roads", "rails", "water", "green", "pois")}
+    counts = {key: len(value) for key, value in zone.items() if isinstance(value, list)}
     print(f"{zone_id} : {zone['size'][0]:.0f} × {zone['size'][1]:.0f} m, {counts}")
     return output
 
