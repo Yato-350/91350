@@ -2,6 +2,11 @@
 	"id": "local_tour",
 	"name": "PLACE_LOCAL_TOUR",
 	"territory": "grigny2",
+	"hideout": {
+		"liberated": [
+			"grigny2"
+		]
+	},
 	"plan": [
 		"#########",
 		"#tt..bbe#",

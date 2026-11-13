@@ -43,9 +43,7 @@ func _ready() -> void:
 	_add_bars()
 	_message.hide()
 	_credits.hide()
-	_credits_text.text = (
-		"%s\n\n%s\n\n%s" % [tr("CREDITS_TITLE"), tr("CREDITS_BODY"), Engine.get_license_text()]
-	)
+	_credits_text.text = "%s\n\n%s" % [tr("CREDITS_CLOSE_F1"), CreditsScreen.full_text()]
 	EventBus.game_saved.connect(func(_slot: int) -> void: show_message("HUD_SAVED"))
 	EventBus.game_loaded.connect(func(_slot: int) -> void: show_message("HUD_LOADED"))
 	EventBus.notified.connect(show_message)

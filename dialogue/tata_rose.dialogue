@@ -9,6 +9,7 @@ if step("le_contact", "colis") and has("colis_zed")
 		$> rep("reseau", -10)
 		tata_rose: Un, deux, trois... cent vingt. Tout y est. Ta mère t'a bien élevé.
 		tata_rose: Zed va pas aimer. Va voir Clé-de-12, au garage du parking. Il me doit tout.
+		$> set_flag("contact_rendu")
 		$> objective("DELIVER", "tata_rose")
 	- Je peux pas. C'est un contrat. [#ton=cash]
 		tata_rose: Un contrat. Avec qui, mon grand ? Avec ceux qui nous volent ?

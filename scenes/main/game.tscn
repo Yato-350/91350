@@ -5,3 +5,4 @@
 [node name="Game" instance=ExtResource("1_main")]
 start_place = "zone:appartement_akan"
 new_game = true
+show_title = true

@@ -30,13 +30,19 @@ func test_main_scene_is_set() -> void:
 	assert_eq(main_scene, "res://scenes/main/game.tscn")
 
 
-func test_the_game_starts_a_new_game_in_akans_room() -> void:
+func test_the_game_opens_on_the_title_then_wakes_akan_in_his_room() -> void:
 	GameState.new_game()
 	var game: Main = load("res://scenes/main/game.tscn").instantiate()
 	add_child_autofree(game)
 	await wait_process_frames(3)
+	var screens: Screens = game.get_node("UI/Screens")
+	assert_eq(screens.top_name(), "Title")
+	assert_false(GameState.playing)
+	game.start_new_game()
+	await wait_process_frames(3)
 	assert_eq(GameState.place_id(), "appartement_akan")
 	assert_true(GameState.quests.is_active(GameState.FIRST_QUEST))
 	assert_true(GameState.playing)
+	get_tree().paused = false
 	GameState.playing = false
 	GameState.new_game()

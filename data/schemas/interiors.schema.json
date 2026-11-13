@@ -32,6 +32,10 @@
 			"type": "boolean",
 			"description": "À l'air libre (un toit) : la lumière suit le jour et la nuit."
 		},
+		"hideout": {
+			"type": "object",
+			"description": "Une planque, quand cette condition est vraie : on y sauvegarde en arrivant."
+		},
 		"plan": {
 			"type": "array",
 			"minItems": 3,

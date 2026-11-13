@@ -12,6 +12,11 @@ const COLOR_FADE_SECONDS := 1.5
 const LIBERATION_SECONDS := 4.0
 ## Où Akan se réveille après une arrestation.
 const HOME := "zone:appartement_akan"
+## La dernière quête de l'acte 1 : quand elle se termine, l'écran de fin d'acte s'ouvre.
+const LAST_QUEST := "la_tour_se_leve"
+## Derrière l'écran titre : la tour d'Akan, la nuit, sous le couvre-feu.
+const TITLE_BACKDROP := "zone:grigny2@tour_akan"
+const TITLE_HOUR := 22.5
 ## Durée du fondu au noir, à l'aller comme au retour, quand Akan change de lieu.
 const TRAVEL_FADE_SECONDS := 0.2
 const READY_MARKER := "[91350] prêt"
@@ -24,12 +29,16 @@ const SCREENSHOT_DIR := "res://build/screenshots"
 const SCREENSHOT_FRAMES := 30
 ## « zone:<identifiant> » désigne un lieu des données plutôt qu'un fichier de scène.
 const ZONE_PREFIX := GameState.ZONE_PREFIX
+## « menu:<écran> » capture un écran de menu (Title, Pause, ActEnd…) devant la tour.
+const MENU_PREFIX := "menu:"
 
 ## Là où commence le jeu : la zone d'essai (main.tscn, pour les tests), ou l'appartement
 ## d'Akan pour une vraie partie (game.tscn).
 @export var start_place := DEFAULT_ZONE
 ## Vrai : une nouvelle partie commence (première quête, horloge qui tourne).
 @export var new_game := false
+## Vrai : le jeu s'ouvre sur l'écran titre (game.tscn) ; la partie attend un choix.
+@export var show_title := false
 
 var _colour_enabled := true
 var _traveling := false
@@ -37,6 +46,8 @@ var _traveling := false
 @onready var _pixel_view: PixelView = $PixelView
 @onready var _ui: CanvasLayer = $UI
 @onready var _fade: ColorRect = $Overlay/Fade
+@onready var _screens: Screens = $UI/Screens
+@onready var _hud: Control = $UI/Hud
 
 
 ## Rend le chemin res:// de la scène demandée par « --screenshot <scène> », ou "".
@@ -45,7 +56,7 @@ static func parse_screenshot_scene(args: PackedStringArray) -> String:
 	if index == -1 or index + 1 >= args.size() or args[index + 1].begins_with("--"):
 		return ""
 	var path := args[index + 1]
-	if path.begins_with("res://") or path.begins_with(ZONE_PREFIX):
+	if path.begins_with("res://") or path.begins_with(ZONE_PREFIX) or path.begins_with(MENU_PREFIX):
 		return path
 	return "res://" + path
 
@@ -73,17 +84,99 @@ func _ready() -> void:
 	EventBus.travel_requested.connect(_on_travel_requested)
 	EventBus.player_downed.connect(_on_player_downed)
 	EventBus.zone_liberated.connect(_on_zone_liberated)
+	EventBus.quest_completed.connect(_on_quest_completed)
+	_screens.get_node("Title").chosen.connect(_on_title_chosen)
+	_screens.get_node("Pause").chosen.connect(_on_pause_chosen)
+	_screens.get_node("ActEnd").chosen.connect(_on_act_end_chosen)
 	var screenshot_scene := parse_screenshot_scene(OS.get_cmdline_user_args())
 	if not screenshot_scene.is_empty():
 		_run_screenshot_mode(screenshot_scene)
 		return
-	if new_game:
-		GameState.new_game()
-		GameState.quests.start(GameState.FIRST_QUEST)
-		GameState.playing = true
-	travel_to(start_place)
+	if show_title:
+		show_title_screen()
+	elif new_game:
+		start_new_game()
+	else:
+		travel_to(start_place)
 	await get_tree().process_frame
 	print(READY_MARKER)
+
+
+## L'écran titre, devant la tour la nuit ; le temps ne passe pas.
+func show_title_screen() -> void:
+	_screens.close_all()
+	GameState.new_game()
+	GameState.playing = false
+	GameState.clock.minutes = TITLE_HOUR * GameClock.MINUTES_PER_HOUR
+	travel_to(TITLE_BACKDROP)
+	_hud.visible = false
+	_screens.open("Title")
+
+
+## Une nouvelle partie : Akan se réveille chez lui, la première quête commence.
+func start_new_game() -> void:
+	_screens.close_all()
+	GameState.new_game()
+	GameState.quests.start(GameState.FIRST_QUEST)
+	GameState.playing = true
+	_hud.visible = true
+	travel_to(start_place)
+
+
+## Reprend la partie sauvegardée ; rend false (et ne change rien) s'il n'y en a pas.
+func continue_game() -> bool:
+	if not SaveManager.has_save():
+		return false
+	_screens.close_all()
+	if not load_game():
+		return false
+	GameState.playing = true
+	_hud.visible = true
+	return true
+
+
+func _on_title_chosen(choice: String) -> void:
+	match choice:
+		"new_game":
+			start_new_game()
+		"continue":
+			continue_game()
+		"credits":
+			_screens.open("Credits")
+		"quit":
+			get_tree().quit()
+
+
+func _on_pause_chosen(choice: String) -> void:
+	match choice:
+		"resume":
+			_screens.close()
+		"save":
+			_screens.close()
+			save_game()
+		"load":
+			continue_game()
+		"title":
+			_screens.confirm("CONFIRM_TITLE", show_title_screen)
+		"quit":
+			_screens.confirm("CONFIRM_QUIT", get_tree().quit)
+
+
+func _on_act_end_chosen(choice: String) -> void:
+	match choice:
+		"explore":
+			_screens.close()
+		"title":
+			_screens.confirm("CONFIRM_TITLE", show_title_screen)
+
+
+# La fin de l'acte 1 s'affiche une fois le trajet et le dialogue en cours terminés.
+func _on_quest_completed(quest_id: String) -> void:
+	if quest_id != LAST_QUEST:
+		return
+	while _traveling or get_tree().paused:
+		await get_tree().process_frame
+	_screens.open("ActEnd")
 
 
 func _input(event: InputEvent) -> void:
@@ -127,6 +220,11 @@ func travel_to(ref: String, position: Array = []) -> bool:
 	# Derrière le fondu au noir, la couleur du lieu s'installe d'un coup.
 	_colour_enabled = true
 	EventBus.saturation_change_requested.emit(_zone_saturation(), 0.0)
+	# Une planque garde la partie : on y sauvegarde en arrivant.
+	var hideout: Dictionary = zone.definition.get("hideout", {}) if zone != null else {}
+	if not hideout.is_empty() and GameState.playing and Conditions.check(hideout):
+		if save_game():
+			EventBus.notified.emit("HIDEOUT_SAVED")
 	var player := get_player()
 	if player != null and position.size() == 3:
 		player.teleport(Vector3(position[0], position[1], position[2]))
@@ -223,7 +321,9 @@ func _run_screenshot_mode(scene_path: String) -> void:
 	var hour := parse_hour(OS.get_cmdline_user_args())
 	if hour >= 0.0:
 		GameState.clock.minutes = hour * GameClock.MINUTES_PER_HOUR
-	if not travel_to(scene_path):
+	if scene_path.begins_with(MENU_PREFIX):
+		_show_menu_for_capture(scene_path.trim_prefix(MENU_PREFIX))
+	elif not travel_to(scene_path):
 		get_tree().quit(1)
 		return
 	var view := parse_view(OS.get_cmdline_user_args())
@@ -233,7 +333,7 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		await get_tree().process_frame
 	# « zone:grigny2@-48.7,-34.7 » n'a pas d'extension : seul un fichier de scène en perd une.
 	var file_name := scene_path.get_file()
-	if not scene_path.begins_with(ZONE_PREFIX):
+	if not (scene_path.begins_with(ZONE_PREFIX) or scene_path.begins_with(MENU_PREFIX)):
 		file_name = file_name.get_basename()
 	file_name = file_name.replace(":", "_")
 	if hour >= 0.0:
@@ -248,6 +348,15 @@ func _run_screenshot_mode(scene_path: String) -> void:
 		return
 	print("Capture enregistrée : %s" % ProjectSettings.globalize_path(path))
 	get_tree().quit(0)
+
+
+# Un écran de menu, ouvert devant la tour la nuit, pour une capture.
+func _show_menu_for_capture(menu: String) -> void:
+	show_title_screen()
+	if menu != "Title":
+		_screens.close_all()
+		_hud.visible = true
+		_screens.open(menu)
 
 
 # Tourne la caméra du lieu sur le quart de tour `step`, sans animation.

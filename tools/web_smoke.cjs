@@ -62,7 +62,11 @@ async function main() {
       throw new Error(`le marqueur « ${READY_MARKER} » n'est pas apparu en ${READY_TIMEOUT_MS / 1000} s`);
     }
     await page.click('canvas');
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(SHOT_DIR, 'web_0_titre.png') });
+    // L'écran titre donne le focus à « Nouvelle partie » : Entrée lance la partie.
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(2500);
     await page.screenshot({ path: path.join(SHOT_DIR, 'web_1.png') });
     // Le monde bouge tout seul (horloge, respiration) : on compare une zone que seul le
     // panneau du sac recouvre, loin d'Akan (au centre) et de l'horloge (en haut à droite).

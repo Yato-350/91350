@@ -13,6 +13,7 @@ if step("le_contact", "coursier")
 		$> give("lance_pierre")
 		emissaire: Cash. Zed aime les gens cash.
 		emissaire: Un lance-pierre. Ça éteint une caméra. Ça endort pas un homme. Garde-le comme ça.
+		$> set_flag("contact_paye")
 		$> objective("USE", "payer_zed")
 	- Il y a quoi, dans ce colis ? [#ton=malin]
 		emissaire: Clause numéro deux : on pose pas de questions.
@@ -32,6 +33,7 @@ if step("le_contact", "colis") and has("colis_zed")
 	$> rep("familles", -10)
 	relais_zed: Un lance-pierre. Ça éteint une caméra, ça endort pas un homme. Contrat honoré.
 	relais_zed: Zed n'oublie jamais un service. Il n'oublie jamais rien, d'ailleurs.
+	$> set_flag("contact_livre")
 	$> objective("DELIVER", "relais_zed")
 else
 	relais_zed: Je connais personne. J'attends personne. C'est mon métier.
