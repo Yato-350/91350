@@ -6,7 +6,9 @@ render_mode cull_disabled;
 
 #include "res://shaders/cutaway.gdshaderinc"
 
-uniform float bar_spacing = 0.25;
+// À 16 pixels par mètre, des barreaux plus serrés se fondraient en une bande noire
+// (le contour en noircit chaque bord).
+uniform float bar_spacing = 0.5;
 uniform float bar_width = 0.07;
 uniform float post_spacing = 2.5;
 uniform float post_width = 0.1;

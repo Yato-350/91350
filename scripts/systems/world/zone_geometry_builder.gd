@@ -29,7 +29,19 @@ const RAIL_COLOR := "brun_1"
 const WATER_COLOR := "eau_sombre"
 const GREEN_COLORS := {"pitch": "vert_feuille", "playground": "orange_sombre"}
 const GREEN_DEFAULT_COLOR := "vert_sombre"
-const BUILDING_COLORS: Array[String] = ["beton_4", "beton_5", "beton_4"]
+## Grigny 2 : des tours claires, béton gris, blanc cassé et beige.
+const BUILDING_COLORS: Array[String] = ["beton_5", "creme", "beton_5", "beton_4"]
+## Couleurs notées dans OpenStreetMap → couleurs de la palette.
+const OSM_COLORS := {
+	"white": "blanc",
+	"beige": "creme",
+	"grey": "beton_4",
+	"gray": "beton_4",
+	"black": "beton_1",
+	"brown": "brun_2",
+	"red": "rouge_sombre",
+	"yellow": "jaune_linge",
+}
 const NEUTRAL_COLOR := "creme"
 const COMMERCIAL_COLOR := "beton_3"
 const ROOF_COLOR := "beton_2"
@@ -155,6 +167,8 @@ static func _add_building(
 		color = palette[NEUTRAL_COLOR]
 	elif building.get("kind", "") == "commercial":
 		color = palette[COMMERCIAL_COLOR]
+	elif OSM_COLORS.has(building.get("colour", "")):
+		color = palette[OSM_COLORS[building["colour"]]]
 	# UV2 : (graine propre au bâtiment, hauteur) pour le shader des façades.
 	var extra := Vector2(fposmod(id * 0.6180339887, 1.0), height)
 	var wall_color := Color(color, 1.0)
@@ -190,7 +204,8 @@ static func _add_building(
 				extra
 			)
 		along += length
-	var roof_color := Color(palette[ROOF_COLOR], 0.0)
+	var roof_id: String = OSM_COLORS.get(building.get("roof_colour", ""), ROOF_COLOR)
+	var roof_color := Color(palette[roof_id], 0.0)
 	var floor_color := Color(palette[FLOOR_COLOR], 0.0)
 	var unused := PackedVector3Array()
 	var indices := Geometry2D.triangulate_polygon(points)
