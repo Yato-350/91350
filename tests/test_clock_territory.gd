@@ -66,3 +66,21 @@ func test_liberation_is_signalled_once_and_survives_a_save() -> void:
 	assert_true(copy.is_liberated("grigny2"))
 	assert_eq(copy.support("grigny2"), 80)
 	assert_false(copy.is_liberated("inconnue"))
+
+
+func test_the_clock_counts_the_minutes_until_an_hour_comes_round() -> void:
+	var clock := GameClock.new()
+	clock.minutes = 14 * 60.0
+	assert_eq(clock.minutes_until(21), 7 * 60.0)
+	assert_eq(clock.minutes_until(7), 17 * 60.0, "demain matin")
+	assert_eq(clock.minutes_until(14), 0.0)
+
+
+func test_the_regime_greys_its_zones_and_freedom_brings_the_colour_back() -> void:
+	var territory := Territory.new()
+	territory.register("grigny2", 85, 15)
+	assert_eq(territory.saturation("grigny2"), Territory.REGIME_SATURATION)
+	assert_lt(Territory.REGIME_SATURATION, 1.0)
+	territory.liberate("grigny2")
+	assert_eq(territory.saturation("grigny2"), 1.0)
+	assert_eq(territory.saturation(""), 1.0, "hors territoire : pleine couleur")

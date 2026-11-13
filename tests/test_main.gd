@@ -98,6 +98,28 @@ func test_a_door_fades_out_travels_and_fades_back_in() -> void:
 	assert_eq(fade.color.a, 0.0)
 
 
+func test_the_world_turns_grey_in_regime_territory_and_colour_returns_when_freed() -> void:
+	var main := await _make_main()
+	var view: PixelView = main.get_node("PixelView")
+	main.travel_to("zone:grigny2")
+	await wait_process_frames(2)
+	assert_almost_eq(view.saturation, Territory.REGIME_SATURATION, 0.01, "derrière le fondu")
+	GameState.territory.liberate("grigny2")
+	await wait_seconds(Main.LIBERATION_SECONDS + 0.2)
+	assert_almost_eq(view.saturation, 1.0, 0.01)
+
+
+func test_a_family_home_keeps_its_colours_but_the_landing_is_grey() -> void:
+	var main := await _make_main()
+	var view: PixelView = main.get_node("PixelView")
+	main.travel_to("zone:appartement_akan")
+	await wait_process_frames(2)
+	assert_almost_eq(view.saturation, Territory.FREE_SATURATION, 0.01, "chez soi")
+	main.travel_to("zone:palier_11")
+	await wait_process_frames(2)
+	assert_almost_eq(view.saturation, Territory.REGIME_SATURATION, 0.01, "les communs")
+
+
 func test_the_view_comes_closer_indoors() -> void:
 	var main := await _make_main()
 	var view: PixelView = main.get_node("PixelView")

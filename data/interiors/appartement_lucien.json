@@ -2,6 +2,7 @@
 	"id": "appartement_lucien",
 	"name": "PLACE_APPARTEMENT_LUCIEN",
 	"territory": "grigny2",
+	"home": true,
 	"plan": [
 		"###########",
 		"#ss...ee..#",

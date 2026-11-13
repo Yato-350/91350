@@ -32,6 +32,11 @@ func hour() -> int:
 	return int(minutes / MINUTES_PER_HOUR)
 
 
+## Minutes de jeu avant la prochaine fois qu'il sera `target_hour` heures (0 s'il l'est).
+func minutes_until(target_hour: float) -> float:
+	return fposmod(target_hour * MINUTES_PER_HOUR - minutes, MINUTES_PER_DAY)
+
+
 func format() -> String:
 	return "%02d:%02d" % [hour(), int(minutes) % int(MINUTES_PER_HOUR)]
 

@@ -8,6 +8,8 @@ extends Node
 
 const DEFAULT_ZONE := "res://scenes/zones/test_zone.tscn"
 const COLOR_FADE_SECONDS := 1.5
+## Au moment où une zone se libère, ses couleurs reviennent lentement.
+const LIBERATION_SECONDS := 4.0
 ## Où Akan se réveille après une arrestation.
 const HOME := "zone:appartement_akan"
 ## Durée du fondu au noir, à l'aller comme au retour, quand Akan change de lieu.
@@ -60,6 +62,7 @@ func _ready() -> void:
 	_layout_ui()
 	EventBus.travel_requested.connect(_on_travel_requested)
 	EventBus.player_downed.connect(_on_player_downed)
+	EventBus.zone_liberated.connect(_on_zone_liberated)
 	var screenshot_scene := parse_screenshot_scene(OS.get_cmdline_user_args())
 	if not screenshot_scene.is_empty():
 		_run_screenshot_mode(screenshot_scene)
@@ -86,8 +89,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		_toggle_fullscreen()
 	elif event.is_action_pressed(&"debug_toggle_color"):
 		_colour_enabled = not _colour_enabled
-		var target := 1.0 if _colour_enabled else 0.0
+		var target := _zone_saturation() if _colour_enabled else 0.0
 		EventBus.saturation_change_requested.emit(target, COLOR_FADE_SECONDS)
+
+
+# Gris dans une zone du régime, couleur une fois libre (une scène d'essai : couleur).
+func _zone_saturation() -> float:
+	var zone := _pixel_view.get_zone() as Zone
+	return zone.saturation() if zone != null else Territory.FREE_SATURATION
+
+
+func _on_zone_liberated(zone_id: String) -> void:
+	if zone_id == GameState.territory_id:
+		_colour_enabled = true
+		EventBus.saturation_change_requested.emit(_zone_saturation(), LIBERATION_SECONDS)
 
 
 ## Charge un lieu et y place Akan. `ref` est un chemin de scène ou « zone:<id>[@repère] » ;
@@ -99,6 +114,9 @@ func travel_to(ref: String, position: Array = []) -> bool:
 	var zone := _pixel_view.get_zone() as Zone
 	GameState.enter(ref, zone.territory_id if zone != null else "")
 	_pixel_view.zoom = zone.get_zoom() if zone != null else 1
+	# Derrière le fondu au noir, la couleur du lieu s'installe d'un coup.
+	_colour_enabled = true
+	EventBus.saturation_change_requested.emit(_zone_saturation(), 0.0)
 	var player := get_player()
 	if player != null and position.size() == 3:
 		player.teleport(Vector3(position[0], position[1], position[2]))

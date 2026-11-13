@@ -9,6 +9,10 @@ const MAX_VALUE := 100
 ## Une zone se libère quand le Contrôle est tombé et que le Soutien a monté.
 const LIBERATION_MAX_CONTROL := 25
 const LIBERATION_MIN_SUPPORT := 75
+## Saturation du rendu dans une zone tenue par le régime : le gris, sans tout éteindre
+## (les couleurs de la vie du quartier percent encore). Libre : pleine couleur.
+const REGIME_SATURATION := 0.6
+const FREE_SATURATION := 1.0
 
 ## zone → {"control": int, "support": int, "liberated": bool}
 var _zones := {}
@@ -48,6 +52,14 @@ func can_liberate(zone_id: String) -> bool:
 		and control(zone_id) <= LIBERATION_MAX_CONTROL
 		and support(zone_id) >= LIBERATION_MIN_SUPPORT
 	)
+
+
+## La couleur, c'est la liberté : gris dans une zone du régime, couleur une fois libre
+## (et hors de tout territoire, comme la zone d'essai).
+func saturation(zone_id: String) -> float:
+	if not _zones.has(zone_id) or is_liberated(zone_id):
+		return FREE_SATURATION
+	return REGIME_SATURATION
 
 
 func is_liberated(zone_id: String) -> bool:

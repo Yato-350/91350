@@ -1,8 +1,9 @@
 class_name Story
 extends RefCounted
-## Le vocabulaire des fichiers de dialogue : ce qu'une réplique peut lire de la partie
-## (« if flag("radio") ») et ce qu'elle peut y changer (« $> give("piles", 2) »).
-## Les dialogues ne touchent ainsi jamais directement aux systèmes du jeu.
+## Le vocabulaire des fichiers de dialogue, côté récit : ce qu'une réplique peut lire de
+## l'histoire d'Akan (« if flag("radio") ») et ce qu'elle peut y changer
+## (« $> give("piles", 2) »). Le quartier (heure, Soutien, Vigilance) est dans
+## Neighbourhood. Les dialogues ne touchent ainsi jamais directement aux systèmes du jeu.
 
 
 func flag(flag_name: String) -> bool:
@@ -56,34 +57,5 @@ func step(quest: String, step_id: String) -> bool:
 	return GameState.quests.is_step(quest, step_id)
 
 
-func reputation(group: String) -> int:
-	return GameState.progression.reputation(group)
-
-
-func rep(group: String, amount: int) -> void:
-	GameState.progression.add_reputation(group, amount)
-
-
-func support(amount: int) -> void:
-	GameState.territory.add_support(GameState.territory_id, amount)
-
-
-func vigilance(amount: float) -> void:
-	GameState.surveillance.report(GameState.territory_id, amount)
-
-
 func xp(amount: int) -> void:
 	GameState.progression.add_xp(amount)
-
-
-func hour() -> int:
-	return GameState.clock.hour()
-
-
-func curfew() -> bool:
-	return GameState.clock.is_curfew()
-
-
-## Emmène Akan ailleurs à la fin de la réplique : travel("hall_tour@escalier").
-func travel(target: String) -> void:
-	EventBus.travel_requested.emit(target)

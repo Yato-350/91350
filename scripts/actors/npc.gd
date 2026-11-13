@@ -7,6 +7,8 @@ const BODY_RADIUS := 0.3
 const BODY_HEIGHT := 1.7
 ## Entrée jouée par défaut dans son fichier de dialogue.
 const DEFAULT_CUE := "start"
+## La condition de présence (horaires compris) se relit à ce rythme, en secondes.
+const PRESENCE_CHECK_SECONDS := 1.0
 ## En deçà de cette distance, l'habitant tourne la tête vers Akan.
 const LOOK_DISTANCE := 4.0
 ## Hauteur des yeux d'Akan, que l'on regarde.
@@ -19,6 +21,8 @@ var cue := ""
 var visual := CharacterVisual.new()
 ## Condition de présence : quand elle devient fausse, le personnage part.
 var presence := {}
+
+var _presence_left := PRESENCE_CHECK_SECONDS
 
 
 ## Crée le personnage décrit par une entrée « npcs » d'un lieu :
@@ -56,7 +60,11 @@ func _check_presence() -> void:
 		queue_free()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_presence_left -= delta
+	if _presence_left <= 0.0 and not presence.is_empty():
+		_presence_left = PRESENCE_CHECK_SECONDS
+		_check_presence()
 	var player := get_tree().get_first_node_in_group(Player.GROUP) as Player
 	if player != null and player.global_position.distance_to(global_position) < LOOK_DISTANCE:
 		visual.look_at_point(player.global_position + Vector3.UP * EYE_HEIGHT)

@@ -82,7 +82,13 @@
 			"character": "vigile",
 			"at": "-68.5,-143.5",
 			"dialogue": "file",
-			"cue": "controle"
+			"cue": "controle",
+			"if": {
+				"hours": [
+					7,
+					20
+				]
+			}
 		},
 		{
 			"id": "monsieur_paul",
@@ -93,6 +99,10 @@
 			"if": {
 				"not_flags": [
 					"paul_embarque"
+				],
+				"hours": [
+					7,
+					20
 				]
 			}
 		},
@@ -101,14 +111,26 @@
 			"character": "civil_2",
 			"at": "-68.5,-139.5",
 			"dialogue": "voisins",
-			"cue": "file"
+			"cue": "file",
+			"if": {
+				"hours": [
+					7,
+					20
+				]
+			}
 		},
 		{
 			"id": "voisin_file",
 			"character": "civil_3",
 			"at": "-68.5,-138",
 			"dialogue": "voisins",
-			"cue": "file_2"
+			"cue": "file_2",
+			"if": {
+				"hours": [
+					7,
+					20
+				]
+			}
 		},
 		{
 			"id": "tonton",

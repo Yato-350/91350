@@ -2,10 +2,11 @@
 	"id": "appartement_akan",
 	"name": "PLACE_APPARTEMENT_AKAN",
 	"territory": "grigny2",
+	"home": true,
 	"plan": [
 		"#############",
 		"#b.w#B.w#fkc#",
-		"#b.l#B..#de,#",
+		"#bzl#B..#de,#",
 		"#...#..m#,,i#",
 		"##.###.###.##",
 		"#s........v.#",
@@ -21,7 +22,8 @@
 		"i": "cuisine",
 		"e": "evier",
 		"d": "daronne",
-		"y": "maya"
+		"y": "maya",
+		"z": "lit"
 	},
 	"floors": {
 		",": "beton_5"
@@ -77,6 +79,17 @@
 			"id": "bidon",
 			"item": "bidon_vide",
 			"at": "evier"
+		}
+	],
+	"spots": [
+		{
+			"id": "lit",
+			"at": "lit",
+			"prompt": "PROMPT_DORMIR",
+			"dialogue": [
+				"akan",
+				"dormir"
+			]
 		}
 	],
 	"npcs": [

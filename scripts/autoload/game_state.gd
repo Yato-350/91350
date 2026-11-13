@@ -83,10 +83,7 @@ func arrest() -> void:
 	for item_id: String in CONFISCATED:
 		inventory.remove(item_id, ceili(inventory.count(item_id) / 2.0))
 	vitals.heal(RELEASE_HEALTH - vitals.health)
-	var until_wake := fposmod(
-		WAKE_HOUR * GameClock.MINUTES_PER_HOUR - clock.minutes, GameClock.MINUTES_PER_DAY
-	)
-	advance_time(until_wake / GameClock.MINUTES_PER_SECOND)
+	advance_time(clock.minutes_until(WAKE_HOUR) / GameClock.MINUTES_PER_SECOND)
 	_offence_until = -1.0
 	set_flag("deja_arrete")
 

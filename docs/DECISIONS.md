@@ -46,6 +46,10 @@ Choix datés et justifiés. Une décision réversible se prend, se note ici, et 
 | 40 | 2026-11-13 | Objectif de quête **`USE`** ajouté à la liste du brief ; **`COLLECT`** = avoir l'objet dans le sac | Le tutoriel fait manger et boire ; un objet ramassé trop tôt ne bloque pas la quête | Oui |
 | 41 | 2026-11-13 | Un objet qui ne tient pas dans le sac **tombe au sol** ; rien n'est jamais perdu | Un sac plein ne doit pas bloquer une quête | Oui |
 | 42 | 2026-11-13 | Éclairage : l'**ambiance et le soleil s'additionnent en sRGB** ; énergies réglées pour qu'un sol reçoive juste sa couleur | En Compatibility, une lumière à ombres est dessinée dans une passe ajoutée après la conversion sRGB (mesuré) ; dehors, à reprendre avec le cycle jour/nuit | Oui |
+| 43 | 2026-11-13 | **Gris du régime à 0,6** de saturation (pas 0) ; libérée : 1,0, en 4 s | À 0,4, la palette ramène tout au gris béton : on ne voit plus la vie du quartier (linge, vêtements, rideaux). À 0,6 les pelouses grisent et la libération reste une récompense visible | Oui |
+| 44 | 2026-11-13 | Un **logement garde ses couleurs** (`"home": true`) | Chez soi, le régime n'entre pas : le contraste avec le palier gris enseigne « couleur = liberté » sans un mot | Oui |
+| 45 | 2026-11-13 | **Points d'action** (`spots`) en données : un geste = un dialogue | Lit, mur à taguer, boîtier à saboter : la même brique, et c'est le dialogue qui décide (choix, effets, objectifs) | Oui |
+| 46 | 2026-11-13 | Vocabulaire des dialogues en **deux objets** : `Story` (récit) et `Neighbourhood` (quartier) | Un seul objet dépassait vingt fonctions publiques ; Dialogue Manager cherche dans les deux sans que l'auteur ait à le savoir | Oui |
 
 ## À surveiller
 

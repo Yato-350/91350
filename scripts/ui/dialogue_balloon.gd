@@ -4,7 +4,8 @@ extends Control
 ## (Calme, Cash, Malin). Pendant un dialogue, le jeu est en pause.
 ##
 ## Les dialogues sont des fichiers dialogue/*.dialogue (addon Dialogue Manager) ; ils
-## lisent et changent la partie par le vocabulaire de Story.
+## lisent et changent la partie par le vocabulaire de Story (le récit) et de
+## Neighbourhood (le quartier).
 
 const DIALOGUE_PATH := "res://dialogue/%s.dialogue"
 const TONE_TAG := "ton"
@@ -20,7 +21,8 @@ var _source := ""
 var _waiting_list: Array[Array] = []
 var _resource: DialogueResource
 var _line: DialogueLine
-var _story := Story.new()
+## Ce que les dialogues peuvent lire et changer de la partie.
+var _vocabulary: Array = [Story.new(), Neighbourhood.new()]
 var _waiting := false
 var _speaker := Label.new()
 var _text := RichTextLabel.new()
@@ -99,7 +101,9 @@ func advance() -> void:
 
 func _next(key: String) -> void:
 	_waiting = true
-	var line: DialogueLine = await DialogueManager.get_next_dialogue_line(_resource, key, [_story])
+	var line: DialogueLine = await DialogueManager.get_next_dialogue_line(
+		_resource, key, _vocabulary
+	)
 	_waiting = false
 	if line == null:
 		_finish()

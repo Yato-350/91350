@@ -76,6 +76,7 @@ func _ready() -> void:
 		_add_door(door)
 	_add_props()
 	_add_pickups()
+	_add_spots()
 	_add_npcs()
 	_add_cameras()
 	_add_vigiles()
@@ -100,6 +101,14 @@ func _ready() -> void:
 
 func get_zoom() -> int:
 	return INTERIOR_ZOOM if is_interior else 1
+
+
+## Saturation du rendu ici : gris dans le territoire du régime, couleur une fois libre ;
+## un logement (« home ») garde toujours ses couleurs : chez soi, le régime n'entre pas.
+func saturation() -> float:
+	if definition.get("home", false):
+		return Territory.FREE_SATURATION
+	return GameState.territory.saturation(territory_id)
 
 
 func _physics_process(_delta: float) -> void:
@@ -248,6 +257,13 @@ func _add_pickups() -> void:
 		var node := Pickup.create(pickup["item"], int(pickup.get("count", 1)), id)
 		node.position = marker_position(pickup["at"])
 		add_child(node)
+
+
+func _add_spots() -> void:
+	for spot_data: Dictionary in definition.get("spots", []):
+		var spot := Spot.create(spot_data)
+		spot.position = marker_position(spot_data["at"])
+		add_child(spot)
 
 
 # Un personnage n'est là que si sa condition « if » est vraie à l'arrivée d'Akan.

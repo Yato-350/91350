@@ -147,6 +147,51 @@
 				}
 			}
 		},
+		"spots": {
+			"type": "array",
+			"description": "Points d'action : interagir joue un dialogue (lit, mur à taguer, boîtier).",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"at",
+					"prompt",
+					"dialogue"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9_]*$"
+					},
+					"at": {
+						"type": "string",
+						"description": "Repère du point."
+					},
+					"prompt": {
+						"type": "string",
+						"description": "Clé du verbe affiché."
+					},
+					"dialogue": {
+						"type": "array",
+						"description": "[fichier de dialogue/, entrée].",
+						"items": {
+							"type": "string"
+						},
+						"minItems": 2,
+						"maxItems": 2
+					},
+					"if": {
+						"type": "object",
+						"description": "Condition pour que le geste soit possible (voir conditions.gd)."
+					},
+					"offence": {
+						"type": "boolean",
+						"description": "Vrai pour un geste interdit : les guetteurs qui voient Akan s'inquiètent."
+					}
+				}
+			}
+		},
 		"cameras": {
 			"type": "array",
 			"items": {

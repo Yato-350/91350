@@ -2,3 +2,17 @@
 akan: L'ascenseur est mort. Encore.
 akan: Onze étages, frérot. Onze.
 => END
+
+~ dormir
+if curfew()
+	akan: Dehors, c'est le couvre-feu. Ici, c'est moi qui décide quand je dors.
+else
+	akan: Mon lit. Le matelas a pris la forme de mon dos.
+- Dormir jusqu'au matin
+	$> sleep_until(7)
+	akan: Sept heures. Les canalisations chantent, la tour se réveille. Debout.
+- Faire une sieste jusqu'au soir [if hour() >= 7 and hour() < 18 /]
+	$> sleep_until(19)
+	akan: Dix-neuf heures. Le ciel a pris la couleur des lampadaires.
+- Pas maintenant.
+=> END

@@ -87,6 +87,7 @@ func test_an_unknown_dialogue_is_refused() -> void:
 
 func test_the_story_vocabulary_reads_and_changes_the_game() -> void:
 	var story := Story.new()
+	var street := Neighbourhood.new()
 	GameState.enter("zone:grigny2", "grigny2")
 	story.give("piles", 3)
 	assert_true(story.has("piles", 3))
@@ -96,16 +97,16 @@ func test_the_story_vocabulary_reads_and_changes_the_game() -> void:
 	assert_true(story.flag("radio"))
 	story.clear_flag("radio")
 	assert_false(story.flag("radio"))
-	story.rep("familles", 5)
-	story.support(10)
-	story.vigilance(1)
+	street.rep("familles", 5)
+	street.support(10)
+	street.vigilance(1)
 	story.xp(100)
-	assert_eq(story.reputation("familles"), 5)
+	assert_eq(street.reputation("familles"), 5)
 	assert_eq(GameState.territory.support("grigny2"), 25)
 	assert_eq(GameState.surveillance.level("grigny2"), 1)
 	assert_eq(GameState.progression.level, 2)
 	watch_signals(EventBus)
-	story.travel("hall_tour@escalier")
+	street.travel("hall_tour@escalier")
 	assert_signal_emitted_with_parameters(EventBus, "travel_requested", ["hall_tour@escalier"])
 
 

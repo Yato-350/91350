@@ -30,6 +30,8 @@ func test_every_requested_cue_exists() -> void:
 			for door: Dictionary in places[place].get("doors", []):
 				if door.has("dialogue"):
 					requests.append(door["dialogue"])
+			for spot: Dictionary in places[place].get("spots", []):
+				requests.append(spot["dialogue"])
 	var quests := DataRegistry.all("quests")
 	for quest: String in quests:
 		for step: Dictionary in quests[quest]["steps"]:
