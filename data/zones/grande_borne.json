@@ -1,0 +1,24 @@
+{
+	"id": "grande_borne",
+	"name_regime": "ZONE_GRANDE_BORNE_REGIME",
+	"name_real": "ZONE_GRANDE_BORNE_REAL",
+	"control": 90,
+	"support": 5,
+	"markers": {
+		"default": [
+			190,
+			-186
+		],
+		"passerelle": [
+			190,
+			-186
+		]
+	},
+	"doors": [
+		{
+			"at": "passerelle",
+			"to": "grigny2@passerelle",
+			"prompt": "PROMPT_TRAVERSER"
+		}
+	]
+}

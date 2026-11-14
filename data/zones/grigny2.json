@@ -76,6 +76,16 @@
 			"at": "salle",
 			"to": "salle_boxe",
 			"prompt": "PROMPT_ENTRER"
+		},
+		{
+			"at": "passerelle",
+			"to": "grande_borne@passerelle",
+			"prompt": "PROMPT_TRAVERSER",
+			"if": {
+				"liberated": [
+					"grigny2"
+				]
+			}
 		}
 	],
 	"props": [

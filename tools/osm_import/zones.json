@@ -1,3 +1,4 @@
 {
-	"grigny2": { "name": "Grigny 2", "bbox": [2.3912, 48.6512, 2.3983, 48.6574] }
+	"grigny2": { "name": "Grigny 2", "bbox": [2.3912, 48.6512, 2.3983, 48.6574] },
+	"grande_borne": { "name": "La Grande Borne", "bbox": [2.3722, 48.65, 2.3816, 48.656] }
 }
