@@ -1,0 +1,18 @@
+# Canapé du salon : tissu beige, jeté blanc sur l'assise, coussins sombres à fleurs.
+palette:
+  c: creme
+  5: beton_5
+  b: brun_1
+  v: violet_tag
+  w: blanc
+box: c 0 0 0 32 6 14
+box: 5 0 0 0 32 1 14
+box: c 0 6 10 32 7 4
+box: c 0 6 0 3 4 14
+box: c 29 6 0 3 4 14
+box: w 3 6 1 26 1 9
+box: b 4 7 8 6 4 2
+box: v 6 8 8 2 2 1
+box: b 22 7 8 6 4 2
+box: v 24 8 8 2 2 1
+box: v 14 7 8 4 3 2

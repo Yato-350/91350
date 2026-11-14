@@ -1,0 +1,15 @@
+# Table basse : plateau de verre sur un socle blanc et noir, une coupe dessus.
+palette:
+  w: blanc
+  n: noir
+  4: beton_4
+  e: bleu_ciel
+  c: creme
+box: n 2 0 2 12 2 6
+box: w 2 2 2 12 4 6
+box: 4 0 0 0 1 7 1
+box: 4 15 0 0 1 7 1
+box: 4 0 0 9 1 7 1
+box: 4 15 0 9 1 7 1
+box: e 0 7 0 16 1 10
+box: c 6 8 4 4 1 3

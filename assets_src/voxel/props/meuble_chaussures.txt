@@ -1,0 +1,18 @@
+# Meubles à chaussures blancs, à abattants, dans l'entrée ; dessus, une boîte en forme
+# de maison et un flacon de savon.
+palette:
+  w: blanc
+  5: beton_5
+  4: beton_4
+  c: creme
+  R: rouge_sombre
+  j: jaune_linge
+box: w 0 0 0 28 13 4
+box: 4 0 0 0 28 1 4
+box: 5 0 6 0 28 1 1
+box: 5 0 12 0 28 1 1
+box: 5 14 1 0 1 12 1
+box: c 3 13 1 3 2 2
+box: R 3 15 1 3 1 2
+box: j 9 13 1 1 3 1
+box: 4 9 16 1 1 1 1

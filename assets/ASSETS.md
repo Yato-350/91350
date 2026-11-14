@@ -11,7 +11,7 @@ uniquement en CC0 ou sous une licence compatible.
 | `assets/ui/theme.tres` | Fait pour le projet | Projet | Provisoire |
 | Personnages (`assets/voxel/characters/*.glb`, `assets/icons/characters/*.png`) | Générés par `tools/build_voxels.py` depuis `data/characters/characters.json` | Projet | Placeholder généré (43 personnages) |
 | Objets (`assets/voxel/items/`, `assets/icons/items/`) | Générés depuis `assets_src/voxel/items/*.txt` | Projet | Placeholder généré (26 objets) |
-| Décor (`assets/voxel/props/`, `assets/icons/props/`) | Générés depuis `assets_src/voxel/props/*.txt` | Projet | Placeholder généré (48 éléments, dont les fresques d'Akan : créations originales) |
+| Décor (`assets/voxel/props/`, `assets/icons/props/`) | Générés depuis `assets_src/voxel/props/*.txt` | Projet | Placeholder généré (75 éléments, dont les fresques d'Akan : créations originales, et l'ameublement d'un appartement) |
 | Zones extérieures (`scenes/zones/generated/*.scn`) | Cuites par `tools/bake_zones.gd` depuis `tools/osm_import/data/` | Données dérivées d'OpenStreetMap : ODbL (`docs/LEGAL.md`) | Généré |
 | Zone de test (`scenes/zones/test_zone.tscn`) | Boîtes grises écrites à la main | Projet | Placeholder de M0 |
 | Sons, musiques et ambiance (`assets/audio/*.wav`) | Synthétisés par `tools/build_sounds.py` (oscillateurs, enveloppes, bruit ; graine fixe) | CC0 (faits pour le projet) | Placeholder généré : 23 bruitages, 3 musiques, 1 ambiance |
