@@ -27,14 +27,15 @@ const FURNISHED := {
 }
 
 ## Deux pièces : à gauche le sol par défaut, à droite une salle d'eau carrelée, aux murs
-## bleus ; entre les deux, une gaine en bois ; une baignoire dans le coin de la salle d'eau.
+## bleus ; entre les deux, une gaine en bois ; une baignoire dans le coin de la salle d'eau ;
+## une fenêtre à l'ouest.
 const ROOMS := {
 	"id": "pieces",
 	"plan":
 	[
 		"########",
 		"#a.#~uu#",
-		"#..P~uu#",
+		"F..P~uu#",
 		"#..#~~~D",
 		"########",
 	],
@@ -117,6 +118,28 @@ func test_neighbouring_cells_of_a_prop_make_one_piece_of_furniture() -> void:
 	assert_eq(placements[2]["position"], Vector3(2.0, 0.0, 0.5))
 
 
+func test_furniture_against_a_wall_knows_how_far_the_wall_is() -> void:
+	var room := {
+		"id": "chambre",
+		"plan": ["######", "#a.bb#", "#....#", "#..r.#", "######"],
+		"markers": {"a": "default"},
+		"props":
+		{
+			"b": {"model": "lit", "yaw": 180, "against_wall": true},
+			"r": {"model": "armoire", "yaw": -90, "against_wall": true},
+		},
+	}
+	var placements := InteriorBuilder.prop_placements(room)
+	var bed := placements[0]
+	assert_eq(bed["back"], Vector3(0.0, 0.0, -1.0), "à 180°, le dos regarde le nord")
+	var face := 1.0 - InteriorBuilder.WALL_THICKNESS / 2.0
+	assert_almost_eq(bed["back_gap"], face, 0.001, "du milieu du lit à la face du mur")
+	var wardrobe := placements[1]
+	assert_eq(wardrobe["back"], Vector3(-1.0, 0.0, 0.0), "à -90°, le dos regarde l'ouest")
+	assert_almost_eq(wardrobe["back_gap"], 2.0 + face, 0.001, "le mur est deux cases plus loin")
+	assert_false(InteriorBuilder.prop_placements(FURNISHED)[0].has("back_gap"), "sinon, rien")
+
+
 func test_solid_furniture_blocks_the_navigation_grid() -> void:
 	var furnished := InteriorBuilder.build(FURNISHED, _palette)
 	add_child_autofree(furnished)
@@ -135,6 +158,11 @@ func test_each_side_of_a_wall_takes_the_colour_of_the_room_it_faces() -> void:
 	)
 	assert_eq(
 		InteriorBuilder.side_color_id(ROOMS, Vector2i(3, 2), Vector2i.LEFT), "peau_1", "la gaine"
+	)
+	assert_eq(
+		InteriorBuilder.side_color_id(ROOMS, Vector2i(0, 2), Vector2i.RIGHT),
+		"bleu_ciel",
+		"une fenêtre"
 	)
 	assert_eq(
 		InteriorBuilder.side_color_id(ROOMS, Vector2i(7, 3), Vector2i.LEFT),

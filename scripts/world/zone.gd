@@ -376,6 +376,11 @@ func _make_prop(placement: Dictionary) -> Prop:
 	var prop := Prop.create(placement["model"], placement["solid"])
 	prop.position = placement["position"]
 	prop.rotation_degrees.y = placement["yaw"]
+	# Un meuble contre un mur y recule jusqu'à le toucher (son arrière est son +Z).
+	var gap: float = placement.get("back_gap", -1.0)
+	if gap >= 0.0 and prop.has_node("Model"):
+		var depth := VoxelModel.bounds(prop.get_node("Model") as Node3D).end.z
+		prop.position += (placement["back"] as Vector3) * (gap - depth)
 	return prop
 
 

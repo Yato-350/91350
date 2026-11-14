@@ -1,10 +1,11 @@
 class_name InteriorBuilder
 ## Construit un intérieur à partir d'un plan en texte (data/interiors/*.json), une case
 ## par mètre : « # » mur, une majuscule un pan de mur particulier (« D » porte, « E »
-## ascenseur, « S » escalier, « P » gaine technique en bois), « espace » le vide, « . » du
-## sol. Les autres caractères sont déclarés par l'intérieur : « floors » (un autre sol, une
-## pièce), « markers » (un repère : lit, porte, point d'arrivée) ou « props » (un meuble ;
-## des cases voisines de même caractère forment un seul meuble, posé en leur milieu).
+## ascenseur, « S » escalier, « P » gaine technique en bois, « F » fenêtre), « espace » le
+## vide, « . » du sol. Les autres caractères sont déclarés par l'intérieur : « floors » (un
+## autre sol, une pièce), « markers » (un repère : lit, porte, point d'arrivée) ou « props »
+## (un meuble ; des cases voisines de même caractère forment un seul meuble, posé en leur
+## milieu).
 ##
 ## Les murs sont fins, au milieu de leur case, et dessinés bas (coupés à hauteur de
 ## hanche) pour voir dans les pièces ; leur collision monte plus haut. Chaque côté d'un mur
@@ -29,9 +30,9 @@ const CUT_COLOR := "noir"
 ## Le dos des murs, tourné vers le vide : sombre, pour détacher les pièces du fond.
 const OUTSIDE_COLOR := "beton_1"
 ## Pans de mur particuliers : D une porte (brune), E l'ascenseur, S l'escalier, G une porte
-## vitrée à cadre noir, P les portes en bois d'une gaine technique (paliers).
+## vitrée à cadre noir, P les portes en bois d'une gaine technique (paliers), F une fenêtre.
 const SPECIAL_WALLS := {
-	"D": "brun_1", "E": "bleu_acier", "S": "beton_2", "G": "noir", "P": "peau_1"
+	"D": "brun_1", "E": "bleu_acier", "S": "beton_2", "G": "noir", "P": "peau_1", "F": "bleu_ciel"
 }
 ## Distance (en cases) jusqu'où un meuble ou un repère cherche le sol de sa pièce.
 const ROOM_SEARCH := 12
@@ -92,7 +93,10 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 
 
 ## Les meubles du plan : [{"model", "yaw", "solid", "position", "if"}], un par groupe de
-## cases voisines portant le même caractère.
+## cases voisines portant le même caractère. Un meuble « against_wall » (un lit, une
+## armoire, des rideaux) dit aussi où regarde son dos (« back », l'arrière du modèle tourné
+## de « yaw ») et à quelle distance de son milieu se trouve la face du mur derrière lui
+## (« back_gap ») : le lieu l'y recule pour qu'il touche le mur.
 static func prop_placements(definition: Dictionary) -> Array[Dictionary]:
 	var placements: Array[Dictionary] = []
 	var rows := _rows(definition)
@@ -119,19 +123,46 @@ static func prop_placements(definition: Dictionary) -> Array[Dictionary]:
 			for member: Vector2i in group:
 				middle += _center_of(rows, member) / group.size()
 			var prop: Dictionary = props[kind]
-			(
-				placements
-				. append(
-					{
-						"model": prop.get("model", ""),
-						"yaw": float(prop.get("yaw", 0.0)),
-						"solid": prop.get("solid", true),
-						"position": middle,
-						"if": prop.get("if", {}),
-					}
-				)
-			)
+			var placement := {
+				"model": prop.get("model", ""),
+				"yaw": float(prop.get("yaw", 0.0)),
+				"solid": prop.get("solid", true),
+				"position": middle,
+				"if": prop.get("if", {}),
+			}
+			if prop.get("against_wall", false):
+				var back := _back_of(placement["yaw"])
+				placement["back"] = Vector3(back.x, 0.0, back.y)
+				placement["back_gap"] = _gap_to_wall(rows, group, middle, back)
+			placements.append(placement)
 	return placements
+
+
+# La direction (sur la grille) de l'arrière d'un modèle tourné de `yaw` degrés : son +Z.
+static func _back_of(yaw: float) -> Vector2i:
+	var angle := deg_to_rad(yaw)
+	return Vector2i(roundi(sin(angle)), roundi(cos(angle)))
+
+
+# Distance du milieu d'un meuble à la face du mur le plus proche derrière lui, ou -1 s'il
+# n'y a pas de mur de ce côté.
+static func _gap_to_wall(
+	rows: PackedStringArray, group: Array[Vector2i], middle: Vector3, back: Vector2i
+) -> float:
+	var direction := Vector3(back.x, 0.0, back.y)
+	var gap := -1.0
+	for member: Vector2i in group:
+		var cell := member + back
+		while _is_inside(rows, cell) and not _is_wall(_kind(rows, cell)):
+			if _kind(rows, cell) == VOID:
+				break
+			cell += back
+		if not _is_wall_inside(rows, cell):
+			continue
+		var face := _center_of(rows, cell) - direction * WALL_THICKNESS / 2.0
+		var distance := (face - middle).dot(direction)
+		gap = distance if gap < 0.0 else minf(gap, distance)
+	return gap
 
 
 ## Couleur (nom dans la palette) du côté `side` du mur `cell` : sombre vers le dehors ; un
