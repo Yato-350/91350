@@ -1,0 +1,11 @@
+# Borne incendie : un fût rouge, deux prises sur les côtés, un chapeau blanc. Voxels de
+# 1/16 m.
+palette:
+  r: rouge_propagande
+  R: rouge_sombre
+  w: blanc
+box: R 0 0 0 6 1 6
+box: r 1 1 1 4 9 4
+box: r 0 6 2 6 2 2
+box: w 1 10 1 4 2 4
+box: w 2 12 2 2 1 2

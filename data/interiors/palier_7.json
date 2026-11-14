@@ -18,8 +18,8 @@
 		"h": "escalier_bas",
 		"e": "voisin_1"
 	},
-	"floor_color": "beton_4",
-	"wall_color": "beton_5",
+	"floor_color": "beton_2",
+	"wall_color": "creme",
 	"doors": [
 		{
 			"at": "escalier_haut",

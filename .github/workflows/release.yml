@@ -1,10 +1,17 @@
 name: Release
 
 # Une étiquette v* (v0.1.0…) construit le jeu pour Windows, Linux, macOS et le web, puis
-# publie une GitHub Release avec les quatre archives et des notes générées.
+# publie une GitHub Release avec les quatre archives et des notes générées. On peut aussi
+# la lancer à la main (onglet Actions) avec un numéro de version : l'étiquette est alors
+# créée par la release, sur le commit construit.
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version à publier (vX.Y.Z)"
+        required: true
 
 permissions:
   contents: write
@@ -17,7 +24,16 @@ jobs:
   release:
     name: Exports et GitHub Release
     runs-on: ubuntu-24.04
+    env:
+      VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
     steps:
+      - name: Numéro de version
+        run: |
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version invalide : « $VERSION » (attendu : vX.Y.Z)" >&2
+            exit 1
+          fi
+
       - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v7
@@ -65,7 +81,7 @@ jobs:
 
       - name: Archives
         run: |
-          version="${GITHUB_REF_NAME}"
+          version="${VERSION}"
           mkdir -p build/release
           (cd build/windows && zip -q -r "../release/91350-${version}-windows.zip" .)
           (cd build/linux && zip -q -r "../release/91350-${version}-linux.zip" .)
@@ -77,7 +93,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" build/release/*.zip \
-            --title "91350 ${GITHUB_REF_NAME}" \
+          gh release create "${VERSION}" build/release/*.zip \
+            --target "${GITHUB_SHA}" \
+            --title "91350 ${VERSION}" \
             --generate-notes \
             --prerelease

@@ -1,0 +1,10 @@
+# Jardinière carrelée du hall : un bac en travertin beige, vide, la terre sèche dedans.
+# Voxels de 1/8 m.
+palette:
+  c: creme
+  b: beton_5
+  t: brun_1
+scale: 2
+box: c 0 0 0 16 4 7
+box: b 0 4 0 16 1 7
+box: t 1 4 1 14 1 5

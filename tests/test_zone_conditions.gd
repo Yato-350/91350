@@ -24,6 +24,25 @@ const PLAN := {
 		{"id": "veilleur", "character": "civil_2", "at": "nuit", "if": {"hours": [21, 6]}},
 	],
 	"cameras": [{"id": "essai", "at": "coin", "if": {"not_liberated": ["grigny2"]}}],
+	"signs":
+	[
+		{
+			"id": "gare_regime",
+			"at": "coin",
+			"yaw": 90.0,
+			"height": 6.0,
+			"text": "SIGN_GARE_REGIME",
+			"if": {"not_liberated": ["grigny2"]},
+		},
+		{
+			"id": "gare_libre",
+			"at": "coin",
+			"yaw": 90.0,
+			"height": 6.0,
+			"text": "SIGN_GARE_REAL",
+			"if": {"liberated": ["grigny2"]},
+		},
+	],
 }
 
 
@@ -126,3 +145,18 @@ func test_someone_who_must_leave_finishes_the_conversation_first() -> void:
 	await wait_process_frames(2)
 	assert_true(GameState.quests.is_done("essai"), "la conversation compte")
 	assert_false(is_instance_valid(gus) and not gus.is_queued_for_deletion(), "puis il s'en va")
+
+
+func test_a_sign_shows_the_regime_name_then_the_real_one() -> void:
+	var zone := await _make(PLAN)
+	var sign := zone.get_node_or_null("SignGareRegime") as Label3D
+	assert_not_null(sign)
+	assert_eq(sign.text, tr("SIGN_GARE_REGIME"))
+	assert_almost_eq(sign.position.y, 6.0, 0.01)
+	assert_eq(sign.alpha_cut, Label3D.ALPHA_CUT_DISCARD, "pas de transparence dans le monde")
+	GameState.territory.liberate("grigny2")
+	await wait_process_frames(1)
+	assert_null(zone.get_node_or_null("SignGareRegime"))
+	var free_sign := zone.get_node_or_null("SignGareLibre") as Label3D
+	assert_not_null(free_sign, "les vrais noms reviennent")
+	assert_eq(free_sign.text, tr("SIGN_GARE_REAL"))

@@ -118,3 +118,17 @@ func test_geometry_survives_packing_into_a_scene() -> void:
 func _ray(from: Vector3, to: Vector3) -> Dictionary:
 	var query := PhysicsRayQueryParameters3D.create(from, to)
 	return _geometry.get_world_3d().direct_space_state.intersect_ray(query)
+
+
+func test_a_station_tells_the_facade_shader_its_style() -> void:
+	var zone := ZONE.duplicate(true)
+	zone["buildings"][0]["kind"] = "station"
+	var geometry := ZoneGeometryBuilder.build(zone, Palette.load_colors())
+	add_child_autofree(geometry)
+	var chunk: MeshInstance3D = geometry.get_node("Buildings").get_child(0)
+	var colors: PackedColorArray = chunk.mesh.surface_get_arrays(0)[Mesh.ARRAY_COLOR]
+	var styles := {}
+	for color: Color in colors:
+		styles[snappedf(color.a, 0.01)] = true
+	assert_has(styles, ZoneGeometryBuilder.STATION_STYLE, "les murs de la gare")
+	assert_has(styles, 0.0, "le toit reste un toit")

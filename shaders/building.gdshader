@@ -3,10 +3,14 @@ shader_type spatial;
 // (rideaux, volets roulants, éclairées la nuit), loggias ou balcons selon l'immeuble, linge
 // qui sèche, paraboles, quelqu'un à sa fenêtre ; au rez-de-chaussée, soubassement et
 // tags ; en haut, l'acrotère ; sur les toits, des gravillons.
+// Les grandes tours ont leur dessin à elles, relevé sur place : de larges pilastres crème
+// striés, des colonnes de fenêtres sombres, parfois un damier bordeaux et crème, des
+// balcons empilés et une corniche blanche.
 // « Vision à travers les murs » : quand un bâtiment cache le joueur, un disque tramé
 // s'ouvre autour de lui (pas de transparence alpha : on jette des pixels).
 //
-// Données du maillage : COLOR.a vaut 1 sur les murs et 0 sur les toits ;
+// Données du maillage : COLOR.a vaut 1 sur les murs, 0 sur les toits, et 0,75 sur les
+// murs de la gare (verrière éclairée, bardage rouge brique, casquette de métal) ;
 // UV = (distance le long du mur, hauteur) en mètres ; UV2 = (graine, hauteur du bâtiment).
 
 #include "res://shaders/cutaway.gdshaderinc"
@@ -29,6 +33,19 @@ const vec3 TAGS[4] = vec3[4](
 const vec3 CURTAINS[3] = vec3[3](
 	vec3(0.957, 0.894, 0.757), vec3(0.365, 0.525, 0.776), vec3(1.0, 0.616, 0.227));
 const vec3 SHUTTER = vec3(0.525, 0.541, 0.576);
+const vec3 MAROON = vec3(0.486, 0.075, 0.125);
+const vec3 CREAM = vec3(0.957, 0.894, 0.757);
+const vec3 WHITE = vec3(0.933, 0.937, 0.941);
+const vec3 FRAME = vec3(0.078, 0.082, 0.102);
+// Une tour : à partir de cette hauteur ; une travée = un pilastre + une colonne de fenêtres.
+const float TOWER_HEIGHT = 20.0;
+const float BAY = 4.5;
+const float PILASTER = 1.5;
+const float CORNICE = 0.9;
+const vec3 BRICK = vec3(0.71, 0.388, 0.122);
+// La gare : un trumeau de bardage tous les tant de mètres, la verrière entre deux.
+const float STATION_BAY = 9.0;
+const float STATION_PIER = 2.2;
 const vec3 DISH = vec3(0.933, 0.937, 0.941);
 const vec3 SKIN = vec3(0.627, 0.431, 0.298);
 const vec3 SHIRT = vec3(0.169, 0.247, 0.4);
@@ -45,6 +62,75 @@ bool in_box(vec2 point, vec2 low, vec2 high) {
 
 void vertex() {
 	world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+}
+
+// La gare : bardage rouge brique à joints sombres, verrière à montants noirs toujours
+// un peu éclairée (franchement le soir), casquette de métal en haut.
+vec3 station_facade(vec2 uv, float height, out float lit) {
+	lit = 0.0;
+	if (uv.y > height - 0.6) {
+		return WHITE * 0.9;
+	}
+	if (uv.y > height - 0.9) {
+		return FRAME;
+	}
+	bool glass = mod(uv.x, STATION_BAY) > STATION_PIER && uv.y > 0.8;
+	if (!glass) {
+		bool joint = mod(uv.x, 1.2) < 0.06 || mod(uv.y, 1.0) < 0.06;
+		return joint ? BRICK * 0.7 : BRICK;
+	}
+	if (mod(uv.x, 1.5) < 0.08 || mod(uv.y, 0.6) < 0.05) {
+		return FRAME * 1.6;
+	}
+	lit = 0.6 + 0.4 * night_factor;
+	return mix(window_dark, window_lit, lit);
+}
+
+// Une façade de tour : pilastre crème strié, puis une colonne de fenêtres à menuiseries
+// noires ; l'allège est bordeaux et des panneaux crème se décalent d'un étage à l'autre
+// dans le damier ; une travée sur six porte des balcons empilés.
+vec3 tower_facade(vec2 uv, float seed, vec3 base, bool damier, out float lit) {
+	lit = 0.0;
+	float bay = floor(uv.x / BAY);
+	float x = uv.x - bay * BAY;
+	if (x < PILASTER) {
+		float stria = step(0.8, fract(uv.x * 6.0));
+		return CREAM * (0.93 - 0.06 * stria);
+	}
+	float storey = floor(uv.y / window_cell.y);
+	float y = uv.y - storey * window_cell.y;
+	float wx = x - PILASTER;
+	vec2 cell = vec2(bay, storey);
+	float roll = hash(cell + seed);
+	float roll2 = hash(cell.yx + seed * 1.3 + 7.0);
+	if (hash(vec2(bay, seed * 2.3)) < 0.17 && y < 1.1) {
+		if (y < 0.18) {
+			return WHITE * 0.95;
+		}
+		return (y < 0.26 || mod(wx, 0.3) < 0.05) ? FRAME : base * 0.5;
+	}
+	vec3 color;
+	if (y < 0.85) {
+		color = damier ? MAROON : base * 0.55;
+	} else if (mod(wx, 1.0) < 0.07 || y > 2.62) {
+		color = FRAME;
+	} else {
+		color = window_dark;
+		lit = step(1.0 - (0.05 + 0.5 * night_factor), roll);
+		if (roll2 < 0.25 && mod(wx, 1.0) > 0.55) {
+			color = CURTAINS[int(roll2 * 12.0) % 3];
+		}
+		color = mix(color, window_lit, lit);
+	}
+	if (damier) {
+		float shift = mod(storey + bay, 2.0) * 1.5;
+		if (wx > shift + 0.08 && wx < shift + 1.42 && y > 0.45 && y < 2.35) {
+			lit = 0.0;
+			float grain = hash(floor(uv * 5.0) + seed);
+			return CREAM * (0.86 + 0.06 * grain);
+		}
+	}
+	return color;
 }
 
 void fragment() {
@@ -64,6 +150,18 @@ void fragment() {
 		// Toit : gravillons, et une bordure plus claire.
 		float grain = hash(floor(UV * 3.0) + seed);
 		color = base * (0.9 + 0.12 * grain);
+	} else if (COLOR.a < 0.9) {
+		color = station_facade(UV, height, lit);
+	} else if (height >= TOWER_HEIGHT && hash(vec2(seed, 9.1)) < 0.85) {
+		// Une tour de Grigny 2 : corniche blanche, soubassement, puis le dessin des travées.
+		bool damier = hash(vec2(seed, 9.1)) < 0.45;
+		if (UV.y > height - CORNICE) {
+			color = UV.y > height - 0.15 ? WHITE : WHITE * 0.92;
+		} else if (UV.y < window_cell.y * 0.35) {
+			color = base * 0.78;
+		} else {
+			color = tower_facade(UV, seed, base, damier, lit);
+		}
 	} else {
 		// Style de l'immeuble : loggias filantes, balcons, ou fenêtres simples.
 		float style = hash(vec2(seed, 1.7));

@@ -7,11 +7,11 @@
 		"#,c,#mmq.a..b.#",
 		"#,g,..........#",
 		"#,t,#.1....2..#",
-		"#####.........#",
+		"#####vv.......#",
 		"Dl.....3......#",
 		"#xw.......4.jk#",
 		"#......p.....z#",
-		"#######D#######"
+		"#######G#######"
 	],
 	"markers": {
 		"p": "default",
@@ -31,8 +31,8 @@
 	"floors": {
 		",": "brun_2"
 	},
-	"floor_color": "beton_4",
-	"wall_color": "beton_5",
+	"floor_color": "beton_5",
+	"wall_color": "creme",
 	"doors": [
 		{
 			"at": "default",
@@ -74,6 +74,9 @@
 		},
 		"z": {
 			"model": "caisse"
+		},
+		"v": {
+			"model": "jardiniere"
 		}
 	},
 	"cameras": [

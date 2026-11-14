@@ -1,0 +1,13 @@
+# Lampadaire « soucoupe » du parvis de la gare : un mât argenté fin, un disque plat en
+# haut, la lampe dessous. Voxels de 1/8 m.
+palette:
+  1: beton_5
+  2: beton_4
+  n: noir
+  o: orange_sodium
+scale: 2
+box: 2 3 0 3 2 1 2
+box: 1 4 1 4 1 33 1
+box: n 0 34 0 9 1 9
+box: 2 1 35 1 7 1 7
+box: o 3 33 3 3 1 3

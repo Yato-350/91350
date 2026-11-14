@@ -27,7 +27,9 @@ const CUT_COLOR := "noir"
 ## Le dos des murs, tourné vers le vide : sombre, pour détacher les pièces du fond.
 const OUTSIDE_COLOR := "beton_1"
 ## Couleur des pans de mur particuliers.
-const SPECIAL_WALLS := {"D": "brun_1", "E": "bleu_acier", "S": "beton_2"}
+## Pans de mur particuliers : D une porte (brune), E l'ascenseur, S l'escalier, G une porte
+## vitrée à cadre noir.
+const SPECIAL_WALLS := {"D": "brun_1", "E": "bleu_acier", "S": "beton_2", "G": "noir"}
 const SIDES: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
 const QUADRANTS: Array[Vector2i] = [
 	Vector2i(-1, -1), Vector2i(1, -1), Vector2i(1, 1), Vector2i(-1, 1)
