@@ -1,0 +1,55 @@
+# Coin repas de la cuisine, fait pour un coin : banquette d'angle en pin le long de
+# l'avant et du côté gauche, sous la fenêtre voilée ; coussins à fleurs, table et nappe
+# blanche à pois rouges. Décalé vers l'avant et la gauche pour toucher les deux murs.
+offset: -6 0 -6
+palette:
+  p: peau_2
+  P: peau_1
+  w: blanc
+  R: rouge_sombre
+  r: rouge_propagande
+  5: beton_5
+  4: beton_4
+# Banquette : coffre, assise, dossier.
+box: P 0 0 0 32 6 7
+box: p 0 6 0 32 1 7
+box: p 0 7 0 32 8 2
+box: P 0 0 0 7 6 32
+box: p 0 6 0 7 1 32
+box: p 0 7 0 2 8 32
+box: P 0 14 0 32 1 2
+box: P 0 14 0 2 1 32
+# Coussins.
+box: w 12 7 2 7 1 5
+box: r 14 8 3 2 1 2
+box: w 2 7 14 5 1 7
+box: r 3 8 16 2 1 2
+# Table.
+box: P 11 0 11 2 11 2
+box: P 26 0 11 2 11 2
+box: P 11 0 25 2 11 2
+box: P 26 0 25 2 11 2
+box: p 10 11 10 19 1 17
+# Nappe.
+box: w 9 12 9 21 1 19
+box: w 9 9 9 21 3 1
+box: w 9 9 27 21 3 1
+box: w 9 9 9 1 3 19
+box: w 29 9 9 1 3 19
+box: R 12 12 12 1 1 1
+box: R 16 12 15 1 1 1
+box: R 20 12 12 1 1 1
+box: R 25 12 17 1 1 1
+box: R 13 12 21 1 1 1
+box: R 19 12 24 1 1 1
+box: R 24 12 23 1 1 1
+box: R 9 10 16 1 1 1
+box: R 29 11 20 1 1 1
+# Fenêtre voilée au-dessus de la banquette.
+box: 4 6 34 0 22 1 1
+box: w 7 15 0 20 19 1
+box: 5 9 15 0 1 19 1
+box: 5 13 15 0 1 19 1
+box: 5 17 15 0 1 19 1
+box: 5 21 15 0 1 19 1
+box: 5 25 15 0 1 19 1

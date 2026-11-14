@@ -1,0 +1,22 @@
+# Lit d'une personne, tête vers l'arrière (contre le mur) : tête de lit capitonnée
+# blanche, couette bleue à motifs.
+palette:
+  w: blanc
+  5: beton_5
+  e: bleu_ecran
+  a: bleu_acier
+  c: creme
+box: 5 0 0 0 16 4 31
+box: w 0 4 0 16 2 29
+box: w 0 0 29 16 15 2
+box: 5 3 10 28 1 1 1
+box: 5 8 10 28 1 1 1
+box: 5 12 10 28 1 1 1
+box: 5 5 13 28 1 1 1
+box: 5 10 13 28 1 1 1
+box: c 2 6 23 12 2 5
+box: e 0 6 0 16 1 22
+box: a 3 6 16 3 1 3
+box: a 9 6 11 4 1 3
+box: a 4 6 5 3 1 3
+box: a 11 6 2 3 1 2

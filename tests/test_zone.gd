@@ -149,3 +149,23 @@ func test_grigny2_has_patrols_on_reachable_rounds() -> void:
 			var cell := nav.cell_of(point)
 			assert_eq(reached[cell.y * nav.size.x + cell.x], 1, "%s : %s" % [vigile.id, point])
 		assert_eq(vigile.grid, _zone.nav_grid(), "une seule grille par zone")
+
+
+func test_furniture_against_a_wall_touches_it() -> void:
+	var room := {
+		"id": "chambre_essai",
+		"name": "PLACE_APPARTEMENT_AKAN",
+		"territory": "grigny2",
+		"plan": ["#####", "#.b.#", "#a..#", "#####"],
+		"markers": {"a": "default"},
+		"props": {"b": {"model": "armoire", "yaw": 180, "against_wall": true}},
+	}
+	var zone := Zone.from_definition("chambre_essai", room, true)
+	add_child_autofree(zone)
+	await wait_process_frames(2)
+	var wardrobe: Prop = zone.find_children("Armoire", "Prop", true, false)[0]
+	var bounds := VoxelModel.bounds(wardrobe.get_node("Model"))
+	var back := wardrobe.global_transform * Vector3(0.0, 0.0, bounds.end.z)
+	var wall_face := -1.5 + InteriorBuilder.WALL_THICKNESS / 2.0
+	assert_almost_eq(back.z, wall_face, 0.01, "le dos de l'armoire touche le mur du nord")
+	assert_almost_eq(back.x, 0.0, 0.01, "sans glisser de côté")

@@ -1,0 +1,13 @@
+# Lave-linge à hublot.
+palette:
+  w: blanc
+  5: beton_5
+  4: beton_4
+  2: beton_2
+  n: noir
+box: w 0 0 0 10 14 10
+box: 5 0 12 0 10 2 1
+box: n 7 12 0 2 1 1
+box: 4 2 3 0 6 6 1
+box: 2 3 4 0 4 4 1
+box: 5 4 6 0 1 1 1

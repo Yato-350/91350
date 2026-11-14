@@ -57,6 +57,9 @@ Choix datés et justifiés. Une décision réversible se prend, se note ici, et 
 | 51 | 2026-11-13 | Bus **Music → MusicDuck → Master**, SFX, Ambience, UI ; la musique **suit la couleur** (régime, maison, quartier libre) | Le réglage du joueur reste sur Music, le tassement sous les dialogues sur MusicDuck ; « la musique revient avec la couleur » (brief) | Oui |
 | 52 | 2026-11-13 | **Pile d'écrans** (titre, pause, confirmation, fin d'acte, sac, journal) | Un seul écran prend les entrées et le focus ; « annuler » rend la main à celui d'en dessous | Oui |
 | 53 | 2026-11-13 | Exports bureau avec le **pck intégré**, macOS **universel signé ad hoc** ; import **ETC2/ASTC** activé | Un seul fichier à lancer ; Apple Silicon exige ETC2/ASTC et une signature, même ad hoc | Oui |
+| 54 | 2026-11-14 | **Murs par pièce** (`wall_colors`, selon le sol que le mur regarde) ; pans de mur **P** (gaine en bois) et **F** (fenêtre) | La salle de bain bleue, les gaines du palier et la fenêtre du couloir se lisent sans nouveau système | Oui |
+| 55 | 2026-11-14 | **Meubles « contre le mur »** (`against_wall`) : le lieu recule le meuble jusqu'à la face du mur derrière lui (son arrière, +Z) | Les murs sont au milieu de leur case : sans cela, un lit ou une armoire flottait à 40 cm du mur | Oui |
+| 56 | 2026-11-14 | **Palier type** d'après le plan d'évacuation d'un étage des Sablons ; **appartement d'Akan en F4** d'après des photos d'intérieur | Réalisme demandé par l'auteur ; rien de personnel n'entre dans le jeu (ni personne, ni objet religieux, ni texte, ni marque) | Oui |
 
 ## À surveiller
 

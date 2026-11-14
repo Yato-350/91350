@@ -1,0 +1,11 @@
+# Manteaux pendus à une patère : une doudoune noire à capuche, une veste grise.
+palette:
+  n: noir
+  2: beton_2
+  3: beton_3
+  4: beton_4
+box: 4 0 30 0 14 1 2
+box: n 1 12 0 7 17 4
+box: n 2 27 1 5 3 3
+box: 2 2 14 0 1 13 1
+box: 3 8 14 1 5 15 3

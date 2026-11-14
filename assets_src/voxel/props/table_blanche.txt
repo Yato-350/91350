@@ -1,0 +1,11 @@
+# Table de salle à manger blanche, un chemin de table crème.
+palette:
+  w: blanc
+  5: beton_5
+  c: creme
+box: w 0 10 0 22 2 14
+box: 5 1 0 1 2 10 2
+box: 5 19 0 1 2 10 2
+box: 5 1 0 11 2 10 2
+box: 5 19 0 11 2 10 2
+box: c 2 12 5 18 1 4

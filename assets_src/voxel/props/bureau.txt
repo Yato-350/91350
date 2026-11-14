@@ -1,0 +1,26 @@
+# Bureau blanc, plateau façon marbre, écran, lampe et petit miroir rond.
+palette:
+  w: blanc
+  5: beton_5
+  4: beton_4
+  n: noir
+  b: bleu_nuit
+  e: bleu_ciel
+  j: jaune_linge
+box: w 0 0 0 1 12 1
+box: w 17 0 0 1 12 1
+box: w 0 0 7 1 12 1
+box: w 17 0 7 1 12 1
+box: w 0 12 0 18 1 8
+box: w 6 9 0 8 3 7
+box: 5 6 10 0 8 1 1
+box: 5 3 12 2 6 1 1
+box: 5 11 12 4 5 1 1
+box: n 9 13 5 2 1 2
+box: n 6 14 6 8 6 1
+box: b 7 15 6 6 4 1
+box: 4 2 13 3 1 1 1
+box: 4 1 14 3 3 3 1
+box: e 2 15 3 1 1 1
+box: 4 15 13 6 1 5 1
+box: j 14 18 5 3 1 2

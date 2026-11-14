@@ -55,3 +55,38 @@ on s'en inspire.
 - La gare : verrière, bardage, enseigne « POINT DE TRANSIT 7 » sous le régime,
   « GRIGNY-CENTRE » une fois libre (les vrais noms reviennent).
 - Arbres : une part en couleurs d'automne.
+
+## Partie 2 — un étage courant et un appartement type
+
+Deuxième série : un couloir d'étage des Sablons, le **plan d'évacuation** affiché à
+l'étage, et les pièces d'un appartement. Mêmes règles : rien n'est versionné, rien de
+personnel n'entre dans le jeu (ni personne, ni nom, ni objet religieux, ni texte, ni
+marque). On garde les volumes, les matières et les couleurs.
+
+**L'étage (d'après le plan d'évacuation)**
+- Un **couloir** est-ouest ; au milieu, côté nord, la **cage d'escalier** octogonale et son
+  **escalier en colimaçon** autour d'un poteau ; en face, l'**ascenseur** et une gaine.
+- Des **gaines techniques** dans des renfoncements, fermées par de grandes **portes en
+  bois** à loquet ; une colonne sèche ; **cinq logements** (deux à chaque bout, un à côté
+  de l'escalier).
+- Crépi crème, lino gris foncé, plinthes noires, plafonnier rond, une grille d'aération.
+
+**L'appartement (un F4)**
+- **Entrée** : couloir au parquet foncé, meubles à chaussures blancs à abattants, un
+  chemin de couloir clair, une étagère d'angle en verre avec un bouquet.
+- **Cuisine** : carrelage beige, frigo et plan de travail blancs, lave-linge, **banquette
+  d'angle en pin** sous la fenêtre voilée, table à nappe, tabouret rouge.
+- **Séjour** double : canapé et fauteuil beiges aux coussins sombres, table basse en
+  verre, meuble télé blanc et sa colonne, table et chaises blanches, grands tapis clairs,
+  voilages blancs et doubles rideaux beiges.
+- **Chambres** au stratifié clair : grand lit à tête capitonnée brune ; lit d'une
+  personne à tête capitonnée blanche, bureau blanc, fauteuil de jeu.
+- **WC** séparé à faïence blanche ; **salle de bain** : baignoire, lavabo sur meuble,
+  faïence blanche à **bandes bleues** et frise ; un cellier (manteaux, congélateur).
+
+**Dans le jeu**
+- Les paliers du 7e et du 11e suivent ce plan ; l'escalier en colimaçon mène en bas et,
+  au 11e, au toit ; une fenêtre au bout du couloir (le « rebord » de l'enquête).
+- L'appartement d'Akan devient ce F4, meublé ainsi : un sol par pièce, les murs bleus de
+  la salle de bain, les meubles collés aux murs. Décor neutre, comme tout le jeu.
+

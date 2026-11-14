@@ -1,0 +1,10 @@
+# Extincteur rouge sur son support mural.
+palette:
+  r: rouge_propagande
+  n: noir
+  4: beton_4
+box: 4 0 4 3 4 1 1
+box: r 0 5 0 4 9 3
+box: n 1 14 1 2 1 1
+box: 4 1 15 1 2 1 1
+box: n 3 9 0 1 4 1

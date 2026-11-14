@@ -1,0 +1,19 @@
+# Meuble télé blanc, sa colonne de rangement, des statuettes et l'écran plat éteint.
+palette:
+  w: blanc
+  5: beton_5
+  n: noir
+  b: bleu_nuit
+  c: creme
+box: w 0 0 0 28 8 7
+box: 5 0 4 0 28 1 1
+box: 5 14 0 0 1 8 1
+box: w 0 8 1 6 18 6
+box: 5 0 17 1 6 1 1
+box: n 15 8 3 4 1 2
+box: n 9 9 3 16 10 1
+box: b 10 10 3 14 8 1
+box: c 26 8 2 1 3 1
+box: c 24 8 3 1 2 1
+box: c 2 26 3 1 3 1
+box: c 4 26 3 1 2 1

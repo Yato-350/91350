@@ -1,0 +1,12 @@
+# Baignoire : tablier carrelé de blanc à frise bleue, robinet et douchette côté mur.
+palette:
+  w: blanc
+  5: beton_5
+  e: bleu_ecran
+  4: beton_4
+box: w 0 0 0 27 9 11
+box: 5 2 8 2 23 1 7
+box: e 0 4 0 27 1 1
+box: e 0 4 0 1 1 11
+box: 4 22 9 9 1 3 1
+box: 4 20 11 9 3 1 1

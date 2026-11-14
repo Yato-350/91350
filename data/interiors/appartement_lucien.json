@@ -5,7 +5,7 @@
 	"home": true,
 	"plan": [
 		"###########",
-		"#ss...ee..#",
+		"#ss.vvee..#",
 		"#........r#",
 		"#..l...tt.#",
 		"#......hh.#",
@@ -38,6 +38,12 @@
 		"h": {
 			"model": "chaise",
 			"solid": false
+		},
+		"v": {
+			"model": "voilage",
+			"yaw": 180,
+			"solid": false,
+			"against_wall": true
 		}
 	},
 	"doors": [

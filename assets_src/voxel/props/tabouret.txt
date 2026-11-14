@@ -1,0 +1,14 @@
+# Tabouret rouge à pieds chromés.
+palette:
+  r: rouge_propagande
+  4: beton_4
+box: 4 0 0 0 1 7 1
+box: 4 5 0 0 1 7 1
+box: 4 0 0 5 1 7 1
+box: 4 5 0 5 1 7 1
+box: 4 0 2 0 6 1 1
+box: 4 0 2 5 6 1 1
+box: 4 0 2 0 1 1 6
+box: 4 5 2 0 1 1 6
+box: r 0 7 0 6 1 6
+box: r 1 8 1 4 1 4
