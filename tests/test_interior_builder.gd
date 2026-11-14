@@ -26,6 +26,24 @@ const FURNISHED := {
 	"props": {"t": {"model": "table"}, "c": {"model": "chaise", "yaw": 90, "solid": false}},
 }
 
+## Deux pièces : à gauche le sol par défaut, à droite une salle d'eau carrelée, aux murs
+## bleus ; entre les deux, une gaine en bois ; une baignoire dans le coin de la salle d'eau.
+const ROOMS := {
+	"id": "pieces",
+	"plan":
+	[
+		"########",
+		"#a.#~uu#",
+		"#..P~uu#",
+		"#..#~~~D",
+		"########",
+	],
+	"markers": {"a": "default"},
+	"floors": {"~": "beton_5"},
+	"wall_colors": {"~": "bleu_ecran"},
+	"props": {"u": {"model": "table"}},
+}
+
 var _palette: Dictionary
 var _geometry: ZoneGeometry
 
@@ -108,6 +126,43 @@ func test_solid_furniture_blocks_the_navigation_grid() -> void:
 	assert_eq(InteriorBuilder.plan_errors(FURNISHED), [] as Array[String])
 
 
+func test_each_side_of_a_wall_takes_the_colour_of_the_room_it_faces() -> void:
+	var between := Vector2i(3, 1)
+	assert_eq(InteriorBuilder.side_color_id(ROOMS, between, Vector2i.LEFT), "creme")
+	assert_eq(InteriorBuilder.side_color_id(ROOMS, between, Vector2i.RIGHT), "bleu_ecran")
+	assert_eq(
+		InteriorBuilder.side_color_id(ROOMS, Vector2i(5, 0), Vector2i.UP), "beton_1", "le dehors"
+	)
+	assert_eq(
+		InteriorBuilder.side_color_id(ROOMS, Vector2i(3, 2), Vector2i.LEFT), "peau_1", "la gaine"
+	)
+	assert_eq(
+		InteriorBuilder.side_color_id(ROOMS, Vector2i(7, 3), Vector2i.LEFT),
+		"brun_1",
+		"une porte reste une porte"
+	)
+
+
+func test_a_wall_behind_furniture_still_belongs_to_the_room() -> void:
+	# La baignoire couvre le coin : sa pièce se cherche au-delà de ses cases.
+	assert_eq(InteriorBuilder.side_color_id(ROOMS, Vector2i(7, 1), Vector2i.LEFT), "bleu_ecran")
+	assert_eq(
+		InteriorBuilder.floor_color_id(ROOMS, Vector2i(6, 1)),
+		"beton_5",
+		"pas de parquet sous la baignoire"
+	)
+	assert_eq(InteriorBuilder.floor_color_id(ROOMS, Vector2i(1, 1)), "brun_2", "le sol par défaut")
+
+
+func test_the_walls_are_painted_room_by_room() -> void:
+	var rooms := InteriorBuilder.build(ROOMS, _palette)
+	add_child_autofree(rooms)
+	var colors := _mesh_colors(rooms.get_node("Walls"))
+	for color_id: String in ["bleu_ecran", "creme", "peau_1", "brun_1"]:
+		assert_true(colors.has(_palette[color_id]), color_id)
+	assert_eq(InteriorBuilder.plan_errors(ROOMS), [] as Array[String])
+
+
 func test_a_sound_plan_has_no_error() -> void:
 	assert_eq(InteriorBuilder.plan_errors(DEFINITION), [] as Array[String])
 
@@ -128,6 +183,14 @@ func test_plan_errors_name_each_defect() -> void:
 			"markers": {"a": "default"},
 			"props": {"t": {"model": "licorne"}},
 		},
+		"fuchsia":
+		{"plan": ["####", "#a.#", "####"], "markers": {"a": "default"}, "wall_color": "fuchsia"},
+		"sol absent":
+		{
+			"plan": ["####", "#a.#", "####"],
+			"markers": {"a": "default"},
+			"wall_colors": {"~": "blanc"},
+		},
 	}
 	for expected: String in cases:
 		var errors := InteriorBuilder.plan_errors(cases[expected])
@@ -143,3 +206,11 @@ func test_every_interior_of_the_game_has_a_sound_plan() -> void:
 		assert_eq(
 			InteriorBuilder.plan_errors(interiors[interior_id]), [] as Array[String], interior_id
 		)
+
+
+# Les couleurs des sommets d'un maillage.
+func _mesh_colors(mesh_instance: MeshInstance3D) -> Dictionary:
+	var colors := {}
+	for color: Color in mesh_instance.mesh.surface_get_arrays(0)[Mesh.ARRAY_COLOR]:
+		colors[color] = true
+	return colors

@@ -1,13 +1,15 @@
 class_name InteriorBuilder
 ## Construit un intérieur à partir d'un plan en texte (data/interiors/*.json), une case
 ## par mètre : « # » mur, une majuscule un pan de mur particulier (« D » porte, « E »
-## ascenseur, « S » escalier), « espace » le vide, « . » du sol. Les autres caractères
-## sont déclarés par l'intérieur : « floors » (un autre sol), « markers » (un repère :
-## lit, porte, point d'arrivée) ou « props » (un meuble ; des cases voisines de même
-## caractère forment un seul meuble, posé en leur milieu).
+## ascenseur, « S » escalier, « P » gaine technique en bois), « espace » le vide, « . » du
+## sol. Les autres caractères sont déclarés par l'intérieur : « floors » (un autre sol, une
+## pièce), « markers » (un repère : lit, porte, point d'arrivée) ou « props » (un meuble ;
+## des cases voisines de même caractère forment un seul meuble, posé en leur milieu).
 ##
 ## Les murs sont fins, au milieu de leur case, et dessinés bas (coupés à hauteur de
-## hanche) pour voir dans les pièces ; leur collision monte plus haut.
+## hanche) pour voir dans les pièces ; leur collision monte plus haut. Chaque côté d'un mur
+## prend la couleur de la pièce qu'il regarde (« wall_colors », par sol : une salle de bain
+## carrelée de bleu), sinon « wall_color ».
 
 const MATERIAL := preload("res://assets/materials/prop.tres")
 const WALL := "#"
@@ -26,10 +28,13 @@ const WALL_COLOR := "creme"
 const CUT_COLOR := "noir"
 ## Le dos des murs, tourné vers le vide : sombre, pour détacher les pièces du fond.
 const OUTSIDE_COLOR := "beton_1"
-## Couleur des pans de mur particuliers.
 ## Pans de mur particuliers : D une porte (brune), E l'ascenseur, S l'escalier, G une porte
-## vitrée à cadre noir.
-const SPECIAL_WALLS := {"D": "brun_1", "E": "bleu_acier", "S": "beton_2", "G": "noir"}
+## vitrée à cadre noir, P les portes en bois d'une gaine technique (paliers).
+const SPECIAL_WALLS := {
+	"D": "brun_1", "E": "bleu_acier", "S": "beton_2", "G": "noir", "P": "peau_1"
+}
+## Distance (en cases) jusqu'où un meuble ou un repère cherche le sol de sa pièce.
+const ROOM_SEARCH := 12
 const SIDES: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
 const QUADRANTS: Array[Vector2i] = [
 	Vector2i(-1, -1), Vector2i(1, -1), Vector2i(1, 1), Vector2i(-1, 1)
@@ -48,7 +53,6 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 	var props: Dictionary = definition.get("props", {})
 	var floor_colors: Dictionary = definition.get("floors", {})
 	var floor_color: String = definition.get("floor_color", FLOOR_COLOR)
-	var wall_color: String = definition.get("wall_color", WALL_COLOR)
 	var floor_surface := SurfaceTool.new()
 	floor_surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var wall_surface := SurfaceTool.new()
@@ -66,13 +70,7 @@ static func build(definition: Dictionary, palette: Dictionary) -> ZoneGeometry:
 				geometry.nav_data.set_opaque(cell)
 				var colors: Array[Color] = []
 				for side: Vector2i in SIDES:
-					var outside := (
-						not _is_inside(rows, cell + side) or _kind(rows, cell + side) == VOID
-					)
-					var color_id: String = (
-						OUTSIDE_COLOR if outside else SPECIAL_WALLS.get(kind, wall_color)
-					)
-					colors.append(palette[color_id])
+					colors.append(palette[side_color_id(definition, cell, side)])
 				_add_wall(wall_surface, rows, cell, center, colors, palette[CUT_COLOR])
 				_add_floor_under_wall(
 					floor_surface, rows, cell, center, floor_colors, floor_color, palette
@@ -136,6 +134,31 @@ static func prop_placements(definition: Dictionary) -> Array[Dictionary]:
 	return placements
 
 
+## Couleur (nom dans la palette) du côté `side` du mur `cell` : sombre vers le dehors ; un
+## pan particulier garde la sienne ; sinon celle de la pièce que ce côté regarde.
+static func side_color_id(definition: Dictionary, cell: Vector2i, side: Vector2i) -> String:
+	var rows := _rows(definition)
+	var beside := cell + side
+	if not _is_inside(rows, beside) or _kind(rows, beside) == VOID:
+		return OUTSIDE_COLOR
+	var kind := _kind(rows, cell)
+	if SPECIAL_WALLS.has(kind):
+		return SPECIAL_WALLS[kind]
+	var room := _floor_key_of(rows, beside, definition.get("floors", {}))
+	var wall_colors: Dictionary = definition.get("wall_colors", {})
+	return wall_colors.get(room, definition.get("wall_color", WALL_COLOR))
+
+
+## Couleur (nom dans la palette) du sol de la case `cell`.
+static func floor_color_id(definition: Dictionary, cell: Vector2i) -> String:
+	return _floor_color_of(
+		_rows(definition),
+		cell,
+		definition.get("floors", {}),
+		definition.get("floor_color", FLOOR_COLOR)
+	)
+
+
 ## Rend les défauts du plan (liste vide s'il est sain) : un plan mal fermé laisserait
 ## Akan sortir du décor.
 static func plan_errors(definition: Dictionary) -> Array[String]:
@@ -178,6 +201,26 @@ static func plan_errors(definition: Dictionary) -> Array[String]:
 		var model: String = props[kind].get("model", "")
 		if not ResourceLoader.exists(VoxelModel.PATH % (PROP_MODEL_PATH % model)):
 			errors.append("meuble sans modèle : %s" % model)
+	errors.append_array(_color_errors(definition))
+	return errors
+
+
+# Des couleurs absentes de la palette, ou des murs peints pour un sol qui n'existe pas.
+static func _color_errors(definition: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	var palette := Palette.load_colors()
+	var floor_colors: Dictionary = definition.get("floors", {})
+	var wall_colors: Dictionary = definition.get("wall_colors", {})
+	var used: Array = [definition.get("floor_color", FLOOR_COLOR)]
+	used.append(definition.get("wall_color", WALL_COLOR))
+	used.append_array(floor_colors.values())
+	used.append_array(wall_colors.values())
+	for color_id: String in used:
+		if not palette.has(color_id):
+			errors.append("couleur inconnue : %s" % color_id)
+	for room: String in wall_colors:
+		if room != FLOOR and not floor_colors.has(room):
+			errors.append("couleur de mur pour un sol absent : %s" % room)
 	return errors
 
 
@@ -207,22 +250,39 @@ static func _center_of(rows: PackedStringArray, cell: Vector2i) -> Vector3:
 	)
 
 
-# Couleur du sol d'une case. Un repère ou un meuble n'en dit rien : il prend le sol de la
-# case voisine, pour ne pas faire de tache dans la pièce.
+# Couleur du sol d'une case.
 static func _floor_color_of(
 	rows: PackedStringArray, cell: Vector2i, floor_colors: Dictionary, floor_color: String
 ) -> String:
+	return floor_colors.get(_floor_key_of(rows, cell, floor_colors), floor_color)
+
+
+# Le caractère de sol qui vaut pour une case : le sien ; pour un repère ou un meuble, qui
+# n'en disent rien, celui de la case de sol la plus proche, pour ne pas faire de tache
+# dans la pièce (un grand lit dans un coin cherche au-delà de ses propres cases).
+static func _floor_key_of(
+	rows: PackedStringArray, cell: Vector2i, floor_colors: Dictionary
+) -> String:
 	var kind := _kind(rows, cell)
-	if floor_colors.has(kind):
-		return floor_colors[kind]
-	if kind != FLOOR:
-		for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
-			var beside := _kind(rows, cell + side)
-			if floor_colors.has(beside):
-				return floor_colors[beside]
-			if beside == FLOOR:
-				break
-	return floor_color
+	if kind == FLOOR or floor_colors.has(kind):
+		return kind
+	var visited := {cell: true}
+	var frontier: Array[Vector2i] = [cell]
+	for _step: int in ROOM_SEARCH:
+		var next: Array[Vector2i] = []
+		for from: Vector2i in frontier:
+			for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+				var beside := from + side
+				if visited.has(beside) or not _is_inside(rows, beside):
+					continue
+				visited[beside] = true
+				var found := _kind(rows, beside)
+				if found == FLOOR or floor_colors.has(found):
+					return found
+				if found != VOID and not _is_wall(found):
+					next.append(beside)
+		frontier = next
+	return FLOOR
 
 
 # Un rectangle de sol autour de `center`, de `low` à `high` (x, z).
