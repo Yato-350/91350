@@ -4,29 +4,42 @@
 	"territory": "grigny2",
 	"home": true,
 	"plan": [
-		"#############",
-		"#b.w#B.w#fkc#",
-		"#bzl#B..#de,#",
-		"#...#..m#,,i#",
-		"##.###.###.##",
-		"#s........v.#",
-		"#s..tt.....pD",
-		"#a..hh.y....#",
-		"#############"
+		"#################",
+		"#trrsrrc1.#fi,bb#",
+		"#t-qs.ann.#kejbb#",
+		"#o-qhy.23.#g,d,u#",
+		"######.#####.####",
+		"#.......xx____.pD",
+		"##.###.###.##.#6#",
+		"#w;;#!m;#)~~#+#4#",
+		"#&&=#?l%#~~~#*###",
+		"#&&=#;z%#((~###  ",
+		"#############    "
 	],
 	"markers": {
 		"l": "default",
 		"m": "chambre",
 		"a": "sejour",
+		"y": "maya",
 		"p": "porte",
 		"i": "cuisine",
 		"e": "evier",
 		"d": "daronne",
-		"y": "maya",
 		"z": "lit"
 	},
+	"floor_color": "brun_2",
+	"wall_color": "blanc",
 	"floors": {
-		",": "beton_5"
+		",": "creme",
+		";": "peau_2",
+		"=": "creme",
+		"~": "beton_5",
+		"+": "beton_5",
+		"-": "beton_5",
+		"_": "blanc"
+	},
+	"wall_colors": {
+		"~": "bleu_ecran"
 	},
 	"doors": [
 		{
@@ -36,42 +49,133 @@
 		}
 	],
 	"props": {
-		"b": {
-			"model": "lit"
+		"t": {
+			"model": "meuble_tv",
+			"yaw": -90,
+			"against_wall": true
 		},
-		"B": {
-			"model": "lit_double"
+		"r": {
+			"model": "rideaux",
+			"yaw": 180,
+			"solid": false,
+			"against_wall": true
 		},
-		"w": {
-			"model": "armoire",
-			"yaw": 180
+		"s": {
+			"model": "canape_salon",
+			"yaw": 90
+		},
+		"q": {
+			"model": "table_basse",
+			"yaw": 90
+		},
+		"h": {
+			"model": "fauteuil",
+			"yaw": 90
+		},
+		"o": {
+			"model": "plante",
+			"yaw": -90,
+			"against_wall": true
+		},
+		"n": {
+			"model": "table_blanche"
+		},
+		"c": {
+			"model": "chaise_blanche",
+			"yaw": 180,
+			"solid": false
+		},
+		"1": {
+			"model": "chaise_blanche",
+			"yaw": 180,
+			"solid": false
+		},
+		"2": {
+			"model": "chaise_blanche",
+			"solid": false
+		},
+		"3": {
+			"model": "chaise_blanche",
+			"solid": false
 		},
 		"f": {
 			"model": "frigo",
-			"yaw": 180
+			"yaw": -90,
+			"against_wall": true
 		},
 		"k": {
 			"model": "plan_travail",
-			"yaw": 180
+			"yaw": -90,
+			"against_wall": true
 		},
-		"c": {
+		"g": {
 			"model": "cuisiniere",
-			"yaw": 180
+			"yaw": -90,
+			"against_wall": true
 		},
-		"s": {
-			"model": "canape",
+		"b": {
+			"model": "coin_repas",
 			"yaw": -90
 		},
-		"v": {
-			"model": "tele",
-			"yaw": 90
-		},
-		"t": {
-			"model": "table"
-		},
-		"h": {
-			"model": "chaise",
+		"j": {
+			"model": "tabouret",
 			"solid": false
+		},
+		"u": {
+			"model": "lave_linge",
+			"yaw": 90,
+			"against_wall": true
+		},
+		"x": {
+			"model": "meuble_chaussures",
+			"yaw": 180,
+			"solid": false,
+			"against_wall": true
+		},
+		"6": {
+			"model": "manteaux",
+			"yaw": 90,
+			"against_wall": true
+		},
+		"4": {
+			"model": "frigo",
+			"against_wall": true
+		},
+		"w": {
+			"model": "armoire",
+			"yaw": 180,
+			"against_wall": true
+		},
+		"&": {
+			"model": "lit_double",
+			"yaw": -90,
+			"against_wall": true
+		},
+		"!": {
+			"model": "bureau",
+			"yaw": 180,
+			"against_wall": true
+		},
+		"?": {
+			"model": "chaise_gamer",
+			"solid": false
+		},
+		"%": {
+			"model": "lit_simple",
+			"against_wall": true
+		},
+		")": {
+			"model": "lavabo",
+			"yaw": -90,
+			"against_wall": true
+		},
+		"(": {
+			"model": "baignoire",
+			"against_wall": true
+		},
+		"*": {
+			"model": "wc",
+			"against_wall": true
 		}
 	},
 	"pickups": [
@@ -105,7 +209,7 @@
 			"character": "maya",
 			"at": "maya",
 			"dialogue": "maya",
-			"yaw": 180
+			"yaw": -90
 		}
 	]
 }

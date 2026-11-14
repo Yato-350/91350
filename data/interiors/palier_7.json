@@ -3,12 +3,13 @@
 	"name": "PLACE_PALIER_7",
 	"territory": "grigny2",
 	"plan": [
-		"###D###L###",
-		"#..c...l..#",
-		"Ea.......bS",
-		"E........hS",
-		"#..e......#",
-		"###D###D###"
+		"       #SSSS#       ",
+		"       S.xx.S       ",
+		"       ShxxbS       ",
+		"##D#PP#S....S#D#P#D#",
+		"F.c...........l....#",
+		"#.e.....a...k......#",
+		"##D#PP##EE#P###PP#D#"
 	],
 	"markers": {
 		"c": "default",
@@ -20,6 +21,16 @@
 	},
 	"floor_color": "beton_2",
 	"wall_color": "creme",
+	"props": {
+		"x": {
+			"model": "escalier_colimacon"
+		},
+		"k": {
+			"model": "extincteur",
+			"solid": false,
+			"against_wall": true
+		}
+	},
 	"doors": [
 		{
 			"at": "escalier_haut",

@@ -6,6 +6,16 @@ phase de test).
 
 ## [Non publié]
 
+### Ajouté
+
+- Les paliers de la tour suivent le plan d'évacuation d'un étage des Sablons : long
+  couloir, escalier en colimaçon dans sa cage, ascenseur en face, gaines techniques en
+  bois, cinq logements, fenêtre au bout du couloir.
+- L'appartement d'Akan devient un F4 : entrée, cuisine avec banquette d'angle, séjour
+  double, deux chambres, WC, salle de bain carrelée de bleu, cellier ; 22 meubles voxel.
+- Les intérieurs peuvent avoir un sol et des murs par pièce, des fenêtres, et des meubles
+  collés aux murs.
+
 ## [0.1.0] — M1 « La tour » (acte 1 jouable)
 
 ### Ajouté
@@ -23,6 +33,9 @@ phase de test).
 - La couleur, c'est la liberté : gris du régime, couleurs chez soi, libération de
   Grigny 2 (couleurs, vrai nom, musique, planque), le régime quitte la zone.
 - Jour et nuit, couvre-feu annoncé, lit pour dormir, horaires du point de ration.
+- Grigny 2 d'après des photos du terrain : tours à pilastres crème et damier bordeaux,
+  gare de Grigny-Centre (verrière, bardage brique, enseigne), hall en travertin, paliers
+  en crépi, potelets, bornes incendie, lampadaires « soucoupe », arbres d'automne.
 - Vigiles (patrouille, soupçon, alerte, recherche), caméras qui balaient, combat au
   corps à corps et neutralisation, arrestation.
 - Besoins, endurance, inventaire en grille, journal des quêtes, guidage vers l'objectif.
